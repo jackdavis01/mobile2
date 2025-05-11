@@ -1,0 +1,11 @@
+# Flutter cache fájlok ignorálása
+/doglist/.dart_tool/
+/doglist/.packages
+/doglist/.pub/
+/doglist/build/
+/doglist/.flutter-plugins
+/doglist/.flutter-plugins-dependencies
+/doglist/.metadata
+/doglist/android/.gradle
+/doglist/ios/Pods
+/doglist/windows/flutter/ephemeral
