@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../parameters/netservices.dart';
 
 class ImageWithCancel extends StatefulWidget {
   final String imageUrl;
@@ -15,46 +17,31 @@ class ImageWithCancel extends StatefulWidget {
   });
 
   @override
-  ImageWithCancelState createState() => ImageWithCancelState();
+  State<ImageWithCancel> createState() => _ImageWithCancelState();
 }
 
-class ImageWithCancelState extends State<ImageWithCancel> {
-  ImageStream? _imageStream;
-  ImageStreamListener? _imageStreamListener;
+class _ImageWithCancelState extends State<ImageWithCancel> {
+  late CachedNetworkImageProvider _provider;
 
   @override
   void initState() {
     super.initState();
-    _loadImage();
-  }
-
-  void _loadImage() {
-    final ImageProvider imageProvider = NetworkImage(widget.imageUrl);
-    _imageStream = imageProvider.resolve(const ImageConfiguration());
-    _imageStreamListener = ImageStreamListener(
-      (ImageInfo image, bool synchronousCall) {
-        setState(() {}); // Rebuild when the image is loaded
-      },
-      onError: (Object error, StackTrace? stackTrace) {
-        if (widget.errorBuilder != null) {
-          setState(() {}); // Rebuild to show the error widget
-        }
-      },
+    _provider = CachedNetworkImageProvider(
+      widget.imageUrl,
+      cacheManager: OneDayCacheManager(),
     );
-    _imageStream?.addListener(_imageStreamListener!);
   }
 
   @override
   void dispose() {
-    _imageStream?.removeListener(_imageStreamListener!); // Stop the image loading
+    // If the widget disappears, the cache manager won't load further
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider imageProvider = NetworkImage(widget.imageUrl);
     return Image(
-      image: imageProvider,
+      image: _provider,
       fit: widget.fit,
       errorBuilder: widget.errorBuilder,
       loadingBuilder: widget.loadingBuilder,

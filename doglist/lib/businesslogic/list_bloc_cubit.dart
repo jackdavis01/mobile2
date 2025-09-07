@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/dog.dart';
-import '../netservices/apidogs.dart';
+import '../repositories/dogs_data_repository.dart';
+//import '../netservices/apidogs.dart';
 
 class ListState {
   final List<Dog> originalItems;
@@ -48,7 +49,7 @@ class ListState {
 }
 
 class ListCubit extends Cubit<ListState> {
-  final ApiDogs _apiDogs = ApiDogs();
+  final DogsDataRepository _dogsRepository = DogsDataRepository();
 
   ListCubit() : super(ListState.initial()) {
     fetchDogData();
@@ -57,7 +58,7 @@ class ListCubit extends Cubit<ListState> {
   Future<void> fetchDogData() async {
     emit(state.copyWith(loading: true, showError: false));
     try {
-      final List<Dog> originalItems = await _apiDogs.fetchData();
+      final List<Dog> originalItems = await _dogsRepository.getDogs();
       emit(state.copyWith(
         originalItems: originalItems,
         items: List.from(originalItems),

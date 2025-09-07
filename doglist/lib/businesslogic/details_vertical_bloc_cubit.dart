@@ -16,7 +16,7 @@ class DetailsVerticalCubit extends Cubit<DetailsVerticalState> {
         currentDogIndex: initialDogIndex,
         currentImagePageIsZoomed: false,
       )
-    ) {/*detailsImageCubit.onZoomChanged = _handleZoomChanged;*/}
+    );
 
   int get currentDogIndex => state.currentDogIndex;
 
@@ -26,10 +26,6 @@ class DetailsVerticalCubit extends Cubit<DetailsVerticalState> {
     ));
     detailsImageCubit = DetailsImageCubit(initialDogIndex: currentDogIndex);
   }
-
-  /*void _handleZoomChanged(bool isZoomed) {
-    emit(state.copyWith(currentImagePageIsZoomed: isZoomed));
-  }*/
 
   void setCurrentImagePageIsZoomed(bool isZoomed) {
     emit(state.copyWith(currentImagePageIsZoomed: isZoomed));

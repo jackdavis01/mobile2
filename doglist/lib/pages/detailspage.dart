@@ -151,13 +151,15 @@ class DetailsPage extends StatelessWidget {
                                                       imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + imageUrls[pageIndex],
                                                       fit: BoxFit.contain,
                                                       loadingBuilder: (context, child, loadingProgress) {
-                                                        if (loadingProgress == null) {
-                                                          detailsImageCubit.updateIsLoading(false);
-                                                          detailsImageCubit.cancelErrorTimer(); // Cancel timer if image loads
-                                                          return child;
+                                                        if (detailsImageCubit.currentHorizontalPage == pageIndex) {
+                                                          if (loadingProgress == null) {
+                                                            detailsImageCubit.updateIsLoading(false, pageIndex: pageIndex);
+                                                            detailsImageCubit.cancelErrorTimer(); // Cancel timer if image loads
+                                                            return child;
+                                                          }
+                                                          detailsImageCubit.updateIsLoading(true, pageIndex: pageIndex);
+                                                          detailsImageCubit.startErrorTimer(); // Start timer while loading
                                                         }
-                                                        detailsImageCubit.updateIsLoading(true);
-                                                        detailsImageCubit.startErrorTimer(); // Start timer while loading
                                                         return child;
                                                       },
                                                       errorBuilder: (context, error, stackTrace) {

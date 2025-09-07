@@ -71,10 +71,19 @@ class DetailsImageCubit extends Cubit<DetailsImageState> {
     _timers.clear();
   }
 
-  void updateIsLoading(bool newIsLoading) {
-    final updated = List<bool>.from(state.lIsLoading);
-    updated[state.currentHorizontalPage] = newIsLoading;
-    emit(state.copyWith(lIsLoading: updated));
+  // The nullable parameter (`{int? pageIndex}`) is a
+  // **defensive design**: it allows the method to be called
+  // without specifying a page, in which case it defaults to the
+  // current horizontal page.
+  // This can be useful for future-proofing or for generic code.
+
+  void updateIsLoading(bool newIsLoading, {int? pageIndex}) {
+    final int idx = pageIndex ?? state.currentHorizontalPage;
+    if (state.lIsLoading[idx] != newIsLoading) {
+      final updated = List<bool>.from(state.lIsLoading);
+      updated[idx] = newIsLoading;
+      emit(state.copyWith(lIsLoading: updated));
+    }
   }
 
   void updateIsZoomed(bool newIsZoomed) {
