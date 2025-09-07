@@ -28,7 +28,7 @@ class _ImageWithCancelState extends State<ImageWithCancel> {
     super.initState();
     _provider = CachedNetworkImageProvider(
       widget.imageUrl,
-      cacheManager: OneDayCacheManager(),
+      cacheManager: LongTermCacheManager(),
     );
   }
 

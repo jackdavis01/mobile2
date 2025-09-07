@@ -61,7 +61,7 @@ class ListPage extends StatelessWidget {
                         // Use CachedNetworkImage for automatic image caching and offline support.
                         wLeading = CachedNetworkImage(
                           imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + item.images.smallOutdoors,
-                          cacheManager: OneDayCacheManager(),
+                          cacheManager: LongTermCacheManager(),
                           fit: BoxFit.cover,
                           placeholder: (context, url) => SizedBox(
                             width: 56,

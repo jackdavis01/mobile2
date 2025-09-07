@@ -103,10 +103,9 @@ class DetailsImageCubit extends Cubit<DetailsImageState> {
       final double x = state.lViewerSize[pageIndex].width / 2;
       final double y = state.lViewerSize[pageIndex].height / 2;
       final double newScale = 1.28;
-      lTransformationController[pageIndex].value = Matrix4.identity()
-        ..translate(x, y)
-        ..scale(newScale)
-        ..translate(-x, -y);
+      lTransformationController[pageIndex].value = Matrix4.translationValues(x, y, 0)
+        ..multiply(Matrix4.diagonal3Values(newScale, newScale, 1.0))
+        ..multiply(Matrix4.translationValues(-x, -y, 0));
       updatedlIsZoomed[pageIndex] = true;
       emit(state.copyWith(lIsZoomed: updatedlIsZoomed));
     }
