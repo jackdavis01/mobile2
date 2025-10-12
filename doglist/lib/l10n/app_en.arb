@@ -1,0 +1,57 @@
+{
+  "@@locale": "en",
+  "materialAppTitle": "Dog List",
+  "@materialAppTitle": {
+    "description": "The title for the App"
+  },
+  "breedListTitle": "Dog Breed List",
+  "@breedListTitle": {
+    "description": "The title for the main list page"
+  },
+  "filterTitle": "Filter",
+  "@filterTitle": {
+    "description": "The title for the filter page"
+  },
+  "internetConnectionError": "Please check your internet connection!",
+  "@internetConnectionError": {
+    "description": "Message for the internet connection issues"
+  },
+  "reloadButton": "Reload",
+  "@reloadButton": {
+    "description": "Text on the Reload button"
+  },
+  "pictureLoadingError": "Error during loading picture, check the internet connection",
+  "@pictureLoadingError": {
+    "description": "Message for the picture loading error"
+  },
+  "errorTitle": "Error",
+  "@errorTitle": {
+    "description": "A generic title for an error page"
+  },
+  "dogDetailsNotAvailableError": "Dog details are not available.",
+  "@dogDetailsNotAvailableError": {
+    "description": "Error message shown when dog details cannot be loaded"
+  },
+  "filterSearchHint": "Search for dog breed...",
+  "@filterSearchHint": {
+    "description": "Hint text for the filter search input field"
+  },
+  "filterErrorMinLength": "Please enter at least 3 characters to search",
+  "@filterErrorMinLength": {
+    "description": "Error message when search input is less than 3 characters"
+  },
+  "filterMatchesCount": "{count, plural, =0{No matches found} =1{1 match found} other{{count} matches found}}",
+  "@filterMatchesCount": {
+    "description": "Shows the number of matching results",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of matching results"
+      }
+    }
+  },
+  "clearAllFilters": "Clear All Filters",
+  "@clearAllFilters": {
+    "description": "Button text to clear all filters"
+  }
+}

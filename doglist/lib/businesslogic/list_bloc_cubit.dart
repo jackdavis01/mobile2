@@ -1,52 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'list_bloc_state.dart';
 import '../models/dog.dart';
 import '../repositories/dogs_data_repository.dart';
-//import '../netservices/apidogs.dart';
-
-class ListState {
-  final List<Dog> originalItems;
-  final List<Dog> items;
-  final List<Dog> favorites;
-  final bool toggleFilter;
-  final bool showError;
-  final bool loading;
-
-  ListState({
-    required this.originalItems,
-    required this.items,
-    required this.favorites,
-    required this.toggleFilter,
-    required this.showError,
-    required this.loading,
-  });
-
-  factory ListState.initial() => ListState(
-    originalItems: [],
-    items: [],
-    favorites: [],
-    toggleFilter: false,
-    showError: false,
-    loading: true,
-  );
-
-  ListState copyWith({
-    List<Dog>? originalItems,
-    List<Dog>? items,
-    List<Dog>? favorites,
-    bool? toggleFilter,
-    bool? showError,
-    bool? loading,
-  }) {
-    return ListState(
-      originalItems: originalItems ?? this.originalItems,
-      items: items ?? this.items,
-      favorites: favorites ?? this.favorites,
-      toggleFilter: toggleFilter ?? this.toggleFilter,
-      showError: showError ?? this.showError,
-      loading: loading ?? this.loading,
-    );
-  }
-}
 
 class ListCubit extends Cubit<ListState> {
   final DogsDataRepository _dogsRepository = DogsDataRepository();
@@ -59,9 +14,11 @@ class ListCubit extends Cubit<ListState> {
     emit(state.copyWith(loading: true, showError: false));
     try {
       final List<Dog> originalItems = await _dogsRepository.getDogs();
+      final List<Dog> favorites = await _dogsRepository.getFavorites();
       emit(state.copyWith(
         originalItems: originalItems,
         items: List.from(originalItems),
+        favorites: favorites,
         showError: false,
         loading: false,
       ));
@@ -70,33 +27,44 @@ class ListCubit extends Cubit<ListState> {
     }
   }
 
-  void toggleFavorite(String id) {
-    final Dog dog = state.originalItems.firstWhere((d) => d.id == id);
-    final List<Dog> favorites = List<Dog>.from(state.favorites);
-    if (favorites.contains(dog)) {
-      favorites.remove(dog);
-    } else {
-      favorites.add(dog);
+  Future<void> toggleFavorite(String id) async {
+    try {
+      final Dog dog = state.originalItems.firstWhere((d) => d.id == id);
+      await _dogsRepository.toggleFavorite(dog);
+      final List<Dog> updatedFavorites = await _dogsRepository.getFavorites();
+      _favoriteFilterAction(favorites: updatedFavorites);
+    } catch (e) {
+      // Handle error if needed
     }
-    _filterAction(favorites: favorites);
   }
 
-  void toggleFilterAction() {
-    final toggleFilter = !state.toggleFilter;
-    _filterAction(toggleFilter: toggleFilter);
-  }
 
-  void _filterAction({List<Dog>? favorites, bool? toggleFilter}) {
+
+  void _favoriteFilterAction({List<Dog>? favorites, bool? toggleFavoriteFilter}) {
     final List<Dog> favs = favorites ?? state.favorites;
-    final bool filter = toggleFilter ?? state.toggleFilter;
-    final List<Dog> items = filter
-        ? state.originalItems.where((item) => favs.contains(item)).toList()
+    final bool favoriteFilter = toggleFavoriteFilter ?? state.toggleFavoriteFilter;
+    final List<Dog> items = favoriteFilter
+        ? state.originalItems.where((item) => favs.any((fav) => fav.id == item.id)).toList()
         : List.from(state.originalItems);
     emit(state.copyWith(
       favorites: favs,
-      toggleFilter: filter,
+      toggleFavoriteFilter: favoriteFilter,
       items: items,
     ));
+  }
+
+  void toggleFavoriteFilterAction() {
+    final toggleFavoriteFilter = !state.toggleFavoriteFilter;
+    _favoriteFilterAction(toggleFavoriteFilter: toggleFavoriteFilter);
+  }
+
+  Future<void> refreshFavorites() async {
+    try {
+      final List<Dog> updatedFavorites = await _dogsRepository.getFavorites();
+      _favoriteFilterAction(favorites: updatedFavorites);
+    } catch (e) {
+      // Handle error if needed
+    }
   }
 
   void reloadData() {

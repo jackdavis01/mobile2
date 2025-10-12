@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '/l10n/gen/app_localizations.dart';
+import '/l10n/gen/app_localizations_en.dart';
 import '../parameters/netservices.dart';
 import '../models/dog.dart';
 import '../businesslogic/details_vertical_bloc_state.dart';
@@ -14,9 +16,20 @@ class DetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map args = ModalRoute.of(context)!.settings.arguments as Map;
-    final List<Dog> dogs = args['dogs'];
-    final int initialDogIndex = args['index'];
+ 
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
+    final Object? arguments = ModalRoute.of(context)?.settings.arguments;
+
+    if (arguments is! Map || !arguments.containsKey('dogs') || !arguments.containsKey('index')) {
+      return Scaffold(
+        appBar: AppBar(title: Text(appLocalizations.errorTitle)),
+        body: Center(child: Text(appLocalizations.dogDetailsNotAvailableError)),
+      );
+    }
+
+    final List<Dog> dogs = arguments['dogs'] as List<Dog>;
+    final int initialDogIndex = arguments['index'] as int;
 
     return BlocProvider<DetailsVerticalCubit>(
       create: (_) => DetailsVerticalCubit(initialDogIndex: initialDogIndex),
@@ -24,7 +37,25 @@ class DetailsPage extends StatelessWidget {
         builder: (context, detailsVerticalState) {
           final DetailsVerticalCubit detailsVerticalCubit = context.read<DetailsVerticalCubit>();
           return Scaffold(
-            appBar: AppBar(title: Text(dogs[detailsVerticalState.currentDogIndex].name), centerTitle: true),
+            appBar: AppBar(
+              title: Text(dogs[detailsVerticalState.currentDogIndex].name), 
+              centerTitle: true,
+              actions: [
+                BlocBuilder<DetailsVerticalCubit, DetailsVerticalState>(
+                  builder: (context, state) {
+                    final Dog currentDog = dogs[state.currentDogIndex];
+                    final bool isFavorite = detailsVerticalCubit.isFavorite(currentDog);
+                    return IconButton(
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : null,
+                      ),
+                      onPressed: () => detailsVerticalCubit.toggleFavorite(currentDog),
+                    );
+                  },
+                ),
+              ],
+            ),
             body: PageView.builder(
               scrollDirection: Axis.vertical,
               physics: detailsVerticalState.currentImagePageIsZoomed
@@ -108,7 +139,7 @@ class DetailsPage extends StatelessWidget {
                                       } else {
                                         return Center(
                                           child: SizedBox(width: 180, child: Text(
-                                            "Error during loading picture, check the internet connection",
+                                            appLocalizations.pictureLoadingError,
                                             style: TextStyle(fontSize: 16.0),
                                             textAlign: TextAlign.center,
                                           )),
@@ -166,7 +197,7 @@ class DetailsPage extends StatelessWidget {
                                                         detailsImageCubit.cancelErrorTimer(); // Cancel timer if error occurs
                                                         return Center(
                                                           child: SizedBox(width: 180, child: Text(
-                                                              "Error during loading picture, check the internet connection",
+                                                              appLocalizations.pictureLoadingError,
                                                               style: TextStyle(fontSize: 16.0),
                                                               textAlign: TextAlign.center,
                                                           )),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '/l10n/gen/app_localizations.dart';
+import '/l10n/gen/app_localizations_en.dart';
 import 'pages/listpage.dart';
 import 'pages/detailspage.dart';
+import 'pages/filterpage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized(); // Ensures that SystemChrome settings are applied
@@ -17,8 +20,13 @@ class DogListApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+ 
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
     return MaterialApp(
-      title: 'Dog List',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      title: appLocalizations.materialAppTitle,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -26,6 +34,7 @@ class DogListApp extends StatelessWidget {
       routes: {
         '/list': (context) => ListPage(),
         '/details': (context) => DetailsPage(),
+        '/filter': (context) => FilterPage(),
       },
     );
   }

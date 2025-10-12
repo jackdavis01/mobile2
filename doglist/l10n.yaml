@@ -1,0 +1,6 @@
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-class: AppLocalizations
+output-dir: lib/l10n/gen
+#synthetic-package: false
+untranslated-messages-file: lib/l10n/gen/missing_translations.txt

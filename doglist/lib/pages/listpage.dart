@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '/l10n/gen/app_localizations.dart';
+import '/l10n/gen/app_localizations_en.dart';
 import '../parameters/netservices.dart';
+import '../businesslogic/list_bloc_state.dart';
 import '../businesslogic/list_bloc_cubit.dart';
 import '../models/dog.dart';
 import '../widgets/spinkitwidgets.dart';
@@ -11,6 +14,9 @@ class ListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+ 
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
     return BlocProvider(
       create: (_) => ListCubit(),
       child: BlocBuilder<ListCubit, ListState>(
@@ -18,12 +24,20 @@ class ListPage extends StatelessWidget {
           final ListCubit listCubit = context.read<ListCubit>();
           return Scaffold(
             appBar: AppBar(
-              title: Text('Dog Breed List'),
+              title: Text(appLocalizations.breedListTitle),
               centerTitle: true,
               actions: [
                 IconButton(
-                  icon: (listState.toggleFilter) ? Icon(Icons.filter_alt_outlined, size: 32) : Icon(Icons.filter_alt, size: 32),
-                  onPressed: listCubit.toggleFilterAction,
+                  icon: Icon(Icons.filter_alt_outlined, size: 32, color: Colors.blue[800]),
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, '/filter');
+                    // Refresh favorites when returning from FilterPage
+                    listCubit.refreshFavorites();
+                  },
+                ),
+                IconButton(
+                  icon: (listState.toggleFavoriteFilter) ? Icon(Icons.favorite, size: 28, color: Colors.red) : Icon(Icons.favorite_border, size: 28),
+                  onPressed: listCubit.toggleFavoriteFilterAction,
                 ),
               ],
             ),
@@ -36,14 +50,14 @@ class ListPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(padding: EdgeInsets.symmetric(horizontal: 36), child: Text(
-                              'Please check your internet connection!',
+                              appLocalizations.internetConnectionError,
                               style: TextStyle(fontSize: 18, color: Colors.red),
                               textAlign: TextAlign.center,
                             )),
                             const SizedBox(height: 16),
                             ElevatedButton(
                               onPressed: listCubit.reloadData,
-                              child: Text('Reload'),
+                              child: Text(appLocalizations.reloadButton),
                             ),
                           ],
                         )
@@ -53,7 +67,7 @@ class ListPage extends StatelessWidget {
                     itemCount: listState.items.length,
                     itemBuilder: (context, index) {
                       final Dog item = listState.items[index];
-                      final bool isFavorite = listState.favorites.contains(item);
+                      final bool isFavorite = listState.favorites.any((fav) => fav.id == item.id);
                       Widget wLeading = Container();
                       Widget wTitle = Container();
                       Widget wSubtitle = Container();
@@ -92,11 +106,14 @@ class ListPage extends StatelessWidget {
                         title: wTitle,
                         subtitle: wSubtitle,
                         trailing: IconButton(
-                          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
-                          onPressed: () => listCubit.toggleFavorite(item.id),
+                          icon: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Colors.red : null,
+                          ),
+                          onPressed: () async => await listCubit.toggleFavorite(item.id),
                         ),
-                        onTap: () {
-                          Navigator.pushNamed(
+                        onTap: () async {
+                          await Navigator.pushNamed(
                             context,
                             '/details',
                             arguments: {
@@ -104,6 +121,8 @@ class ListPage extends StatelessWidget {
                               'index': index,
                             }
                           );
+                          // Refresh favorites when returning from DetailsPage
+                          listCubit.refreshFavorites();
                         },
                       );
                     },
