@@ -8,6 +8,8 @@ import '../businesslogic/list_bloc_state.dart';
 import '../businesslogic/list_bloc_cubit.dart';
 import '../models/dog.dart';
 import '../widgets/spinkitwidgets.dart';
+import '../widgets/ad_banner.dart';
+import '../parameters/ads_config.dart';
 
 class ListPage extends StatelessWidget {
   const ListPage({super.key});
@@ -41,92 +43,107 @@ class ListPage extends StatelessWidget {
                 ),
               ],
             ),
-            body: listState.loading
-              ? CustomSpinKitThreeInOut()
-              : listState.originalItems.isEmpty
-                ? Center(child:
-                    listState.showError
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(padding: EdgeInsets.symmetric(horizontal: 36), child: Text(
-                              appLocalizations.internetConnectionError,
-                              style: TextStyle(fontSize: 18, color: Colors.red),
-                              textAlign: TextAlign.center,
-                            )),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: listCubit.reloadData,
-                              child: Text(appLocalizations.reloadButton),
-                            ),
-                          ],
-                        )
-                      : CustomSpinKitThreeInOut(), // Show loading indicator
-                  )
-                : ListView.builder(
-                    itemCount: listState.items.length,
-                    itemBuilder: (context, index) {
-                      final Dog item = listState.items[index];
-                      final bool isFavorite = listState.favorites.any((fav) => fav.id == item.id);
-                      Widget wLeading = Container();
-                      Widget wTitle = Container();
-                      Widget wSubtitle = Container();
-                      try {
-                        // Use CachedNetworkImage for automatic image caching and offline support.
-                        wLeading = CachedNetworkImage(
-                          imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + item.images.smallOutdoors,
-                          cacheManager: LongTermCacheManager(),
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => SizedBox(
-                            width: 56,
-                            height: 56,
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Center(
-                                child: CustomSpinKitThreeInOut(), // Show a loading indicator while loading
-                              ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => FittedBox(
-                            fit: BoxFit.contain,
-                            child: Icon(
-                              Icons.image, // Default image icon
-                              size: 56,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        );
-                        wTitle = Text(item.name);
-                        wSubtitle = Text("${item.coatStyle}, ${item.coatTexture}");
-                      } catch (e) {
-                        debugPrint("Error in the incoming data: $e");
-                      }
-                      return ListTile(
-                        leading: wLeading,
-                        title: wTitle,
-                        subtitle: wSubtitle,
-                        trailing: IconButton(
-                          icon: Icon(
-                            isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red : null,
-                          ),
-                          onPressed: () async => await listCubit.toggleFavorite(item.id),
-                        ),
-                        onTap: () async {
-                          await Navigator.pushNamed(
-                            context,
-                            '/details',
-                            arguments: {
-                              'dogs': listState.items,
-                              'index': index,
+            body: Stack(
+              children: [
+                // Main content
+                listState.loading
+                  ? CustomSpinKitThreeInOut()
+                  : listState.originalItems.isEmpty
+                    ? Center(child:
+                        listState.showError
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(padding: EdgeInsets.symmetric(horizontal: 36), child: Text(
+                                  appLocalizations.internetConnectionError,
+                                  style: TextStyle(fontSize: 18, color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                )),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  onPressed: listCubit.reloadData,
+                                  child: Text(appLocalizations.reloadButton),
+                                ),
+                              ],
+                            )
+                          : CustomSpinKitThreeInOut(), // Show loading indicator
+                      )
+                    : Padding(
+                        padding: EdgeInsets.only(bottom: AdsConfig.areAdsEnabled ? 60 : 0), // Space for banner ad only if ads enabled
+                        child: ListView.builder(
+                          itemCount: listState.items.length,
+                          itemBuilder: (context, index) {
+                            final Dog item = listState.items[index];
+                            final bool isFavorite = listState.favorites.any((fav) => fav.id == item.id);
+                            Widget wLeading = Container();
+                            Widget wTitle = Container();
+                            Widget wSubtitle = Container();
+                            try {
+                              // Use CachedNetworkImage for automatic image caching and offline support.
+                              wLeading = CachedNetworkImage(
+                                imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + item.images.smallOutdoors,
+                                cacheManager: LongTermCacheManager(),
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => SizedBox(
+                                  width: 56,
+                                  height: 56,
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Center(
+                                      child: CustomSpinKitThreeInOut(), // Show a loading indicator while loading
+                                    ),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Icon(
+                                    Icons.image, // Default image icon
+                                    size: 56,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              );
+                              wTitle = Text(item.name);
+                              wSubtitle = Text("${item.coatStyle}, ${item.coatTexture}");
+                            } catch (e) {
+                              debugPrint("Error in the incoming data: $e");
                             }
-                          );
-                          // Refresh favorites when returning from DetailsPage
-                          listCubit.refreshFavorites();
-                        },
-                      );
-                    },
-                  ),
+                            return ListTile(
+                              leading: wLeading,
+                              title: wTitle,
+                              subtitle: wSubtitle,
+                              trailing: IconButton(
+                                icon: Icon(
+                                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                                  color: isFavorite ? Colors.red : null,
+                                ),
+                                onPressed: () async => await listCubit.toggleFavorite(item.id),
+                              ),
+                              onTap: () async {
+                                await Navigator.pushNamed(
+                                  context,
+                                  '/details',
+                                  arguments: {
+                                    'dogs': listState.items,
+                                    'index': index,
+                                  }
+                                );
+                                // Refresh favorites when returning from DetailsPage
+                                listCubit.refreshFavorites();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                // Banner ad positioned at the bottom
+                const Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: AdBanner(),
+                ),
+              ],
+            ),
           );
         }
       ),

@@ -46,3 +46,8 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Environment variables and sensitive configuration
+.env
+!.env.public
+*.g.dart
