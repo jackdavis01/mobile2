@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:doglist/main.dart';
+import 'package:doglist/app.dart';
 
 void main() {
   testWidgets('Dog List test', (WidgetTester tester) async {

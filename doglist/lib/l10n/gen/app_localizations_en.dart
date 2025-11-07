@@ -55,4 +55,153 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get clearAllFilters => 'Clear All Filters';
+
+  @override
+  String get breedInfoNotAvailable => 'Dog information not available';
+
+  @override
+  String get breedInfoLoadError => 'Could not load extended information';
+
+  @override
+  String breedInfoLoadErrorDetails(String error) {
+    return 'Error loading information: $error';
+  }
+
+  @override
+  String get quickOverview => 'Quick Overview';
+
+  @override
+  String get aboutThisBreed => 'About This Breed';
+
+  @override
+  String get physicalTraits => 'Physical Traits';
+
+  @override
+  String get behaviorProfile => 'Behavior Profile';
+
+  @override
+  String get careRequirements => 'Care Requirements';
+
+  @override
+  String get rareBreed => 'Rare Breed';
+
+  @override
+  String get height => 'Height';
+
+  @override
+  String get weight => 'Weight';
+
+  @override
+  String get lifespan => 'Lifespan';
+
+  @override
+  String get size => 'Size';
+
+  @override
+  String get coatStyle => 'Coat Style';
+
+  @override
+  String get coatTexture => 'Coat Texture';
+
+  @override
+  String get coatLength => 'Coat Length';
+
+  @override
+  String get doubleCoat => 'Double Coat';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get drooling => 'Drooling';
+
+  @override
+  String get familyAffection => 'Family Affection';
+
+  @override
+  String get childFriendly => 'Child Friendly';
+
+  @override
+  String get dogSociability => 'Dog Sociability';
+
+  @override
+  String get friendlyToStrangers => 'Friendly to Strangers';
+
+  @override
+  String get playfulness => 'Playfulness';
+
+  @override
+  String get protectiveInstincts => 'Protective Instincts';
+
+  @override
+  String get adaptability => 'Adaptability';
+
+  @override
+  String get barkingFrequency => 'Barking Frequency';
+
+  @override
+  String get sheddingAmount => 'Shedding Amount';
+
+  @override
+  String get groomingFrequency => 'Grooming Frequency';
+
+  @override
+  String get exerciseNeeds => 'Exercise Needs';
+
+  @override
+  String get mentalStimulation => 'Mental Stimulation';
+
+  @override
+  String get trainingDifficulty => 'Training Difficulty';
+
+  @override
+  String get sizeExtraSmall => 'Extra Small (< 10 lbs)';
+
+  @override
+  String get sizeSmall => 'Small (10-25 lbs)';
+
+  @override
+  String get sizeMedium => 'Medium (25-50 lbs)';
+
+  @override
+  String get sizeLarge => 'Large (50-100 lbs)';
+
+  @override
+  String get sizeExtraLarge => 'Extra Large (100+ lbs)';
+
+  @override
+  String get coatLengthVeryShort => 'Very Short';
+
+  @override
+  String get coatLengthShort => 'Short';
+
+  @override
+  String get coatLengthMedium => 'Medium';
+
+  @override
+  String get coatLengthLong => 'Long';
+
+  @override
+  String get coatLengthVeryLong => 'Very Long';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get ratingVeryLow => 'Very Low';
+
+  @override
+  String get ratingLow => 'Low';
+
+  @override
+  String get ratingModerate => 'Moderate';
+
+  @override
+  String get ratingHigh => 'High';
+
+  @override
+  String get ratingVeryHigh => 'Very High';
 }

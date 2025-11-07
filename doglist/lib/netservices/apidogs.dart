@@ -7,6 +7,17 @@ class ApiDogs {
 
   final String _apiDogUrl = NS.apiDogJsonUrl;
 
+  /// Fetch raw JSON string from API (for caching purposes)
+  Future<String> fetchRawData() async {
+    final response = await http.get(Uri.parse(_apiDogUrl));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Error during loading data.');
+    }
+  }
+
   Future<List<Dog>> fetchData() async {
     final response = await http.get(Uri.parse(_apiDogUrl));
 

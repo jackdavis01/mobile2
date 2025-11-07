@@ -51,3 +51,6 @@ app.*.map.json
 .env
 !.env.public
 *.g.dart
+
+# Docs
+/docs/

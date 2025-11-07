@@ -53,5 +53,207 @@
   "clearAllFilters": "Clear All Filters",
   "@clearAllFilters": {
     "description": "Button text to clear all filters"
+  },
+  "breedInfoNotAvailable": "Dog information not available",
+  "@breedInfoNotAvailable": {
+    "description": "Error message when breed information is not available"
+  },
+  "breedInfoLoadError": "Could not load extended information",
+  "@breedInfoLoadError": {
+    "description": "Error message when extended breed information fails to load"
+  },
+  "breedInfoLoadErrorDetails": "Error loading information: {error}",
+  "@breedInfoLoadErrorDetails": {
+    "description": "Error message with details when loading information fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "quickOverview": "Quick Overview",
+  "@quickOverview": {
+    "description": "Section title for quick overview"
+  },
+  "aboutThisBreed": "About This Breed",
+  "@aboutThisBreed": {
+    "description": "Section title for breed description"
+  },
+  "physicalTraits": "Physical Traits",
+  "@physicalTraits": {
+    "description": "Section title for physical traits"
+  },
+  "behaviorProfile": "Behavior Profile",
+  "@behaviorProfile": {
+    "description": "Section title for behavior profile"
+  },
+  "careRequirements": "Care Requirements",
+  "@careRequirements": {
+    "description": "Section title for care requirements"
+  },
+  "rareBreed": "Rare Breed",
+  "@rareBreed": {
+    "description": "Label for rare breeds"
+  },
+  "height": "Height",
+  "@height": {
+    "description": "Label for height measurement"
+  },
+  "weight": "Weight",
+  "@weight": {
+    "description": "Label for weight measurement"
+  },
+  "lifespan": "Lifespan",
+  "@lifespan": {
+    "description": "Label for lifespan"
+  },
+  "size": "Size",
+  "@size": {
+    "description": "Label for size trait"
+  },
+  "coatStyle": "Coat Style",
+  "@coatStyle": {
+    "description": "Label for coat style trait"
+  },
+  "coatTexture": "Coat Texture",
+  "@coatTexture": {
+    "description": "Label for coat texture trait"
+  },
+  "coatLength": "Coat Length",
+  "@coatLength": {
+    "description": "Label for coat length trait"
+  },
+  "doubleCoat": "Double Coat",
+  "@doubleCoat": {
+    "description": "Label for double coat trait"
+  },
+  "yes": "Yes",
+  "@yes": {
+    "description": "Yes answer"
+  },
+  "no": "No",
+  "@no": {
+    "description": "No answer"
+  },
+  "drooling": "Drooling",
+  "@drooling": {
+    "description": "Label for drooling rating"
+  },
+  "familyAffection": "Family Affection",
+  "@familyAffection": {
+    "description": "Label for family affection rating"
+  },
+  "childFriendly": "Child Friendly",
+  "@childFriendly": {
+    "description": "Label for child friendly rating"
+  },
+  "dogSociability": "Dog Sociability",
+  "@dogSociability": {
+    "description": "Label for dog sociability rating"
+  },
+  "friendlyToStrangers": "Friendly to Strangers",
+  "@friendlyToStrangers": {
+    "description": "Label for friendliness to strangers rating"
+  },
+  "playfulness": "Playfulness",
+  "@playfulness": {
+    "description": "Label for playfulness rating"
+  },
+  "protectiveInstincts": "Protective Instincts",
+  "@protectiveInstincts": {
+    "description": "Label for protective instincts rating"
+  },
+  "adaptability": "Adaptability",
+  "@adaptability": {
+    "description": "Label for adaptability rating"
+  },
+  "barkingFrequency": "Barking Frequency",
+  "@barkingFrequency": {
+    "description": "Label for barking frequency rating"
+  },
+  "sheddingAmount": "Shedding Amount",
+  "@sheddingAmount": {
+    "description": "Label for shedding amount rating"
+  },
+  "groomingFrequency": "Grooming Frequency",
+  "@groomingFrequency": {
+    "description": "Label for grooming frequency rating"
+  },
+  "exerciseNeeds": "Exercise Needs",
+  "@exerciseNeeds": {
+    "description": "Label for exercise needs rating"
+  },
+  "mentalStimulation": "Mental Stimulation",
+  "@mentalStimulation": {
+    "description": "Label for mental stimulation rating"
+  },
+  "trainingDifficulty": "Training Difficulty",
+  "@trainingDifficulty": {
+    "description": "Label for training difficulty rating"
+  },
+  "sizeExtraSmall": "Extra Small (< 10 lbs)",
+  "@sizeExtraSmall": {
+    "description": "Size category: extra small"
+  },
+  "sizeSmall": "Small (10-25 lbs)",
+  "@sizeSmall": {
+    "description": "Size category: small"
+  },
+  "sizeMedium": "Medium (25-50 lbs)",
+  "@sizeMedium": {
+    "description": "Size category: medium"
+  },
+  "sizeLarge": "Large (50-100 lbs)",
+  "@sizeLarge": {
+    "description": "Size category: large"
+  },
+  "sizeExtraLarge": "Extra Large (100+ lbs)",
+  "@sizeExtraLarge": {
+    "description": "Size category: extra large"
+  },
+  "coatLengthVeryShort": "Very Short",
+  "@coatLengthVeryShort": {
+    "description": "Coat length: very short"
+  },
+  "coatLengthShort": "Short",
+  "@coatLengthShort": {
+    "description": "Coat length: short"
+  },
+  "coatLengthMedium": "Medium",
+  "@coatLengthMedium": {
+    "description": "Coat length: medium"
+  },
+  "coatLengthLong": "Long",
+  "@coatLengthLong": {
+    "description": "Coat length: long"
+  },
+  "coatLengthVeryLong": "Very Long",
+  "@coatLengthVeryLong": {
+    "description": "Coat length: very long"
+  },
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown value"
+  },
+  "ratingVeryLow": "Very Low",
+  "@ratingVeryLow": {
+    "description": "Rating level: very low"
+  },
+  "ratingLow": "Low",
+  "@ratingLow": {
+    "description": "Rating level: low"
+  },
+  "ratingModerate": "Moderate",
+  "@ratingModerate": {
+    "description": "Rating level: moderate"
+  },
+  "ratingHigh": "High",
+  "@ratingHigh": {
+    "description": "Rating level: high"
+  },
+  "ratingVeryHigh": "Very High",
+  "@ratingVeryHigh": {
+    "description": "Rating level: very high"
   }
 }

@@ -304,7 +304,12 @@ class DetailsPage extends StatelessWidget {
                         ),
                         SingleChildScrollView(
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 8.0, right: 16.0, bottom: 8, left: 16.0),
+                            padding: EdgeInsets.only(
+                              top: 8.0,
+                              right: 16.0,
+                              bottom: MediaQuery.of(context).padding.bottom + 4.0,
+                              left: 16.0,
+                            ),
                             child: Column(children: [
                               SizedBox(height: 8),
                               wTitle,
@@ -314,6 +319,55 @@ class DetailsPage extends StatelessWidget {
                               wCoatTexture,
                               SizedBox(height: 8),
                               wPersonalityTraits,
+                              SizedBox(height: 16),
+                              // "Did You Know?" button
+                              Align(
+                                alignment: Alignment.center,
+                                child: Card(
+                                  elevation: 3,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  color: Colors.blue.shade50,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/breed-info',
+                                        arguments: {'dog': dog},
+                                      );
+                                    },
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '🐕',
+                                            style: TextStyle(fontSize: 24),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'Did You Know?',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue.shade800,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 18,
+                                            color: Colors.blue.shade800,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ]),
                           ),
                         ),
