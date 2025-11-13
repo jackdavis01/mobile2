@@ -204,4 +204,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ratingVeryHigh => 'Very High';
+
+  @override
+  String get quickFilters => 'Quick Filters (select 0-3):';
+
+  @override
+  String get familyFriendly => 'Family-Friendly';
+
+  @override
+  String get lowMaintenance => 'Low Maintenance';
+
+  @override
+  String get activeDogs => 'Active Dogs';
+
+  @override
+  String get apartmentFriendly => 'Apartment-Friendly';
+
+  @override
+  String get firstTimeOwners => 'First-Time Owners';
+
+  @override
+  String get cleanTidy => 'Clean & Tidy';
 }

@@ -18,6 +18,7 @@ class FilterExpansionWidget extends StatefulWidget {
 class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
   late final ScrollController _scrollController;
   late final ExpansibleController _expansibleController;
+  final GlobalKey _quickFiltersKey = GlobalKey();
 
   @override
   void initState() {
@@ -32,6 +33,33 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
     } else {
       _expansibleController.expand();
     }
+  }
+
+  void expandFilter() {
+    if (!_expansibleController.isExpanded) {
+      _expansibleController.expand();
+    }
+  }
+
+  void scrollToQuickFilters() {
+    // Wait for expansion animation to complete before scrolling
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (!mounted) return; // Check if widget is still mounted
+      
+      final RenderBox? renderBox = _quickFiltersKey.currentContext?.findRenderObject() as RenderBox?;
+      if (renderBox != null && _scrollController.hasClients) {
+        // Get the ancestor render object before the async gap
+        final RenderObject? ancestor = context.findRenderObject();
+        final position = renderBox.localToGlobal(Offset.zero, ancestor: ancestor).dy;
+        // Scroll to position with some offset for better visibility
+        final targetScroll = _scrollController.offset + position - 100;
+        _scrollController.animateTo(
+          targetScroll.clamp(0.0, _scrollController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   @override
@@ -190,8 +218,70 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
                         
                         const SizedBox(height: 16),
                         
+                        // Quick Filters section
+                        Container(
+                          key: _quickFiltersKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                appLocalizations.quickFilters,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8.0,
+                                runSpacing: 4.0,
+                                children: [
+                                  _buildQuickFilterChip(
+                                    context,
+                                    state,
+                                    'family-friendly',
+                                    appLocalizations.familyFriendly,
+                                  ),
+                                  _buildQuickFilterChip(
+                                    context,
+                                    state,
+                                    'low-maintenance',
+                                    appLocalizations.lowMaintenance,
+                                  ),
+                                  _buildQuickFilterChip(
+                                    context,
+                                    state,
+                                    'active-dogs',
+                                    appLocalizations.activeDogs,
+                                  ),
+                                  _buildQuickFilterChip(
+                                    context,
+                                    state,
+                                    'apartment-friendly',
+                                    appLocalizations.apartmentFriendly,
+                                  ),
+                                  _buildQuickFilterChip(
+                                    context,
+                                    state,
+                                    'first-time-owners',
+                                    appLocalizations.firstTimeOwners,
+                                  ),
+                                  _buildQuickFilterChip(
+                                    context,
+                                    state,
+                                    'clean-tidy',
+                                    appLocalizations.cleanTidy,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 16),
+                        
                         // Clear filters button
-                        if (state.searchQuery.isNotEmpty || state.selectedCoatStyle != null || state.selectedCoatTexture != null || state.selectedPersonalityTraits.isNotEmpty)
+                        if (state.searchQuery.isNotEmpty || state.selectedCoatStyle != null || state.selectedCoatTexture != null || state.selectedPersonalityTraits.isNotEmpty || state.selectedQuickFilters.isNotEmpty)
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
@@ -212,6 +302,27 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildQuickFilterChip(BuildContext context, FilterState state, String filterId, String label) {
+    final isSelected = state.selectedQuickFilters.contains(filterId);
+    final canSelect = state.selectedQuickFilters.length < 3 || isSelected;
+    
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: canSelect ? (selected) {
+        final currentFilters = List<String>.from(state.selectedQuickFilters);
+        if (selected) {
+          currentFilters.add(filterId);
+        } else {
+          currentFilters.remove(filterId);
+        }
+        context.read<FilterCubit>().updateQuickFilters(currentFilters);
+      } : null,
+      backgroundColor: canSelect ? null : Colors.grey.shade300,
+      disabledColor: Colors.grey.shade300,
     );
   }
 }

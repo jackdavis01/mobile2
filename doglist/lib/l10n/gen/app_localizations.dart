@@ -459,6 +459,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Very High'**
   String get ratingVeryHigh;
+
+  /// Quick filters section title
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Filters (select 0-3):'**
+  String get quickFilters;
+
+  /// Quick filter: family friendly dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Family-Friendly'**
+  String get familyFriendly;
+
+  /// Quick filter: low maintenance dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Low Maintenance'**
+  String get lowMaintenance;
+
+  /// Quick filter: active dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Active Dogs'**
+  String get activeDogs;
+
+  /// Quick filter: apartment friendly dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Apartment-Friendly'**
+  String get apartmentFriendly;
+
+  /// Quick filter: suitable for first-time owners
+  ///
+  /// In en, this message translates to:
+  /// **'First-Time Owners'**
+  String get firstTimeOwners;
+
+  /// Quick filter: low shedding and minimal drooling dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Clean & Tidy'**
+  String get cleanTidy;
 }
 
 class _AppLocalizationsDelegate

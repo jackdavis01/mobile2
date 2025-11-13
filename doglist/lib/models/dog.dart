@@ -16,6 +16,8 @@ class Dog {
   final int size;                 // For "Apartment-Friendly" filter
   final int barkingFrequency;     // For "Apartment-Friendly" filter
   final int trainingDifficulty;   // For "First-Time Owners" filter
+  final int sheddingAmount;       // For "Clean & Tidy" filter
+  final int droolingFrequency;    // For "Clean & Tidy" filter
 
   Dog({
     required this.id,
@@ -30,6 +32,8 @@ class Dog {
     required this.size,
     required this.barkingFrequency,
     required this.trainingDifficulty,
+    required this.sheddingAmount,
+    required this.droolingFrequency,
   });
 
   factory Dog.fromMap(Map<String, dynamic> map) {
@@ -64,6 +68,8 @@ class Dog {
       size: safeGetInt(map, ['physical', 'size'], 3),
       barkingFrequency: safeGetInt(map, ['behavior', 'barkingFrequency'], 3),
       trainingDifficulty: safeGetInt(map, ['care', 'trainingDifficulty'], 3),
+      sheddingAmount: safeGetInt(map, ['care', 'sheddingAmount'], 3),
+      droolingFrequency: safeGetInt(map, ['physical', 'droolingFrequency'], 3),
     );
   }
 
@@ -78,6 +84,7 @@ class Dog {
         'coatStyle': coatStyle,
         'coatTexture': coatTexture,
         'size': size,
+        'droolingFrequency': droolingFrequency,
       },
       'behavior': {
         'childFriendly': childFriendly,
@@ -87,6 +94,7 @@ class Dog {
         'groomingFrequency': groomingFrequency,
         'exerciseNeeds': exerciseNeeds,
         'trainingDifficulty': trainingDifficulty,
+        'sheddingAmount': sheddingAmount,
       },
       'images': images.toMap(),
     };

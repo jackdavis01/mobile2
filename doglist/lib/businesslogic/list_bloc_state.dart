@@ -7,6 +7,7 @@ class ListState {
   final bool toggleFavoriteFilter;
   final bool showError;
   final bool loading;
+  final bool hasOpenedFilter;
 
   ListState({
     required this.originalItems,
@@ -15,6 +16,7 @@ class ListState {
     required this.toggleFavoriteFilter,
     required this.showError,
     required this.loading,
+    required this.hasOpenedFilter,
   });
 
   factory ListState.initial() => ListState(
@@ -24,6 +26,7 @@ class ListState {
     toggleFavoriteFilter: false,
     showError: false,
     loading: true,
+    hasOpenedFilter: false,
   );
 
   ListState copyWith({
@@ -33,6 +36,7 @@ class ListState {
     bool? toggleFavoriteFilter,
     bool? showError,
     bool? loading,
+    bool? hasOpenedFilter,
   }) {
     return ListState(
       originalItems: originalItems ?? this.originalItems,
@@ -41,6 +45,7 @@ class ListState {
       toggleFavoriteFilter: toggleFavoriteFilter ?? this.toggleFavoriteFilter,
       showError: showError ?? this.showError,
       loading: loading ?? this.loading,
+      hasOpenedFilter: hasOpenedFilter ?? this.hasOpenedFilter,
     );
   }
 }

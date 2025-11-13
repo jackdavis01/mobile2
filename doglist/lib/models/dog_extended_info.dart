@@ -13,7 +13,6 @@ class DogExtendedInfo {
   
   // Physical details (extended - excluding fields already in Dog)
   final int lifespanCategory;
-  final int droolingFrequency;
   final int coatLength;
   final bool doubleCoat;
   
@@ -26,7 +25,6 @@ class DogExtendedInfo {
   final int adaptability;
   
   // Care requirements (excluding fields already in Dog)
-  final int sheddingAmount;
   final int mentalStimulationNeeds;
 
   DogExtendedInfo({
@@ -40,7 +38,6 @@ class DogExtendedInfo {
     required this.lifespan,
     required this.rare,
     required this.lifespanCategory,
-    required this.droolingFrequency,
     required this.coatLength,
     required this.doubleCoat,
     required this.familyAffection,
@@ -49,7 +46,6 @@ class DogExtendedInfo {
     required this.playfulness,
     required this.protectiveInstincts,
     required this.adaptability,
-    required this.sheddingAmount,
     required this.mentalStimulationNeeds,
   });
 
@@ -68,7 +64,6 @@ class DogExtendedInfo {
       rare: map['general']['rare'] as bool? ?? false,
       // Physical
       lifespanCategory: map['physical']['lifespan'] as int? ?? 3,
-      droolingFrequency: map['physical']['droolingFrequency'] as int? ?? 1,
       coatLength: map['physical']['coatLength'] as int? ?? 3,
       doubleCoat: map['physical']['doubleCoat'] as bool? ?? false,
       // Behavior
@@ -79,7 +74,6 @@ class DogExtendedInfo {
       protectiveInstincts: map['behavior']['protectiveInstincts'] as int? ?? 3,
       adaptability: map['behavior']['adaptability'] as int? ?? 3,
       // Care
-      sheddingAmount: map['care']['sheddingAmount'] as int? ?? 3,
       mentalStimulationNeeds: map['care']['mentalStimulationNeeds'] as int? ?? 3,
     );
   }

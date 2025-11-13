@@ -283,13 +283,17 @@ class BreedInfoPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTraitRow(appLocalizations.size, _getSizeText(dog.size, appLocalizations)),
+          _buildSizeRow(dog.size, appLocalizations),
           _buildTraitRow(appLocalizations.coatStyle, dog.coatStyle),
           _buildTraitRow(appLocalizations.coatTexture, dog.coatTexture),
           _buildTraitRow(appLocalizations.coatLength, _getCoatLengthText(info.coatLength, appLocalizations)),
           _buildTraitRow(appLocalizations.doubleCoat, info.doubleCoat ? appLocalizations.yes : appLocalizations.no),
           const Divider(height: 20),
-          RatingBarWidget(label: appLocalizations.drooling, rating: info.droolingFrequency),
+          RatingBarWidget(
+            label: appLocalizations.drooling,
+            rating: dog.droolingFrequency,
+            colorMode: RatingColorMode.reversed,
+          ),
         ],
       ),
     );
@@ -299,14 +303,46 @@ class BreedInfoPage extends StatelessWidget {
     return _buildCard(
       child: Column(
         children: [
-          RatingBarWidget(label: appLocalizations.familyAffection, rating: info.familyAffection),
-          RatingBarWidget(label: appLocalizations.childFriendly, rating: dog.childFriendly),
-          RatingBarWidget(label: appLocalizations.dogSociability, rating: info.dogSociability),
-          RatingBarWidget(label: appLocalizations.friendlyToStrangers, rating: info.friendlinessToStrangers),
-          RatingBarWidget(label: appLocalizations.playfulness, rating: info.playfulness),
-          RatingBarWidget(label: appLocalizations.protectiveInstincts, rating: info.protectiveInstincts),
-          RatingBarWidget(label: appLocalizations.adaptability, rating: info.adaptability),
-          RatingBarWidget(label: appLocalizations.barkingFrequency, rating: dog.barkingFrequency),
+          RatingBarWidget(
+            label: appLocalizations.familyAffection,
+            rating: info.familyAffection,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.childFriendly,
+            rating: dog.childFriendly,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.dogSociability,
+            rating: info.dogSociability,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.friendlyToStrangers,
+            rating: info.friendlinessToStrangers,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.playfulness,
+            rating: info.playfulness,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.protectiveInstincts,
+            rating: info.protectiveInstincts,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.adaptability,
+            rating: info.adaptability,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.barkingFrequency,
+            rating: dog.barkingFrequency,
+            colorMode: RatingColorMode.reversed,
+          ),
         ],
       ),
     );
@@ -316,11 +352,31 @@ class BreedInfoPage extends StatelessWidget {
     return _buildCard(
       child: Column(
         children: [
-          RatingBarWidget(label: appLocalizations.sheddingAmount, rating: info.sheddingAmount),
-          RatingBarWidget(label: appLocalizations.groomingFrequency, rating: dog.groomingFrequency),
-          RatingBarWidget(label: appLocalizations.exerciseNeeds, rating: dog.exerciseNeeds),
-          RatingBarWidget(label: appLocalizations.mentalStimulation, rating: info.mentalStimulationNeeds),
-          RatingBarWidget(label: appLocalizations.trainingDifficulty, rating: dog.trainingDifficulty),
+          RatingBarWidget(
+            label: appLocalizations.sheddingAmount,
+            rating: dog.sheddingAmount,
+            colorMode: RatingColorMode.reversed,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.groomingFrequency,
+            rating: dog.groomingFrequency,
+            colorMode: RatingColorMode.reversed,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.exerciseNeeds,
+            rating: dog.exerciseNeeds,
+            colorMode: RatingColorMode.neutral,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.mentalStimulation,
+            rating: info.mentalStimulationNeeds,
+            colorMode: RatingColorMode.normal,
+          ),
+          RatingBarWidget(
+            label: appLocalizations.trainingDifficulty,
+            rating: dog.trainingDifficulty,
+            colorMode: RatingColorMode.reversed,
+          ),
         ],
       ),
     );
@@ -342,6 +398,40 @@ class BreedInfoPage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// Hybrid widget for size property: shows text label AND blue rating bar
+  Widget _buildSizeRow(int size, AppLocalizations appLocalizations) {
+    final String sizeText = _getSizeText(size, appLocalizations);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 2.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                appLocalizations.size,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                sizeText,
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 4.0),
+          child: RatingBarWidget(
+            label: '',
+            rating: size,
+            colorMode: RatingColorMode.neutral,
+          ),
+        ),
+      ],
     );
   }
 

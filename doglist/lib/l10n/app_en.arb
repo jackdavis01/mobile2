@@ -255,5 +255,33 @@
   "ratingVeryHigh": "Very High",
   "@ratingVeryHigh": {
     "description": "Rating level: very high"
+  },
+  "quickFilters": "Quick Filters (select 0-3):",
+  "@quickFilters": {
+    "description": "Quick filters section title"
+  },
+  "familyFriendly": "Family-Friendly",
+  "@familyFriendly": {
+    "description": "Quick filter: family friendly dogs"
+  },
+  "lowMaintenance": "Low Maintenance",
+  "@lowMaintenance": {
+    "description": "Quick filter: low maintenance dogs"
+  },
+  "activeDogs": "Active Dogs",
+  "@activeDogs": {
+    "description": "Quick filter: active dogs"
+  },
+  "apartmentFriendly": "Apartment-Friendly",
+  "@apartmentFriendly": {
+    "description": "Quick filter: apartment friendly dogs"
+  },
+  "firstTimeOwners": "First-Time Owners",
+  "@firstTimeOwners": {
+    "description": "Quick filter: suitable for first-time owners"
+  },
+  "cleanTidy": "Clean & Tidy",
+  "@cleanTidy": {
+    "description": "Quick filter: low shedding and minimal drooling dogs"
   }
 }

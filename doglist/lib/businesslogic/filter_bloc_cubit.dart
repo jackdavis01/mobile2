@@ -7,8 +7,11 @@ import 'filter_bloc_state.dart';
 class FilterCubit extends Cubit<FilterState> {
   final DogsDataRepository _dogsRepository = DogsDataRepository();
   Timer? _debounceTimer;
+  final String? _initialQuickFilter;
 
-  FilterCubit() : super(FilterState.initial()) {
+  FilterCubit({String? initialQuickFilter}) 
+      : _initialQuickFilter = initialQuickFilter,
+        super(FilterState.initial()) {
     _loadAllDogs();
   }
 
@@ -24,6 +27,14 @@ class FilterCubit extends Cubit<FilterState> {
         isLoading: false,
         hasError: false,
       ));
+      
+      // Apply initial quick filter after data is loaded
+      if (_initialQuickFilter != null) {
+        emit(state.copyWith(selectedQuickFilters: [_initialQuickFilter]));
+        _performFilter();
+        // Set flag to trigger scroll on first render
+        emit(state.copyWith(shouldScrollToQuickFilters: true));
+      }
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
@@ -74,6 +85,17 @@ class FilterCubit extends Cubit<FilterState> {
     }
   }
 
+  void updateQuickFilters(List<String> filters) {
+    if (filters.length <= 3) { // Enforce 0-3 limit
+      emit(state.copyWith(selectedQuickFilters: filters));
+      _performFilter();
+    }
+  }
+
+  void clearScrollFlag() {
+    emit(state.copyWith(shouldScrollToQuickFilters: false));
+  }
+
   void _performFilter() {
     List<Dog> filteredDogs = state.allDogs;
 
@@ -108,6 +130,30 @@ class FilterCubit extends Cubit<FilterState> {
       filteredDogs = filteredDogs.where((dog) {
         return state.selectedPersonalityTraits.every((trait) => 
           dog.personalityTraits.contains(trait));
+      }).toList();
+    }
+
+    // Apply quick filters
+    if (state.selectedQuickFilters.isNotEmpty) {
+      filteredDogs = filteredDogs.where((dog) {
+        return state.selectedQuickFilters.every((filter) {
+          switch (filter) {
+            case 'family-friendly':
+              return dog.childFriendly >= 4;
+            case 'low-maintenance':
+              return dog.groomingFrequency <= 2;
+            case 'active-dogs':
+              return dog.exerciseNeeds >= 4;
+            case 'apartment-friendly':
+              return dog.size <= 2 && dog.barkingFrequency <= 3;
+            case 'first-time-owners':
+              return dog.trainingDifficulty <= 2;
+            case 'clean-tidy':
+              return dog.sheddingAmount <= 2 && dog.droolingFrequency == 1;
+            default:
+              return true;
+          }
+        });
       }).toList();
     }
 
@@ -146,6 +192,7 @@ class FilterCubit extends Cubit<FilterState> {
       clearCoatStyle: true,
       clearCoatTexture: true,
       clearPersonalityTraits: true,
+      clearQuickFilters: true,
       filteredDogs: state.allDogs,
     ));
   }

@@ -67,6 +67,10 @@ class ListCubit extends Cubit<ListState> {
     }
   }
 
+  void markFilterAsOpened() {
+    emit(state.copyWith(hasOpenedFilter: true));
+  }
+
   void reloadData() {
     emit(state.copyWith(showError: false));
     fetchDogData();

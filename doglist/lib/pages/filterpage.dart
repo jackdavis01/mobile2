@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import '../businesslogic/filter_bloc_cubit.dart';
 import '../businesslogic/filter_bloc_state.dart';
 import '../widgets/filter_expansion_widget.dart';
 import '../widgets/spinkitwidgets.dart';
+import '../widgets/dog_list_item.dart';
 import '../models/dog.dart';
-import '../parameters/netservices.dart';
 
 class FilterPage extends StatelessWidget {
   const FilterPage({super.key});
@@ -18,11 +17,19 @@ class FilterPage extends StatelessWidget {
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
     final GlobalKey<FilterExpansionWidgetState> filterKey = GlobalKey<FilterExpansionWidgetState>();
 
-    return BlocProvider(
-      create: (_) => FilterCubit(),
-      child: BlocBuilder<FilterCubit, FilterState>(
-        builder: (context, state) {
-          return Scaffold(
+    return BlocBuilder<FilterCubit, FilterState>(
+      builder: (context, state) {
+        // Auto-expand filter section and scroll to Quick Filters if the flag is set
+        // This only happens once when the initial quick filter is applied
+        if (state.shouldScrollToQuickFilters) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            filterKey.currentState?.expandFilter();
+            filterKey.currentState?.scrollToQuickFilters();
+            // Clear the flag so it doesn't trigger again
+            context.read<FilterCubit>().clearScrollFlag();
+          });
+        }
+        return Scaffold(
             appBar: AppBar(
               title: Text(appLocalizations.filterTitle),
               centerTitle: true,
@@ -82,8 +89,7 @@ class FilterPage extends StatelessWidget {
               },
             ),
           );
-        },
-      ),
+      },
     );
   }
 
@@ -174,6 +180,7 @@ class FilterPage extends StatelessWidget {
     }
 
     return ListView.builder(
+      padding: EdgeInsets.zero,
       itemCount: state.filteredDogs.length,
       itemBuilder: (context, index) {
         final Dog dog = state.filteredDogs[index];
@@ -183,88 +190,57 @@ class FilterPage extends StatelessWidget {
   }
 
   Widget _buildDogListTile(BuildContext context, Dog dog, int index, List<Dog> filteredDogs) {
-    return ListTile(
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0),
-        child: CachedNetworkImage(
-          imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + dog.images.smallOutdoors,
-          cacheManager: LongTermCacheManager(),
-          width: 56,
-          height: 56,
-          fit: BoxFit.cover,
-          placeholder: (context, url) => SizedBox(
-            width: 56,
-            height: 56,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Center(
-                child: CustomSpinKitThreeInOut(),
-              ),
-            ),
-          ),
-          errorWidget: (context, url, error) => FittedBox(
-            fit: BoxFit.contain,
-            child: Icon(
-              Icons.image,
-              size: 56,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-      ),
-      title: Text(dog.name),
-      subtitle: Text("${dog.coatStyle}, ${dog.coatTexture}"),
-      trailing: BlocBuilder<FilterCubit, FilterState>(
-        builder: (context, state) {
-          final bool isFavorite = state.favorites.any((fav) => fav.id == dog.id);
-          return IconButton(
-            icon: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? Colors.red : null,
-            ),
-            onPressed: () => context.read<FilterCubit>().toggleFavorite(dog.id),
-          );
-        },
-      ),
-      onTap: () async {
-        // Navigate to details page with all filtered dogs and correct index
-        final filterCubit = context.read<FilterCubit>();
-        final navigator = Navigator.of(context);
-        final focusScope = FocusScope.of(context);
+    return BlocBuilder<FilterCubit, FilterState>(
+      builder: (context, state) {
+        final bool isFavorite = state.favorites.any((fav) => fav.id == dog.id);
         
-        // Check if any text field currently has focus (indicating keyboard is open)
-        final hasFocus = focusScope.hasFocus;
-        
-        // Dismiss keyboard
-        focusScope.unfocus();
-        
-        // Wait for keyboard to actually disappear if it was open
-        if (hasFocus) {
-          // Wait for focus to be released
-          var attempts = 0;
-          while (focusScope.hasFocus && attempts < 50) {
-            await Future.delayed(const Duration(milliseconds: 16));
-            if (!context.mounted) return;
-            attempts++;
-          }
-          
-          // Additional wait for layout stabilization after keyboard dismissal
-          // This prevents the 50px jump by ensuring the viewport is fully settled
-          await Future.delayed(const Duration(milliseconds: 200));
-        }
+        return DogListItem(
+          dog: dog,
+          isFavorite: isFavorite,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+          imageSize: 72.0,
+          onFavoritePressed: () => context.read<FilterCubit>().toggleFavorite(dog.id),
+          onTap: () async {
+            // Navigate to details page with all filtered dogs and correct index
+            final filterCubit = context.read<FilterCubit>();
+            final navigator = Navigator.of(context);
+            final focusScope = FocusScope.of(context);
+            
+            // Check if any text field currently has focus (indicating keyboard is open)
+            final hasFocus = focusScope.hasFocus;
+            
+            // Dismiss keyboard
+            focusScope.unfocus();
+            
+            // Wait for keyboard to actually disappear if it was open
+            if (hasFocus) {
+              // Wait for focus to be released
+              var attempts = 0;
+              while (focusScope.hasFocus && attempts < 50) {
+                await Future.delayed(const Duration(milliseconds: 16));
+                if (!context.mounted) return;
+                attempts++;
+              }
+              
+              // Additional wait for layout stabilization after keyboard dismissal
+              // This prevents the 50px jump by ensuring the viewport is fully settled
+              await Future.delayed(const Duration(milliseconds: 200));
+            }
 
-        // Check if widget is still mounted before navigation
-        if (!context.mounted) return;
+            // Check if widget is still mounted before navigation
+            if (!context.mounted) return;
         
-        await navigator.pushNamed(
-          '/details',
-          arguments: {
-            'dogs': filteredDogs, // Pass all filtered dogs
-            'index': index, // Pass the actual index of tapped dog in filtered list
+            await navigator.pushNamed(
+              '/details',
+              arguments: {
+                'dogs': filteredDogs, // Pass all filtered dogs
+                'index': index, // Pass the actual index of tapped dog in filtered list
+              },
+            );
+            // Refresh favorites when returning from DetailsPage
+            filterCubit.refreshFavorites();
           },
         );
-        // Refresh favorites when returning from DetailsPage
-        filterCubit.refreshFavorites();
       },
     );
   }

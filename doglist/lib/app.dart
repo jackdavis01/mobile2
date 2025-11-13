@@ -3,8 +3,10 @@ import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import 'pages/listpage.dart';
 import 'pages/detailspage.dart';
-import 'pages/filterpage.dart';
+import 'pages/filter_page_wrapper.dart';
 import 'pages/breed_info_page.dart';
+import 'pages/settingspage.dart';
+import 'pages/infopage.dart';
 
 class DogListApp extends StatelessWidget {
   const DogListApp({super.key});
@@ -25,8 +27,10 @@ class DogListApp extends StatelessWidget {
       routes: {
         '/list': (context) => ListPage(),
         '/details': (context) => DetailsPage(),
-        '/filter': (context) => FilterPage(),
+        '/filter': (context) => FilterPageWrapper(),
         '/breed-info': (context) => BreedInfoPage(),
+        '/settings': (context) => const SettingsPage(),
+        '/info': (context) => const InfoPage(),
       },
     );
   }
