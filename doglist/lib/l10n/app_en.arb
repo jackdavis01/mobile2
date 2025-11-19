@@ -283,5 +283,81 @@
   "cleanTidy": "Clean & Tidy",
   "@cleanTidy": {
     "description": "Quick filter: low shedding and minimal drooling dogs"
+  },
+  "drawerFavourite": "Favorite: {breedName}",
+  "@drawerFavourite": {
+    "description": "Navigation drawer header: favorite breed",
+    "placeholders": {
+      "breedName": {
+        "type": "String",
+        "description": "The name of the favorite breed"
+      }
+    }
+  },
+  "drawerLikes": "Likes: {count}",
+  "@drawerLikes": {
+    "description": "Navigation drawer header: number of likes",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of likes"
+      }
+    }
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title for the settings page"
+  },
+  "infoTitle": "Info",
+  "@infoTitle": {
+    "description": "Title for the info page"
+  },
+  "settingsComingSoon": "Settings Page - Coming Soon",
+  "@settingsComingSoon": {
+    "description": "Placeholder message for settings page"
+  },
+  "infoComingSoon": "Info Page - Coming Soon",
+  "@infoComingSoon": {
+    "description": "Placeholder message for info page"
+  },
+  "none": "None",
+  "@none": {
+    "description": "Displayed when there is no value"
+  },
+  "quickFilterVisibilitySetting": "Quick Filter Chips Visibility",
+  "@quickFilterVisibilitySetting": {
+    "description": "Settings label for quick filter visibility"
+  },
+  "quickFilterNone": "None",
+  "@quickFilterNone": {
+    "description": "Quick filter visibility option: none"
+  },
+  "quickFilterFirstXTimes": "First 3 Times",
+  "@quickFilterFirstXTimes": {
+    "description": "Quick filter visibility option: first 3 times"
+  },
+  "quickFilterAlways": "Always",
+  "@quickFilterAlways": {
+    "description": "Quick filter visibility option: always"
+  },
+  "quickFilterHideDialogTitle": "Quick Filter Preferences",
+  "@quickFilterHideDialogTitle": {
+    "description": "Dialog title for hiding quick filter bar"
+  },
+  "quickFilterHideDialogMessage": "Choose your preference for the quick filter bar. You can change this anytime in Settings.",
+  "@quickFilterHideDialogMessage": {
+    "description": "Dialog message explaining quick filter hiding"
+  },
+  "quickFilterHideYes": "Hide filters",
+  "@quickFilterHideYes": {
+    "description": "Dialog button to hide quick filters"
+  },
+  "quickFilterHideNo": "Always show",
+  "@quickFilterHideNo": {
+    "description": "Dialog button to make quick filters always visible"
+  },
+  "quickFilterCancel": "Cancel",
+  "@quickFilterCancel": {
+    "description": "Dialog button to cancel"
   }
 }

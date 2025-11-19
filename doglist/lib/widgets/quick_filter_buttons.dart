@@ -4,31 +4,39 @@ import '/l10n/gen/app_localizations_en.dart';
 
 enum QuickFilterVisibility {
   switchedOff,
-  onlyBeforeFirstFilterTap,
+  onlyBeforeXTap,
   alwaysVisible,
 }
 
 class QuickFilterButtons extends StatelessWidget {
   final QuickFilterVisibility visibility;
-  final bool hasOpenedFilter;
+  final int filterTapCount;
   final Function(String filterId) onFilterTap;
+  final VoidCallback? onCheckboxTap;
+  static const int tapThreshold = 3;
 
   const QuickFilterButtons({
     super.key,
     required this.visibility,
-    required this.hasOpenedFilter,
+    required this.filterTapCount,
     required this.onFilterTap,
+    this.onCheckboxTap,
   });
 
   bool get shouldShow {
     switch (visibility) {
       case QuickFilterVisibility.switchedOff:
         return false;
-      case QuickFilterVisibility.onlyBeforeFirstFilterTap:
-        return !hasOpenedFilter;
+      case QuickFilterVisibility.onlyBeforeXTap:
+        return true; // Always show when this mode is enabled
       case QuickFilterVisibility.alwaysVisible:
         return true;
     }
+  }
+
+  bool get shouldShowCheckbox {
+    return visibility == QuickFilterVisibility.onlyBeforeXTap && 
+           filterTapCount >= tapThreshold;
   }
 
   @override
@@ -51,6 +59,25 @@ class QuickFilterButtons extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         children: [
+          if (shouldShowCheckbox && onCheckboxTap != null) ...[
+            InkWell(
+              onTap: onCheckboxTap,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.blue.shade300, width: 1),
+                ),
+                child: Icon(
+                  Icons.check_box,
+                  color: Colors.blue.shade800,
+                  size: 24,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
           _buildFilterButton(
             context,
             'family-friendly',

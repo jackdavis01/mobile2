@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '/l10n/gen/app_localizations.dart';
+import '/l10n/gen/app_localizations_en.dart';
 import '../businesslogic/navigation_drawer_bloc_cubit.dart';
 import '../businesslogic/navigation_drawer_bloc_state.dart';
+import '../businesslogic/user_preferences_bloc_cubit.dart';
+import '../businesslogic/user_preferences_bloc_state.dart';
+import '../parameters/netservices.dart';
 
 class DogNavDrawer extends StatelessWidget {
   const DogNavDrawer({super.key});
@@ -10,7 +16,13 @@ class DogNavDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NavigationDrawerCubit(),
-      child: const _DogNavDrawerContent(),
+      child: Builder(
+        builder: (context) {
+          // Refresh best dog when drawer is built
+          context.read<NavigationDrawerCubit>().loadBestDog();
+          return const _DogNavDrawerContent();
+        },
+      ),
     );
   }
 }
@@ -26,26 +38,97 @@ class _DogNavDrawerContent extends StatelessWidget {
     Navigator.pushNamed(context, '/info');
   }
 
+  Future<void> _handleBestDogTap(BuildContext context, NavigationDrawerState drawerState) async {
+    final NavigationDrawerCubit cubit = context.read<NavigationDrawerCubit>();
+    
+    if (drawerState.bestDogId != null) {
+      // Have best dog - navigate to details page
+      try {
+        final allDogs = await cubit.getAllDogs();
+        final bestDogIndex = allDogs.indexWhere((dog) => dog.id == drawerState.bestDogId);
+        
+        if (bestDogIndex >= 0 && context.mounted) {
+          await Navigator.pushNamed(
+            context,
+            '/details',
+            arguments: {
+              'dogs': allDogs,
+              'index': bestDogIndex,
+            },
+          );
+        }
+      } catch (e) {
+        // If error, fall back to filter page
+        if (context.mounted) {
+          Navigator.pushNamed(context, '/filter');
+        }
+      }
+    } else {
+      // No best dog - navigate to filter page
+      Navigator.pushNamed(context, '/filter');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
     final ScrollController scrollController = ScrollController();
 
-    return BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
-      builder: (BuildContext context, NavigationDrawerState drawerState) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserPreferencesCubit, UserPreferencesState>(
+          listener: (context, userPrefsState) {
+            // Refresh drawer when best dog or favorites change
+            context.read<NavigationDrawerCubit>().loadBestDog();
+          },
+        ),
+      ],
+      child: BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
+        builder: (BuildContext context, NavigationDrawerState drawerState) {
+        final String displayName = drawerState.dogBreedName == "Dog breed" 
+            ? appLocalizations.none 
+            : drawerState.dogBreedName;
+        
         Widget drawerHeader = Container(
           padding: const EdgeInsets.only(right: 16),
           color: Theme.of(context).primaryColor,
           child: UserAccountsDrawerHeader(
-            accountName: Text('Favourite: ${drawerState.dogBreedName}', style: const TextStyle(fontSize: 18.0)),
-            accountEmail: Text('Likes: ${drawerState.likes}', style: const TextStyle(fontSize: 18.0)),
+            accountName: Text(appLocalizations.drawerFavourite(displayName), style: const TextStyle(fontSize: 18.0)),
+            accountEmail: Text(appLocalizations.drawerLikes(drawerState.likes), style: const TextStyle(fontSize: 18.0)),
             currentAccountPictureSize: const Size.square(62.0),
-            currentAccountPicture: const CircleAvatar(
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.add,
-                size: 40,
-                color: Colors.blue,
-              ),
+            currentAccountPicture: GestureDetector(
+              onTap: () => _handleBestDogTap(context, drawerState),
+              child: drawerState.bestDogImageUrl != null
+                  ? CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + drawerState.bestDogImageUrl!,
+                          cacheManager: LongTermCacheManager(),
+                          width: 62.0,
+                          height: 62.0,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Icon(
+                            Icons.add,
+                            size: 40,
+                            color: Colors.blue,
+                          ),
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.add,
+                            size: 40,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.add,
+                        size: 40,
+                        color: Colors.blue,
+                      ),
+                    ),
             ),
             margin: const EdgeInsets.only(bottom: 0),
             otherAccountsPictures: <Widget>[
@@ -73,13 +156,13 @@ class _DogNavDrawerContent extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.settings),
               minLeadingWidth: 0,
-              title: const Text('Settings', style: TextStyle(fontSize: 18.0)),
+              title: Text(appLocalizations.settingsTitle, style: const TextStyle(fontSize: 18.0)),
               onTap: () => _navigateToSettingsPage(context),
             ),
             ListTile(
               leading: const Icon(Icons.info),
               minLeadingWidth: 0,
-              title: const Text('Info', style: TextStyle(fontSize: 18.0)),
+              title: Text(appLocalizations.infoTitle, style: const TextStyle(fontSize: 18.0)),
               onTap: () => _navigateToInfoPage(context),
             ),
           ],
@@ -98,6 +181,7 @@ class _DogNavDrawerContent extends StatelessWidget {
           ),
         );
       },
+      ),
     );
   }
 }

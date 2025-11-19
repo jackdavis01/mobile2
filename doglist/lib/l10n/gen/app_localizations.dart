@@ -501,6 +501,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clean & Tidy'**
   String get cleanTidy;
+
+  /// Navigation drawer header: favorite breed
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite: {breedName}'**
+  String drawerFavourite(String breedName);
+
+  /// Navigation drawer header: number of likes
+  ///
+  /// In en, this message translates to:
+  /// **'Likes: {count}'**
+  String drawerLikes(int count);
+
+  /// Title for the settings page
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// Title for the info page
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get infoTitle;
+
+  /// Placeholder message for settings page
+  ///
+  /// In en, this message translates to:
+  /// **'Settings Page - Coming Soon'**
+  String get settingsComingSoon;
+
+  /// Placeholder message for info page
+  ///
+  /// In en, this message translates to:
+  /// **'Info Page - Coming Soon'**
+  String get infoComingSoon;
+
+  /// Displayed when there is no value
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get none;
+
+  /// Settings label for quick filter visibility
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Filter Chips Visibility'**
+  String get quickFilterVisibilitySetting;
+
+  /// Quick filter visibility option: none
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get quickFilterNone;
+
+  /// Quick filter visibility option: first 3 times
+  ///
+  /// In en, this message translates to:
+  /// **'First 3 Times'**
+  String get quickFilterFirstXTimes;
+
+  /// Quick filter visibility option: always
+  ///
+  /// In en, this message translates to:
+  /// **'Always'**
+  String get quickFilterAlways;
+
+  /// Dialog title for hiding quick filter bar
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Filter Preferences'**
+  String get quickFilterHideDialogTitle;
+
+  /// Dialog message explaining quick filter hiding
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your preference for the quick filter bar. You can change this anytime in Settings.'**
+  String get quickFilterHideDialogMessage;
+
+  /// Dialog button to hide quick filters
+  ///
+  /// In en, this message translates to:
+  /// **'Hide filters'**
+  String get quickFilterHideYes;
+
+  /// Dialog button to make quick filters always visible
+  ///
+  /// In en, this message translates to:
+  /// **'Always show'**
+  String get quickFilterHideNo;
+
+  /// Dialog button to cancel
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get quickFilterCancel;
 }
 
 class _AppLocalizationsDelegate

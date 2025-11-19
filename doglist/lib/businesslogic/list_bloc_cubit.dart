@@ -14,11 +14,9 @@ class ListCubit extends Cubit<ListState> {
     emit(state.copyWith(loading: true, showError: false));
     try {
       final List<Dog> originalItems = await _dogsRepository.getDogs();
-      final List<Dog> favorites = await _dogsRepository.getFavorites();
       emit(state.copyWith(
         originalItems: originalItems,
         items: List.from(originalItems),
-        favorites: favorites,
         showError: false,
         loading: false,
       ));
@@ -27,48 +25,21 @@ class ListCubit extends Cubit<ListState> {
     }
   }
 
-  Future<void> toggleFavorite(String id) async {
-    try {
-      final Dog dog = state.originalItems.firstWhere((d) => d.id == id);
-      await _dogsRepository.toggleFavorite(dog);
-      final List<Dog> updatedFavorites = await _dogsRepository.getFavorites();
-      _favoriteFilterAction(favorites: updatedFavorites);
-    } catch (e) {
-      // Handle error if needed
-    }
-  }
-
-
-
-  void _favoriteFilterAction({List<Dog>? favorites, bool? toggleFavoriteFilter}) {
-    final List<Dog> favs = favorites ?? state.favorites;
-    final bool favoriteFilter = toggleFavoriteFilter ?? state.toggleFavoriteFilter;
+  void updateFilteredItems(List<Dog> favorites) {
+    final bool favoriteFilter = state.toggleFavoriteFilter;
     final List<Dog> items = favoriteFilter
-        ? state.originalItems.where((item) => favs.any((fav) => fav.id == item.id)).toList()
+        ? state.originalItems.where((item) => favorites.any((fav) => fav.id == item.id)).toList()
         : List.from(state.originalItems);
-    emit(state.copyWith(
-      favorites: favs,
-      toggleFavoriteFilter: favoriteFilter,
-      items: items,
-    ));
+    emit(state.copyWith(items: items));
   }
 
   void toggleFavoriteFilterAction() {
     final toggleFavoriteFilter = !state.toggleFavoriteFilter;
-    _favoriteFilterAction(toggleFavoriteFilter: toggleFavoriteFilter);
-  }
-
-  Future<void> refreshFavorites() async {
-    try {
-      final List<Dog> updatedFavorites = await _dogsRepository.getFavorites();
-      _favoriteFilterAction(favorites: updatedFavorites);
-    } catch (e) {
-      // Handle error if needed
-    }
+    emit(state.copyWith(toggleFavoriteFilter: toggleFavoriteFilter));
   }
 
   void markFilterAsOpened() {
-    emit(state.copyWith(hasOpenedFilter: true));
+    emit(state.copyWith(filterTapCount: state.filterTapCount + 1));
   }
 
   void reloadData() {

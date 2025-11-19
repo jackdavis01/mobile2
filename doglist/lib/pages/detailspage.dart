@@ -8,6 +8,8 @@ import '../businesslogic/details_vertical_bloc_state.dart';
 import '../businesslogic/details_vertical_bloc_cubit.dart';
 import '../businesslogic/details_image_bloc_state.dart';
 import '../businesslogic/details_image_bloc_cubit.dart';
+import '../businesslogic/user_preferences_bloc_cubit.dart';
+import '../businesslogic/user_preferences_bloc_state.dart';
 import '../widgets/imagewithcancel.dart';
 import '../widgets/spinkitwidgets.dart';
 
@@ -36,21 +38,22 @@ class DetailsPage extends StatelessWidget {
       child: BlocBuilder<DetailsVerticalCubit, DetailsVerticalState>(
         builder: (context, detailsVerticalState) {
           final DetailsVerticalCubit detailsVerticalCubit = context.read<DetailsVerticalCubit>();
+          final UserPreferencesCubit userPrefsCubit = context.read<UserPreferencesCubit>();
           return Scaffold(
             appBar: AppBar(
               title: Text(dogs[detailsVerticalState.currentDogIndex].name), 
               centerTitle: true,
               actions: [
-                BlocBuilder<DetailsVerticalCubit, DetailsVerticalState>(
-                  builder: (context, state) {
-                    final Dog currentDog = dogs[state.currentDogIndex];
-                    final bool isFavorite = detailsVerticalCubit.isFavorite(currentDog);
+                BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
+                  builder: (context, userPrefsState) {
+                    final Dog currentDog = dogs[detailsVerticalState.currentDogIndex];
+                    final bool isFavorite = userPrefsCubit.isFavorite(currentDog.id);
                     return IconButton(
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
                         color: isFavorite ? Colors.red : null,
                       ),
-                      onPressed: () => detailsVerticalCubit.toggleFavorite(currentDog),
+                      onPressed: () async => await userPrefsCubit.toggleFavorite(currentDog),
                     );
                   },
                 ),

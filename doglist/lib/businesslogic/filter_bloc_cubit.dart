@@ -19,11 +19,9 @@ class FilterCubit extends Cubit<FilterState> {
     emit(state.copyWith(isLoading: true, hasError: false));
     try {
       final List<Dog> allDogs = await _dogsRepository.getDogs();
-      final List<Dog> favorites = await _dogsRepository.getFavorites();
       emit(state.copyWith(
         allDogs: allDogs,
         filteredDogs: allDogs,
-        favorites: favorites,
         isLoading: false,
         hasError: false,
       ));
@@ -160,25 +158,6 @@ class FilterCubit extends Cubit<FilterState> {
     emit(state.copyWith(filteredDogs: filteredDogs));
   }
 
-  Future<void> toggleFavorite(String id) async {
-    try {
-      final Dog dog = state.allDogs.firstWhere((d) => d.id == id);
-      await _dogsRepository.toggleFavorite(dog);
-      final List<Dog> updatedFavorites = await _dogsRepository.getFavorites();
-      emit(state.copyWith(favorites: updatedFavorites));
-    } catch (e) {
-      // Handle error if needed
-    }
-  }
-
-  Future<void> refreshFavorites() async {
-    try {
-      final List<Dog> updatedFavorites = await _dogsRepository.getFavorites();
-      emit(state.copyWith(favorites: updatedFavorites));
-    } catch (e) {
-      // Handle error if needed
-    }
-  }
 
   void clearSearchQuery() {
     emit(state.copyWith(searchQuery: ''));

@@ -4,6 +4,9 @@ import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import '../businesslogic/list_bloc_state.dart';
 import '../businesslogic/list_bloc_cubit.dart';
+import '../businesslogic/user_preferences_bloc_cubit.dart';
+import '../businesslogic/settings_bloc_cubit.dart';
+import '../businesslogic/settings_bloc_state.dart';
 import '../models/dog.dart';
 import '../widgets/spinkitwidgets.dart';
 import '../widgets/ad_banner.dart';
@@ -25,6 +28,14 @@ class ListPage extends StatelessWidget {
       child: BlocBuilder<ListCubit, ListState>(
         builder: (BuildContext context, ListState listState) {
           final ListCubit listCubit = context.read<ListCubit>();
+          final UserPreferencesCubit userPrefsCubit = context.read<UserPreferencesCubit>();
+          
+          // Update filtered items when favorites change (for favorite filter)
+          // Only do this once per build, not on every UserPreferencesState change
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            listCubit.updateFilteredItems(userPrefsCubit.state.favorites);
+          });
+              
           return Scaffold(
             appBar: AppBar(
               title: Text(appLocalizations.breedListTitle),
@@ -49,8 +60,10 @@ class ListPage extends StatelessWidget {
                   onPressed: () async {
                     listCubit.markFilterAsOpened();
                     await Navigator.pushNamed(context, '/filter');
-                    // Refresh favorites when returning from FilterPage
-                    listCubit.refreshFavorites();
+                    // Refresh preferences when returning from FilterPage
+                    if (context.mounted) {
+                      await userPrefsCubit.refreshPreferences();
+                    }
                   },
                 ),
                 IconButton(
@@ -63,17 +76,60 @@ class ListPage extends StatelessWidget {
             body: Column(
               children: [
                 // Quick Filter Buttons Stripe
-                QuickFilterButtons(
-                  visibility: QuickFilterVisibility.alwaysVisible,
-                  hasOpenedFilter: listState.hasOpenedFilter,
-                  onFilterTap: (filterId) async {
-                    listCubit.markFilterAsOpened();
-                    await Navigator.pushNamed(
-                      context,
-                      '/filter',
-                      arguments: {'selectedQuickFilter': filterId},
+                BlocBuilder<SettingsCubit, SettingsState>(
+                  builder: (context, settingsState) {
+                    final SettingsCubit settingsCubit = context.read<SettingsCubit>();
+                    
+                    return QuickFilterButtons(
+                      visibility: settingsState.quickFilterVisibility,
+                      filterTapCount: listState.filterTapCount,
+                      onFilterTap: (filterId) async {
+                        listCubit.markFilterAsOpened();
+                        await Navigator.pushNamed(
+                          context,
+                          '/filter',
+                          arguments: {'selectedQuickFilter': filterId},
+                        );
+                        if (context.mounted) {
+                          await userPrefsCubit.refreshPreferences();
+                        }
+                      },
+                      onCheckboxTap: () async {
+                        final result = await showDialog<String>(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            return AlertDialog(
+                              title: Text(appLocalizations.quickFilterHideDialogTitle),
+                              content: Text(appLocalizations.quickFilterHideDialogMessage),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(dialogContext).pop('hide'),
+                                  child: Text(appLocalizations.quickFilterHideYes),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(dialogContext).pop('always'),
+                                  child: Text(appLocalizations.quickFilterHideNo),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(dialogContext).pop('cancel'),
+                                  child: Text(appLocalizations.quickFilterCancel),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (result != null && result != 'cancel') {
+                          if (result == 'hide') {
+                            await settingsCubit.setQuickFilterVisibility(QuickFilterVisibility.switchedOff);
+                            await settingsCubit.setFirstXTimesDisabled(true);
+                          } else if (result == 'always') {
+                            await settingsCubit.setQuickFilterVisibility(QuickFilterVisibility.alwaysVisible);
+                            await settingsCubit.setFirstXTimesDisabled(true);
+                          }
+                        }
+                      },
                     );
-                    listCubit.refreshFavorites();
                   },
                 ),
                 // Main content
@@ -106,18 +162,18 @@ class ListPage extends StatelessWidget {
                     : Padding(
                         padding: EdgeInsets.only(bottom: AdsConfig.areAdsEnabled ? 60 : 0), // Space for banner ad only if ads enabled
                         child: ListView.builder(
-                          padding: EdgeInsets.zero,
+                          padding: MediaQuery.of(context).padding.bottom > 0
+                              ? EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)
+                              : EdgeInsets.zero,
                           itemCount: listState.items.length,
                           itemBuilder: (context, index) {
                             final Dog item = listState.items[index];
-                            final bool isFavorite = listState.favorites.any((fav) => fav.id == item.id);
                             
                             return DogListItem(
                               dog: item,
-                              isFavorite: isFavorite,
                               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
                               imageSize: 72.0,
-                              onFavoritePressed: () async => await listCubit.toggleFavorite(item.id),
+                              onFavoriteToggled: () async => await userPrefsCubit.refreshPreferences(),
                               onTap: () async {
                                 await Navigator.pushNamed(
                                   context,
@@ -127,8 +183,10 @@ class ListPage extends StatelessWidget {
                                     'index': index,
                                   }
                                 );
-                                // Refresh favorites when returning from DetailsPage
-                                listCubit.refreshFavorites();
+                                // Refresh preferences when returning from DetailsPage
+                                if (context.mounted) {
+                                  await userPrefsCubit.refreshPreferences();
+                                }
                               },
                             );
                           },
@@ -147,7 +205,7 @@ class ListPage extends StatelessWidget {
               ],
             ),
           );
-        }
+        },
       ),
     );
   }

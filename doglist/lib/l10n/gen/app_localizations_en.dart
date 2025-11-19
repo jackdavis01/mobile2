@@ -225,4 +225,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cleanTidy => 'Clean & Tidy';
+
+  @override
+  String drawerFavourite(String breedName) {
+    return 'Favorite: $breedName';
+  }
+
+  @override
+  String drawerLikes(int count) {
+    return 'Likes: $count';
+  }
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get infoTitle => 'Info';
+
+  @override
+  String get settingsComingSoon => 'Settings Page - Coming Soon';
+
+  @override
+  String get infoComingSoon => 'Info Page - Coming Soon';
+
+  @override
+  String get none => 'None';
+
+  @override
+  String get quickFilterVisibilitySetting => 'Quick Filter Chips Visibility';
+
+  @override
+  String get quickFilterNone => 'None';
+
+  @override
+  String get quickFilterFirstXTimes => 'First 3 Times';
+
+  @override
+  String get quickFilterAlways => 'Always';
+
+  @override
+  String get quickFilterHideDialogTitle => 'Quick Filter Preferences';
+
+  @override
+  String get quickFilterHideDialogMessage =>
+      'Choose your preference for the quick filter bar. You can change this anytime in Settings.';
+
+  @override
+  String get quickFilterHideYes => 'Hide filters';
+
+  @override
+  String get quickFilterHideNo => 'Always show';
+
+  @override
+  String get quickFilterCancel => 'Cancel';
 }

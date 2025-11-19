@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/dog.dart';
 import '../parameters/netservices.dart';
 import '../widgets/spinkitwidgets.dart';
+import '../businesslogic/user_preferences_bloc_cubit.dart';
+import '../businesslogic/user_preferences_bloc_state.dart';
 
 class DogListItem extends StatelessWidget {
   final Dog dog;
-  final bool isFavorite;
-  final VoidCallback onFavoritePressed;
   final VoidCallback onTap;
+  final VoidCallback? onFavoriteToggled;
+  final VoidCallback? onBestToggled;
   final EdgeInsets padding;
   final double imageSize;
 
   const DogListItem({
     super.key,
     required this.dog,
-    required this.isFavorite,
-    required this.onFavoritePressed,
     required this.onTap,
+    this.onFavoriteToggled,
+    this.onBestToggled,
     this.padding = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
     this.imageSize = 56.0,
   });
@@ -76,6 +79,8 @@ class DogListItem extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4.0),
                   Text(
@@ -84,17 +89,49 @@ class DogListItem extends StatelessWidget {
                       fontSize: 14,
                       color: Colors.grey.shade600,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
+            // Best star button
+            BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
+              builder: (context, state) {
+                final cubit = context.read<UserPreferencesCubit>();
+                final isBest = cubit.isBest(dog.id);
+                
+                return IconButton(
+                  padding: EdgeInsets.only(bottom: 2.5),
+                  icon: Icon(
+                    isBest ? Icons.star : Icons.star_border,
+                    color: isBest ? Colors.amber : null,
+                    size: 29.0,
+                  ),
+                  onPressed: () async {
+                    await cubit.toggleBestDog(dog.id);
+                    onBestToggled?.call();
+                  },
+                );
+              },
+            ),
             // Favorite button
-            IconButton(
-              icon: Icon(
-                isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: isFavorite ? Colors.red : null,
-              ),
-              onPressed: onFavoritePressed,
+            BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
+              builder: (context, state) {
+                final cubit = context.read<UserPreferencesCubit>();
+                final isFavorite = cubit.isFavorite(dog.id);
+                
+                return IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : null,
+                  ),
+                  onPressed: () async {
+                    await cubit.toggleFavorite(dog);
+                    onFavoriteToggled?.call();
+                  },
+                );
+              },
             ),
           ],
         ),

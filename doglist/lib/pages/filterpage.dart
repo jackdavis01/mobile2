@@ -4,6 +4,7 @@ import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import '../businesslogic/filter_bloc_cubit.dart';
 import '../businesslogic/filter_bloc_state.dart';
+import '../businesslogic/user_preferences_bloc_cubit.dart';
 import '../widgets/filter_expansion_widget.dart';
 import '../widgets/spinkitwidgets.dart';
 import '../widgets/dog_list_item.dart';
@@ -179,8 +180,10 @@ class FilterPage extends StatelessWidget {
       );
     }
 
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    
     return ListView.builder(
-      padding: EdgeInsets.zero,
+      padding: bottomPadding > 0 ? EdgeInsets.only(bottom: bottomPadding) : EdgeInsets.zero,
       itemCount: state.filteredDogs.length,
       itemBuilder: (context, index) {
         final Dog dog = state.filteredDogs[index];
@@ -190,57 +193,50 @@ class FilterPage extends StatelessWidget {
   }
 
   Widget _buildDogListTile(BuildContext context, Dog dog, int index, List<Dog> filteredDogs) {
-    return BlocBuilder<FilterCubit, FilterState>(
-      builder: (context, state) {
-        final bool isFavorite = state.favorites.any((fav) => fav.id == dog.id);
+    final UserPreferencesCubit userPrefsCubit = context.read<UserPreferencesCubit>();
+    
+    return DogListItem(
+      dog: dog,
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+      imageSize: 72.0,
+      onTap: () async {
+        // Navigate to details page with all filtered dogs and correct index
+        final navigator = Navigator.of(context);
+        final focusScope = FocusScope.of(context);
         
-        return DogListItem(
-          dog: dog,
-          isFavorite: isFavorite,
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-          imageSize: 72.0,
-          onFavoritePressed: () => context.read<FilterCubit>().toggleFavorite(dog.id),
-          onTap: () async {
-            // Navigate to details page with all filtered dogs and correct index
-            final filterCubit = context.read<FilterCubit>();
-            final navigator = Navigator.of(context);
-            final focusScope = FocusScope.of(context);
-            
-            // Check if any text field currently has focus (indicating keyboard is open)
-            final hasFocus = focusScope.hasFocus;
-            
-            // Dismiss keyboard
-            focusScope.unfocus();
-            
-            // Wait for keyboard to actually disappear if it was open
-            if (hasFocus) {
-              // Wait for focus to be released
-              var attempts = 0;
-              while (focusScope.hasFocus && attempts < 50) {
-                await Future.delayed(const Duration(milliseconds: 16));
-                if (!context.mounted) return;
-                attempts++;
-              }
-              
-              // Additional wait for layout stabilization after keyboard dismissal
-              // This prevents the 50px jump by ensuring the viewport is fully settled
-              await Future.delayed(const Duration(milliseconds: 200));
-            }
-
-            // Check if widget is still mounted before navigation
+        // Check if any text field currently has focus (indicating keyboard is open)
+        final hasFocus = focusScope.hasFocus;
+        
+        // Dismiss keyboard
+        focusScope.unfocus();
+        
+        // Wait for keyboard to actually disappear if it was open
+        if (hasFocus) {
+          // Wait for focus to be released
+          var attempts = 0;
+          while (focusScope.hasFocus && attempts < 50) {
+            await Future.delayed(const Duration(milliseconds: 16));
             if (!context.mounted) return;
-        
-            await navigator.pushNamed(
-              '/details',
-              arguments: {
-                'dogs': filteredDogs, // Pass all filtered dogs
-                'index': index, // Pass the actual index of tapped dog in filtered list
-              },
-            );
-            // Refresh favorites when returning from DetailsPage
-            filterCubit.refreshFavorites();
+            attempts++;
+          }
+          
+          // Additional wait for layout stabilization after keyboard dismissal
+          // This prevents the 50px jump by ensuring the viewport is fully settled
+          await Future.delayed(const Duration(milliseconds: 200));
+        }
+
+        // Check if widget is still mounted before navigation
+        if (!context.mounted) return;
+    
+        await navigator.pushNamed(
+          '/details',
+          arguments: {
+            'dogs': filteredDogs, // Pass all filtered dogs
+            'index': index, // Pass the actual index of tapped dog in filtered list
           },
         );
+        // Refresh preferences when returning from DetailsPage
+        await userPrefsCubit.refreshPreferences();
       },
     );
   }

@@ -8,7 +8,6 @@ class FilterState {
   final List<String> selectedQuickFilters; // New field for quick filters
   final List<Dog> allDogs;
   final List<Dog> filteredDogs;
-  final List<Dog> favorites;
   final bool isLoading;
   final bool hasError;
   final String? errorMessage;
@@ -22,7 +21,6 @@ class FilterState {
     required this.selectedQuickFilters,
     required this.allDogs,
     required this.filteredDogs,
-    required this.favorites,
     required this.isLoading,
     required this.hasError,
     this.errorMessage,
@@ -37,7 +35,6 @@ class FilterState {
     selectedQuickFilters: [],
     allDogs: [],
     filteredDogs: [],
-    favorites: [],
     isLoading: false,
     hasError: false,
     errorMessage: null,
@@ -61,7 +58,6 @@ class FilterState {
     bool clearQuickFilters = false,
     List<Dog>? allDogs,
     List<Dog>? filteredDogs,
-    List<Dog>? favorites,
     bool? isLoading,
     bool? hasError,
     String? errorMessage,
@@ -75,7 +71,6 @@ class FilterState {
       selectedQuickFilters: clearQuickFilters ? [] : (selectedQuickFilters ?? this.selectedQuickFilters),
       allDogs: allDogs ?? this.allDogs,
       filteredDogs: filteredDogs ?? this.filteredDogs,
-      favorites: favorites ?? this.favorites,
       isLoading: isLoading ?? this.isLoading,
       hasError: hasError ?? this.hasError,
       errorMessage: errorMessage ?? this.errorMessage,

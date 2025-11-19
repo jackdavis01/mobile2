@@ -1,52 +1,31 @@
 import 'package:flutter/material.dart';
+import '/l10n/gen/app_localizations.dart';
+import '/l10n/gen/app_localizations_en.dart';
 
-class InfoPage extends StatefulWidget {
+class InfoPage extends StatelessWidget {
   const InfoPage({super.key});
 
   @override
-  State<InfoPage> createState() => _InfoPageState();
-}
-
-class _InfoPageState extends State<InfoPage> {
-  @override
   Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+    
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        leading: null,
-        title: Row(
-          children: <Widget>[
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 18),
-                    child: Text("Info"),
-                  ),
-                  const SizedBox(width: 36),
-                ],
-              ),
-            ),
-          ],
+        title: Text(appLocalizations.infoTitle),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(20.0),
           child: Text(
-            'Info Page - Coming Soon',
-            style: TextStyle(fontSize: 18),
+            appLocalizations.infoComingSoon,
+            style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
         ),
