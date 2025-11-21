@@ -278,4 +278,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quickFilterCancel => 'Cancel';
+
+  @override
+  String get infoApplicationInformation => 'Application Information';
+
+  @override
+  String get infoApplicationName => 'Application name:';
+
+  @override
+  String get infoPackageName => 'Package name:';
+
+  @override
+  String get infoVersionNumber => 'Version number:';
+
+  @override
+  String get infoBuildNumber => 'Build number:';
+
+  @override
+  String get infoBuildMode => 'Build mode:';
+
+  @override
+  String get infoPlatform => 'Platform:';
+
+  @override
+  String get infoPrerelease => 'Prerelease:';
+
+  @override
+  String get infoChannel => 'Channel:';
+
+  @override
+  String get infoAuthor => 'Author:';
 }

@@ -597,6 +597,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get quickFilterCancel;
+
+  /// Info page section title
+  ///
+  /// In en, this message translates to:
+  /// **'Application Information'**
+  String get infoApplicationInformation;
+
+  /// Info page application name label
+  ///
+  /// In en, this message translates to:
+  /// **'Application name:'**
+  String get infoApplicationName;
+
+  /// Info page package name label
+  ///
+  /// In en, this message translates to:
+  /// **'Package name:'**
+  String get infoPackageName;
+
+  /// Info page version number label
+  ///
+  /// In en, this message translates to:
+  /// **'Version number:'**
+  String get infoVersionNumber;
+
+  /// Info page build number label
+  ///
+  /// In en, this message translates to:
+  /// **'Build number:'**
+  String get infoBuildNumber;
+
+  /// Info page build mode label
+  ///
+  /// In en, this message translates to:
+  /// **'Build mode:'**
+  String get infoBuildMode;
+
+  /// Info page platform label
+  ///
+  /// In en, this message translates to:
+  /// **'Platform:'**
+  String get infoPlatform;
+
+  /// Info page prerelease label
+  ///
+  /// In en, this message translates to:
+  /// **'Prerelease:'**
+  String get infoPrerelease;
+
+  /// Info page channel label
+  ///
+  /// In en, this message translates to:
+  /// **'Channel:'**
+  String get infoChannel;
+
+  /// Info page author label
+  ///
+  /// In en, this message translates to:
+  /// **'Author:'**
+  String get infoAuthor;
 }
 
 class _AppLocalizationsDelegate

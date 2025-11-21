@@ -28,6 +28,7 @@ class NavigationDrawerCubit extends Cubit<NavigationDrawerState> {
         ));
       } else {
         emit(state.copyWith(
+          clearDogBreedName: true,
           clearBestDogImageUrl: true,
           clearBestDogId: true,
         ));

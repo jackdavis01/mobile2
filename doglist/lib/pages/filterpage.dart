@@ -45,6 +45,14 @@ class FilterPage extends StatelessWidget {
                     filterKey.currentState?.toggleExpansion();
                   },
                 ),
+                IconButton(
+                  icon: state.toggleFavoriteFilter 
+                    ? const Icon(Icons.favorite, size: 28, color: Colors.red) 
+                    : const Icon(Icons.favorite_border, size: 28),
+                  onPressed: () {
+                    context.read<FilterCubit>().toggleFavoriteFilterAction();
+                  },
+                ),
               ],
             ),
             body: LayoutBuilder(

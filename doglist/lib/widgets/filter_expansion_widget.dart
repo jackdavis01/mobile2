@@ -281,9 +281,8 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
                         const SizedBox(height: 16),
                         
                         // Clear filters button
-                        if (state.searchQuery.isNotEmpty || state.selectedCoatStyle != null || state.selectedCoatTexture != null || state.selectedPersonalityTraits.isNotEmpty || state.selectedQuickFilters.isNotEmpty)
-                          SizedBox(
-                            width: double.infinity,
+                        if (state.searchQuery.isNotEmpty || state.selectedCoatStyle != null || state.selectedCoatTexture != null || state.selectedPersonalityTraits.isNotEmpty || state.selectedQuickFilters.isNotEmpty || state.toggleFavoriteFilter)
+                          Center(
                             child: ElevatedButton.icon(
                               onPressed: () => context.read<FilterCubit>().clearAllFilters(),
                               icon: const Icon(Icons.clear),

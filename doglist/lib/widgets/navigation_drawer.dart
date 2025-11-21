@@ -85,9 +85,7 @@ class _DogNavDrawerContent extends StatelessWidget {
       ],
       child: BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
         builder: (BuildContext context, NavigationDrawerState drawerState) {
-        final String displayName = drawerState.dogBreedName == "Dog breed" 
-            ? appLocalizations.none 
-            : drawerState.dogBreedName;
+        final String displayName = drawerState.dogBreedName ?? appLocalizations.none;
         
         Widget drawerHeader = Container(
           padding: const EdgeInsets.only(right: 16),

@@ -359,5 +359,45 @@
   "quickFilterCancel": "Cancel",
   "@quickFilterCancel": {
     "description": "Dialog button to cancel"
+  },
+  "infoApplicationInformation": "Application Information",
+  "@infoApplicationInformation": {
+    "description": "Info page section title"
+  },
+  "infoApplicationName": "Application name:",
+  "@infoApplicationName": {
+    "description": "Info page application name label"
+  },
+  "infoPackageName": "Package name:",
+  "@infoPackageName": {
+    "description": "Info page package name label"
+  },
+  "infoVersionNumber": "Version number:",
+  "@infoVersionNumber": {
+    "description": "Info page version number label"
+  },
+  "infoBuildNumber": "Build number:",
+  "@infoBuildNumber": {
+    "description": "Info page build number label"
+  },
+  "infoBuildMode": "Build mode:",
+  "@infoBuildMode": {
+    "description": "Info page build mode label"
+  },
+  "infoPlatform": "Platform:",
+  "@infoPlatform": {
+    "description": "Info page platform label"
+  },
+  "infoPrerelease": "Prerelease:",
+  "@infoPrerelease": {
+    "description": "Info page prerelease label"
+  },
+  "infoChannel": "Channel:",
+  "@infoChannel": {
+    "description": "Info page channel label"
+  },
+  "infoAuthor": "Author:",
+  "@infoAuthor": {
+    "description": "Info page author label"
   }
 }

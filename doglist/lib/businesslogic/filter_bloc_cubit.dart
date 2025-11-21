@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/dog.dart';
 import '../repositories/dogs_data_repository.dart';
+import '../repositories/user_preferences_repository.dart';
 import 'filter_bloc_state.dart';
 
 class FilterCubit extends Cubit<FilterState> {
   final DogsDataRepository _dogsRepository = DogsDataRepository();
+  final UserPreferencesRepository _userPrefsRepository = UserPreferencesRepository();
   Timer? _debounceTimer;
   final String? _initialQuickFilter;
 
@@ -94,8 +96,22 @@ class FilterCubit extends Cubit<FilterState> {
     emit(state.copyWith(shouldScrollToQuickFilters: false));
   }
 
-  void _performFilter() {
+  void toggleFavoriteFilterAction() {
+    final toggleFavoriteFilter = !state.toggleFavoriteFilter;
+    emit(state.copyWith(toggleFavoriteFilter: toggleFavoriteFilter));
+    _performFilter();
+  }
+
+  Future<void> _performFilter() async {
     List<Dog> filteredDogs = state.allDogs;
+
+    // Apply favorite filter first
+    if (state.toggleFavoriteFilter) {
+      final List<Dog> favorites = await _userPrefsRepository.getFavorites();
+      filteredDogs = filteredDogs.where((dog) => 
+        favorites.any((fav) => fav.id == dog.id)
+      ).toList();
+    }
 
     // Apply breed name filter
     final String query = state.searchQuery;
@@ -172,6 +188,7 @@ class FilterCubit extends Cubit<FilterState> {
       clearCoatTexture: true,
       clearPersonalityTraits: true,
       clearQuickFilters: true,
+      toggleFavoriteFilter: false,
       filteredDogs: state.allDogs,
     ));
   }
