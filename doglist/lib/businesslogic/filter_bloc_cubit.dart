@@ -7,11 +7,12 @@ import 'filter_bloc_state.dart';
 
 class FilterCubit extends Cubit<FilterState> {
   final DogsDataRepository _dogsRepository = DogsDataRepository();
-  final UserPreferencesRepository _userPrefsRepository = UserPreferencesRepository();
+  final UserPreferencesRepository _userPrefsRepository =
+      UserPreferencesRepository();
   Timer? _debounceTimer;
   final String? _initialQuickFilter;
 
-  FilterCubit({String? initialQuickFilter}) 
+  FilterCubit({String? initialQuickFilter})
       : _initialQuickFilter = initialQuickFilter,
         super(FilterState.initial()) {
     _loadAllDogs();
@@ -27,7 +28,7 @@ class FilterCubit extends Cubit<FilterState> {
         isLoading: false,
         hasError: false,
       ));
-      
+
       // Apply initial quick filter after data is loaded
       if (_initialQuickFilter != null) {
         emit(state.copyWith(selectedQuickFilters: [_initialQuickFilter]));
@@ -79,14 +80,16 @@ class FilterCubit extends Cubit<FilterState> {
   }
 
   void updatePersonalityTraits(List<String> traits) {
-    if (traits.length <= 3) { // Enforce 0-3 limit
+    if (traits.length <= 3) {
+      // Enforce 0-3 limit
       emit(state.copyWith(selectedPersonalityTraits: traits));
       _performFilter();
     }
   }
 
   void updateQuickFilters(List<String> filters) {
-    if (filters.length <= 3) { // Enforce 0-3 limit
+    if (filters.length <= 3) {
+      // Enforce 0-3 limit
       emit(state.copyWith(selectedQuickFilters: filters));
       _performFilter();
     }
@@ -102,15 +105,19 @@ class FilterCubit extends Cubit<FilterState> {
     _performFilter();
   }
 
+  void refreshFilters() {
+    _performFilter();
+  }
+
   Future<void> _performFilter() async {
     List<Dog> filteredDogs = state.allDogs;
 
     // Apply favorite filter first
     if (state.toggleFavoriteFilter) {
       final List<Dog> favorites = await _userPrefsRepository.getFavorites();
-      filteredDogs = filteredDogs.where((dog) => 
-        favorites.any((fav) => fav.id == dog.id)
-      ).toList();
+      filteredDogs = filteredDogs
+          .where((dog) => favorites.any((fav) => fav.id == dog.id))
+          .toList();
     }
 
     // Apply breed name filter
@@ -128,22 +135,24 @@ class FilterCubit extends Cubit<FilterState> {
     // Apply coat style filter
     if (state.selectedCoatStyle != null) {
       filteredDogs = filteredDogs.where((dog) {
-        return dog.coatStyle.toLowerCase() == state.selectedCoatStyle!.toLowerCase();
+        return dog.coatStyle.toLowerCase() ==
+            state.selectedCoatStyle!.toLowerCase();
       }).toList();
     }
 
     // Apply coat texture filter
     if (state.selectedCoatTexture != null) {
       filteredDogs = filteredDogs.where((dog) {
-        return dog.coatTexture.toLowerCase() == state.selectedCoatTexture!.toLowerCase();
+        return dog.coatTexture.toLowerCase() ==
+            state.selectedCoatTexture!.toLowerCase();
       }).toList();
     }
 
     // Apply personality traits filter
     if (state.selectedPersonalityTraits.isNotEmpty) {
       filteredDogs = filteredDogs.where((dog) {
-        return state.selectedPersonalityTraits.every((trait) => 
-          dog.personalityTraits.contains(trait));
+        return state.selectedPersonalityTraits
+            .every((trait) => dog.personalityTraits.contains(trait));
       }).toList();
     }
 
@@ -173,7 +182,6 @@ class FilterCubit extends Cubit<FilterState> {
 
     emit(state.copyWith(filteredDogs: filteredDogs));
   }
-
 
   void clearSearchQuery() {
     emit(state.copyWith(searchQuery: ''));

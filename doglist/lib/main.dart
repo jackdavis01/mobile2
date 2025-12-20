@@ -6,12 +6,12 @@ import 'parameters/ads_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensures that SystemChrome settings are applied
-  
+
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Allow only portrait mode
   ]);
-  
+
   // Only initialize Mobile Ads SDK if ads are enabled
   if (AdsConfig.areAdsEnabled) {
     MobileAds.instance.initialize().then((_) {
@@ -22,6 +22,6 @@ void main() async {
   } else {
     debugPrint('Mobile Ads SDK initialization skipped (ads disabled)');
   }
-  
+
   runApp(const DogListApp());
 }

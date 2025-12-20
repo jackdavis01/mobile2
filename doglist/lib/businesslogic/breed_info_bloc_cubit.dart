@@ -10,10 +10,10 @@ class BreedInfoCubit extends Cubit<BreedInfoState> {
 
   Future<void> loadExtendedInfo(Dog dog, String Function(String) errorCallback) async {
     emit(state.copyWith(loading: true, errorMessage: ''));
-    
+
     try {
       final extendedInfo = await _repository.getExtendedInfo(dog.id);
-      
+
       if (extendedInfo == null) {
         emit(state.copyWith(
           loading: false,

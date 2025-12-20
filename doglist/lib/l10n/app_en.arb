@@ -284,13 +284,13 @@
   "@cleanTidy": {
     "description": "Quick filter: low shedding and minimal drooling dogs"
   },
-  "drawerFavourite": "Favorite: {breedName}",
+  "drawerFavourite": "Best: {breedName}",
   "@drawerFavourite": {
-    "description": "Navigation drawer header: favorite breed",
+    "description": "Navigation drawer header: best breed",
     "placeholders": {
       "breedName": {
         "type": "String",
-        "description": "The name of the favorite breed"
+        "description": "The name of the best breed"
       }
     }
   },
@@ -399,5 +399,109 @@
   "infoAuthor": "Author:",
   "@infoAuthor": {
     "description": "Info page author label"
+  },
+  "discoveryQuickFiltersTitle": "Quick Filters",
+  "@discoveryQuickFiltersTitle": {
+    "description": "Feature discovery title for quick filters on list page"
+  },
+  "discoveryQuickFiltersDescription": "Tap filter chips to quickly find dogs by specific traits like family-friendly or low-maintenance.",
+  "@discoveryQuickFiltersDescription": {
+    "description": "Feature discovery description for quick filters"
+  },
+  "discoveryListFilterButtonTitle": "Advanced Filters",
+  "@discoveryListFilterButtonTitle": {
+    "description": "Feature discovery title for filter button on list page"
+  },
+  "discoveryListFilterButtonDescription": "Tap here to access advanced search and filtering options to find your perfect breed.",
+  "@discoveryListFilterButtonDescription": {
+    "description": "Feature discovery description for filter button on list page"
+  },
+  "discoveryListFavoriteTitle": "Add to Favorites",
+  "@discoveryListFavoriteTitle": {
+    "description": "Feature discovery title for favorite button on list page"
+  },
+  "discoveryListFavoriteDescription": "Tap the heart to save your favorite dog breeds for quick access.",
+  "@discoveryListFavoriteDescription": {
+    "description": "Feature discovery description for favorite button on list page"
+  },
+  "discoveryListFavoriteFilterTitle": "Show Favorites Only",
+  "@discoveryListFavoriteFilterTitle": {
+    "description": "Feature discovery title for favorite filter button on list page"
+  },
+  "discoveryListFavoriteFilterDescription": "Tap this heart icon to filter and show only your favorited breeds.",
+  "@discoveryListFavoriteFilterDescription": {
+    "description": "Feature discovery description for favorite filter button on list page"
+  },
+  "discoveryDetailsZoomTitle": "Zoom Images",
+  "@discoveryDetailsZoomTitle": {
+    "description": "Feature discovery title for zoom icon on details page"
+  },
+  "discoveryDetailsZoomDescription": "Tap this icon to zoom in and out of the dog breed images for a closer look.",
+  "@discoveryDetailsZoomDescription": {
+    "description": "Feature discovery description for zoom icon on details page"
+  },
+  "discoveryDetailsFavoriteTitle": "Favorite This Breed",
+  "@discoveryDetailsFavoriteTitle": {
+    "description": "Feature discovery title for favorite button on details page"
+  },
+  "discoveryDetailsFavoriteDescription": "Tap the heart icon to add or remove this breed from your favorites list.",
+  "@discoveryDetailsFavoriteDescription": {
+    "description": "Feature discovery description for favorite button on details page"
+  },
+  "discoverySearchBarTitle": "Search Breeds",
+  "@discoverySearchBarTitle": {
+    "description": "Feature discovery title for search bar on filter page"
+  },
+  "discoverySearchBarDescription": "Type a breed name to quickly find specific dogs.",
+  "@discoverySearchBarDescription": {
+    "description": "Feature discovery description for search bar"
+  },
+  "discoveryAdvancedFiltersTitle": "Advanced Filters",
+  "@discoveryAdvancedFiltersTitle": {
+    "description": "Feature discovery title for advanced filters on filter page"
+  },
+  "discoveryAdvancedFiltersDescription": "Expand sections to filter by size, weight, temperament, and more.",
+  "@discoveryAdvancedFiltersDescription": {
+    "description": "Feature discovery description for advanced filters"
+  },
+  "discoveryNavBestDogTitle": "Your Best Dog",
+  "@discoveryNavBestDogTitle": {
+    "description": "Feature discovery title for best dog on navigation drawer"
+  },
+  "discoveryNavBestDogDescription": "Your favorite breed appears here. Tap it to view details.",
+  "@discoveryNavBestDogDescription": {
+    "description": "Feature discovery description for best dog"
+  },
+  "discoveryNavMenuTitle": "Navigation Menu",
+  "@discoveryNavMenuTitle": {
+    "description": "Feature discovery title for navigation menu icon"
+  },
+  "discoveryNavMenuDescription": "Add or modify best dog, access settings and app information from this menu.",
+  "@discoveryNavMenuDescription": {
+    "description": "Feature discovery description for navigation menu"
+  },
+  "featureDiscoverySection": "Feature Discovery",
+  "@featureDiscoverySection": {
+    "description": "Section title for feature discovery settings"
+  },
+  "listPageDiscovery": "List Page",
+  "@listPageDiscovery": {
+    "description": "Switch label for list page feature discovery"
+  },
+  "detailsPageDiscovery": "Details Page",
+  "@detailsPageDiscovery": {
+    "description": "Switch label for details page feature discovery"
+  },
+  "filterPageDiscovery": "Filter Page",
+  "@filterPageDiscovery": {
+    "description": "Switch label for filter page feature discovery"
+  },
+  "navigationPageDiscovery": "Navigation",
+  "@navigationPageDiscovery": {
+    "description": "Switch label for navigation drawer feature discovery"
+  },
+  "featureDiscoveryHelpText": "Enable tutorials to see helpful tips on each page. Tutorials automatically hide after completion but can be re-enabled here.",
+  "@featureDiscoveryHelpText": {
+    "description": "Help text explaining feature discovery switches"
   }
 }

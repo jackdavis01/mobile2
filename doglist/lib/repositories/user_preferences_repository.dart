@@ -10,11 +10,11 @@ class UserPreferencesRepository {
   Future<List<Dog>> getFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     final favoritesJson = prefs.getString(_favoritesKey);
-    
+
     if (favoritesJson == null || favoritesJson.isEmpty) {
       return [];
     }
-    
+
     try {
       final List<dynamic> favoritesList = json.decode(favoritesJson);
       return favoritesList.map((map) => Dog.fromMap(map)).toList();
@@ -32,13 +32,13 @@ class UserPreferencesRepository {
   Future<void> toggleFavorite(Dog dog) async {
     final favorites = await getFavorites();
     final existingIndex = favorites.indexWhere((fav) => fav.id == dog.id);
-    
+
     if (existingIndex >= 0) {
       favorites.removeAt(existingIndex);
     } else {
       favorites.add(dog);
     }
-    
+
     await saveFavorites(favorites);
   }
 

@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:ironsource_mediation/ironsource_mediation.dart';
+import 'package:unity_levelplay_mediation/unity_levelplay_mediation.dart';
 import '../parameters/ads_config.dart';
 
-/// AdBanner widget that implements AdMob primary and IronSource fallback banner system
+/// AdBanner widget that implements AdMob primary and Unity LevelPlay (IronSource) fallback banner system
 /// This follows the modern best practices for banner ad implementation in Flutter
 class AdBanner extends StatefulWidget {
   const AdBanner({super.key});
@@ -16,16 +16,16 @@ class AdBanner extends StatefulWidget {
 
 class _AdBannerState extends State<AdBanner>
     with LevelPlayInitListener, LevelPlayBannerAdViewListener {
-  
+
   // AdMob banner ad instance
   BannerAd? _admobBannerAd;
   bool _isAdmobAdLoaded = false;
-  
-  // IronSource banner ad instance
+
+  // Unity LevelPlay banner ad instance
   LevelPlayBannerAdView? _ironSourceBannerAdView;
   bool _isIronSourceAdLoaded = false;
   bool _isIronSourceInitialized = false;
-  
+
   // Ad state management
   bool _isLoadingAd = false;
   bool _shouldShowAd = false;
@@ -35,12 +35,12 @@ class _AdBannerState extends State<AdBanner>
   void initState() {
     super.initState();
     _currentOrientation = Orientation.portrait; // Initialize with default
-    
+
     // Don't initialize ads if they're disabled in configuration
     if (!AdsConfig.areAdsEnabled) {
       return;
     }
-    
+
     if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -54,7 +54,7 @@ class _AdBannerState extends State<AdBanner>
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!mounted) return;
-    
+
     final orientation = MediaQuery.of(context).orientation;
     if (_currentOrientation != orientation) {
       _currentOrientation = orientation;
@@ -68,7 +68,7 @@ class _AdBannerState extends State<AdBanner>
   /// Initialize advertisement systems
   Future<void> _initializeAds() async {
     if (_isLoadingAd) return;
-    
+
     setState(() {
       _isLoadingAd = true;
     });
@@ -76,10 +76,10 @@ class _AdBannerState extends State<AdBanner>
     try {
       // Initialize AdMob first (primary ad network)
       await _initializeAdMob();
-      
-      // Initialize IronSource as fallback
+
+      // Initialize Unity LevelPlay as fallback
       await _initializeIronSource();
-      
+
       // Load the first ad
       await _loadAdMobBanner();
     } catch (e) {
@@ -103,7 +103,7 @@ class _AdBannerState extends State<AdBanner>
           RequestConfiguration(testDeviceIds: testDeviceIds),
         );
       }
-      
+
       if (AdsConfig.isDebugLoggingEnabled) {
         debugPrint('AdBanner: AdMob initialized successfully');
       }
@@ -114,7 +114,7 @@ class _AdBannerState extends State<AdBanner>
     }
   }
 
-  /// Initialize IronSource SDK
+  /// Initialize Unity LevelPlay SDK
   Future<void> _initializeIronSource() async {
     try {
       final appKey = Platform.isAndroid 
@@ -124,15 +124,15 @@ class _AdBannerState extends State<AdBanner>
       // Initialize LevelPlay with current API
       final initRequest = LevelPlayInitRequest.builder(appKey)
           .build();
-      
+
       await LevelPlay.init(initRequest: initRequest, initListener: this);
-      
+
       if (AdsConfig.isDebugLoggingEnabled) {
-        debugPrint('AdBanner: IronSource initialization started');
+        debugPrint('AdBanner: Unity LevelPlay initialization started');
       }
     } catch (e) {
       if (AdsConfig.isDebugLoggingEnabled) {
-        debugPrint('AdBanner: IronSource initialization failed: $e');
+        debugPrint('AdBanner: Unity LevelPlay initialization failed: $e');
       }
     }
   }
@@ -151,7 +151,7 @@ class _AdBannerState extends State<AdBanner>
         if (AdsConfig.isDebugLoggingEnabled) {
           debugPrint('AdBanner: Unable to get adaptive banner size');
         }
-        _loadIronSourceBanner(); // Fallback to IronSource
+        _loadIronSourceBanner(); // Fallback to Unity LevelPlay
         return;
       }
 
@@ -181,7 +181,7 @@ class _AdBannerState extends State<AdBanner>
               _admobBannerAd = null;
               _isAdmobAdLoaded = false;
             });
-            // Fallback to IronSource
+            // Fallback to Unity LevelPlay
             _loadIronSourceBanner();
           },
           onAdOpened: (Ad ad) {
@@ -207,11 +207,11 @@ class _AdBannerState extends State<AdBanner>
       if (AdsConfig.isDebugLoggingEnabled) {
         debugPrint('AdBanner: Error loading AdMob banner: $e');
       }
-      _loadIronSourceBanner(); // Fallback to IronSource
+      _loadIronSourceBanner(); // Fallback to Unity LevelPlay
     }
   }
 
-  /// Load IronSource banner ad (fallback ad network)
+  /// Load Unity LevelPlay banner ad (fallback ad network)
   void _loadIronSourceBanner() {
     if (!_isIronSourceInitialized || _isIronSourceAdLoaded) return;
 
@@ -231,11 +231,11 @@ class _AdBannerState extends State<AdBanner>
       );
 
       if (AdsConfig.isDebugLoggingEnabled) {
-        debugPrint('AdBanner: IronSource banner created and loading');
+        debugPrint('AdBanner: Unity LevelPlay banner created and loading');
       }
     } catch (e) {
       if (AdsConfig.isDebugLoggingEnabled) {
-        debugPrint('AdBanner: Error creating IronSource banner: $e');
+        debugPrint('AdBanner: Error creating Unity LevelPlay banner: $e');
       }
     }
   }
@@ -250,8 +250,8 @@ class _AdBannerState extends State<AdBanner>
         child: AdWidget(ad: _admobBannerAd!),
       );
     }
-    
-    // Show IronSource banner if loaded
+
+    // Show Unity LevelPlay banner if loaded
     if (_isIronSourceAdLoaded && _ironSourceBannerAdView != null) {
       return SizedBox(
         width: double.infinity,
@@ -270,7 +270,7 @@ class _AdBannerState extends State<AdBanner>
     if (!AdsConfig.areAdsEnabled) {
       return const SizedBox.shrink();
     }
-    
+
     // Only show ads on supported platforms
     if (kIsWeb || (!Platform.isIOS && !Platform.isAndroid)) {
       return const SizedBox.shrink();
@@ -295,29 +295,29 @@ class _AdBannerState extends State<AdBanner>
     super.dispose();
   }
 
-  // IronSource LevelPlay Init Listener
+  // Unity LevelPlay Init Listener
   @override
   void onInitFailed(LevelPlayInitError error) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource init failed: ${error.errorMessage}');
+      debugPrint('AdBanner: Unity LevelPlay init failed: ${error.errorMessage}');
     }
   }
 
   @override
   void onInitSuccess(LevelPlayConfiguration configuration) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource init success');
+      debugPrint('AdBanner: Unity LevelPlay init success');
     }
     setState(() {
       _isIronSourceInitialized = true;
     });
   }
 
-  // IronSource Banner Ad View Listener
+  // Unity LevelPlay Banner Ad View Listener
   @override
   void onAdLoaded(LevelPlayAdInfo adInfo) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner loaded');
+      debugPrint('AdBanner: Unity LevelPlay banner loaded');
     }
     setState(() {
       _isIronSourceAdLoaded = true;
@@ -328,7 +328,7 @@ class _AdBannerState extends State<AdBanner>
   @override
   void onAdLoadFailed(LevelPlayAdError error) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner load failed: ${error.errorMessage}');
+      debugPrint('AdBanner: Unity LevelPlay banner load failed: ${error.errorMessage}');
     }
     setState(() {
       _isIronSourceAdLoaded = false;
@@ -338,42 +338,42 @@ class _AdBannerState extends State<AdBanner>
   @override
   void onAdDisplayed(LevelPlayAdInfo adInfo) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner displayed');
+      debugPrint('AdBanner: Unity LevelPlay banner displayed');
     }
   }
 
   @override
   void onAdDisplayFailed(LevelPlayAdInfo adInfo, LevelPlayAdError error) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner display failed: ${error.errorMessage}');
+      debugPrint('AdBanner: Unity LevelPlay banner display failed: ${error.errorMessage}');
     }
   }
 
   @override
   void onAdClicked(LevelPlayAdInfo adInfo) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner clicked');
+      debugPrint('AdBanner: Unity LevelPlay banner clicked');
     }
   }
 
   @override
   void onAdExpanded(LevelPlayAdInfo adInfo) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner expanded');
+      debugPrint('AdBanner: Unity LevelPlay banner expanded');
     }
   }
 
   @override
   void onAdCollapsed(LevelPlayAdInfo adInfo) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner collapsed');
+      debugPrint('AdBanner: Unity LevelPlay banner collapsed');
     }
   }
 
   @override
   void onAdLeftApplication(LevelPlayAdInfo adInfo) {
     if (AdsConfig.isDebugLoggingEnabled) {
-      debugPrint('AdBanner: IronSource banner left application');
+      debugPrint('AdBanner: Unity LevelPlay banner left application');
     }
   }
 }

@@ -257,6 +257,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.3"
+  feature_discovery:
+    dependency: "direct main"
+    description:
+      path: "lib/custom_packages/feature_discovery"
+      relative: true
+    source: path
+    version: "0.14.2+custom"
   ffi:
     dependency: transitive
     description:
@@ -421,14 +428,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  ironsource_mediation:
-    dependency: "direct main"
-    description:
-      name: ironsource_mediation
-      sha256: "8080948a78b816bae717ba694cc7a5dc94b70849f6b3277a28028ac10132a58f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.0"
   js:
     dependency: transitive
     description:
@@ -906,6 +905,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  unity_levelplay_mediation:
+    dependency: "direct main"
+    description:
+      name: unity_levelplay_mediation
+      sha256: da0b872dc7ed2fb80135b591ae7f8cd92ad2b613a55654db977955fc3c676cf7
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.1"
   uuid:
     dependency: transitive
     description:

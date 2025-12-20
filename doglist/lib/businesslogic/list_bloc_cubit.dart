@@ -46,4 +46,8 @@ class ListCubit extends Cubit<ListState> {
     emit(state.copyWith(showError: false));
     fetchDogData();
   }
+
+  void setDrawerOpen(bool isOpen) {
+    emit(state.copyWith(isDrawerOpen: isOpen));
+  }
 }

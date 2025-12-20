@@ -8,7 +8,7 @@ class Dog {
   final String coatTexture;
   final List<String> personalityTraits;
   final DogImages images;
-  
+
   // Hybrid fields: Add filtering fields for quick filters and basic info
   final int childFriendly;        // For "Family-Friendly" filter
   final int groomingFrequency;    // For "Low Maintenance" filter

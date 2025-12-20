@@ -3,7 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/dog.dart';
 import '../parameters/netservices.dart';
+import '../parameters/feature_ids.dart';
 import '../widgets/spinkitwidgets.dart';
+import '../widgets/feature_overlays.dart';
 import '../businesslogic/user_preferences_bloc_cubit.dart';
 import '../businesslogic/user_preferences_bloc_state.dart';
 
@@ -14,6 +16,7 @@ class DogListItem extends StatelessWidget {
   final VoidCallback? onBestToggled;
   final EdgeInsets padding;
   final double imageSize;
+  final bool enableDiscovery;
 
   const DogListItem({
     super.key,
@@ -23,6 +26,7 @@ class DogListItem extends StatelessWidget {
     this.onBestToggled,
     this.padding = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
     this.imageSize = 56.0,
+    this.enableDiscovery = false,
   });
 
   @override
@@ -100,7 +104,7 @@ class DogListItem extends StatelessWidget {
               builder: (context, state) {
                 final cubit = context.read<UserPreferencesCubit>();
                 final isBest = cubit.isBest(dog.id);
-                
+
                 return IconButton(
                   padding: EdgeInsets.only(bottom: 2.5),
                   icon: Icon(
@@ -120,8 +124,8 @@ class DogListItem extends StatelessWidget {
               builder: (context, state) {
                 final cubit = context.read<UserPreferencesCubit>();
                 final isFavorite = cubit.isFavorite(dog.id);
-                
-                return IconButton(
+
+                final favoriteButton = IconButton(
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
                     color: isFavorite ? Colors.red : null,
@@ -131,6 +135,16 @@ class DogListItem extends StatelessWidget {
                     onFavoriteToggled?.call();
                   },
                 );
+
+                // Only wrap first item with discovery overlay
+                if (enableDiscovery) {
+                  return ListFavoriteButtonDiscoveryOverlay(
+                    featureId: FeatureIds.listFavoriteButton,
+                    child: favoriteButton,
+                  );
+                }
+
+                return favoriteButton;
               },
             ),
           ],

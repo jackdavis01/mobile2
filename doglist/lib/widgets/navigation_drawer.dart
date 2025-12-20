@@ -7,6 +7,10 @@ import '../businesslogic/navigation_drawer_bloc_cubit.dart';
 import '../businesslogic/navigation_drawer_bloc_state.dart';
 import '../businesslogic/user_preferences_bloc_cubit.dart';
 import '../businesslogic/user_preferences_bloc_state.dart';
+import '../businesslogic/settings_bloc_cubit.dart';
+import '../widgets/feature_discovery_wrapper.dart';
+import '../widgets/feature_overlays.dart';
+import '../parameters/feature_ids.dart';
 import '../parameters/netservices.dart';
 
 class DogNavDrawer extends StatelessWidget {
@@ -20,7 +24,14 @@ class DogNavDrawer extends StatelessWidget {
         builder: (context) {
           // Refresh best dog when drawer is built
           context.read<NavigationDrawerCubit>().loadBestDog();
-          return const _DogNavDrawerContent();
+          return FeatureDiscoveryWrapper(
+            pageKey: 'navigation',
+            featureIds: FeatureIds.navigationPageFeatures,
+            onCompleted: () {
+              context.read<SettingsCubit>().markNavigationPageDiscoveryCompleted();
+            },
+            child: const _DogNavDrawerContent(),
+          );
         },
       ),
     );
@@ -40,13 +51,13 @@ class _DogNavDrawerContent extends StatelessWidget {
 
   Future<void> _handleBestDogTap(BuildContext context, NavigationDrawerState drawerState) async {
     final NavigationDrawerCubit cubit = context.read<NavigationDrawerCubit>();
-    
+
     if (drawerState.bestDogId != null) {
       // Have best dog - navigate to details page
       try {
         final allDogs = await cubit.getAllDogs();
         final bestDogIndex = allDogs.indexWhere((dog) => dog.id == drawerState.bestDogId);
-        
+
         if (bestDogIndex >= 0 && context.mounted) {
           await Navigator.pushNamed(
             context,
@@ -86,7 +97,7 @@ class _DogNavDrawerContent extends StatelessWidget {
       child: BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
         builder: (BuildContext context, NavigationDrawerState drawerState) {
         final String displayName = drawerState.dogBreedName ?? appLocalizations.none;
-        
+
         Widget drawerHeader = Container(
           padding: const EdgeInsets.only(right: 16),
           color: Theme.of(context).primaryColor,
@@ -94,39 +105,42 @@ class _DogNavDrawerContent extends StatelessWidget {
             accountName: Text(appLocalizations.drawerFavourite(displayName), style: const TextStyle(fontSize: 18.0)),
             accountEmail: Text(appLocalizations.drawerLikes(drawerState.likes), style: const TextStyle(fontSize: 18.0)),
             currentAccountPictureSize: const Size.square(62.0),
-            currentAccountPicture: GestureDetector(
-              onTap: () => _handleBestDogTap(context, drawerState),
-              child: drawerState.bestDogImageUrl != null
-                  ? CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + drawerState.bestDogImageUrl!,
-                          cacheManager: LongTermCacheManager(),
-                          width: 62.0,
-                          height: 62.0,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Icon(
-                            Icons.add,
-                            size: 40,
-                            color: Colors.blue,
-                          ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.add,
-                            size: 40,
-                            color: Colors.blue,
+            currentAccountPicture: NavigationBestDogDiscoveryOverlay(
+              featureId: FeatureIds.navBestDog,
+              child: GestureDetector(
+                onTap: () => _handleBestDogTap(context, drawerState),
+                child: drawerState.bestDogImageUrl != null
+                    ? CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + drawerState.bestDogImageUrl!,
+                            cacheManager: LongTermCacheManager(),
+                            width: 62.0,
+                            height: 62.0,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Icon(
+                              Icons.add,
+                              size: 40,
+                              color: Colors.blue,
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.add,
+                              size: 40,
+                              color: Colors.blue,
+                            ),
                           ),
                         ),
+                      )
+                    : const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.add,
+                          size: 40,
+                          color: Colors.blue,
+                        ),
                       ),
-                    )
-                  : const CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.add,
-                        size: 40,
-                        color: Colors.blue,
-                      ),
-                    ),
+              ),
             ),
             margin: const EdgeInsets.only(bottom: 0),
             otherAccountsPictures: <Widget>[

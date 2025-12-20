@@ -1,6 +1,6 @@
 class DogExtendedInfo {
   final String id; // Reference to Dog
-  
+
   // General information
   final String group;
   final String shortDescription;
@@ -10,12 +10,12 @@ class DogExtendedInfo {
   final int weight;
   final int lifespan;
   final bool rare;
-  
+
   // Physical details (extended - excluding fields already in Dog)
   final int lifespanCategory;
   final int coatLength;
   final bool doubleCoat;
-  
+
   // Behavior ratings (excluding childFriendly and barkingFrequency already in Dog)
   final int familyAffection;
   final int dogSociability;
@@ -23,7 +23,7 @@ class DogExtendedInfo {
   final int playfulness;
   final int protectiveInstincts;
   final int adaptability;
-  
+
   // Care requirements (excluding fields already in Dog)
   final int mentalStimulationNeeds;
 
@@ -50,7 +50,7 @@ class DogExtendedInfo {
   });
 
   factory DogExtendedInfo.fromMap(String id, Map<String, dynamic> map) {
-    
+
     return DogExtendedInfo(
       id: id,
       // General

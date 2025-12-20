@@ -4,11 +4,13 @@ import '../businesslogic/filter_bloc_cubit.dart';
 import '../businesslogic/filter_bloc_state.dart';
 import '../l10n/gen/app_localizations.dart';
 import '../l10n/gen/app_localizations_en.dart';
+import '../widgets/feature_overlays.dart';
+import '../parameters/feature_ids.dart';
 import 'filter_input_widget.dart';
 
 class FilterExpansionWidget extends StatefulWidget {
   final double? maxHeight;
-  
+
   const FilterExpansionWidget({super.key, this.maxHeight});
 
   @override
@@ -25,6 +27,9 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
     super.initState();
     _scrollController = ScrollController();
     _expansibleController = ExpansibleController();
+    _expansibleController.addListener(() {
+      setState(() {}); // Rebuild to update the arrow icon
+    });
   }
 
   void toggleExpansion() {
@@ -45,7 +50,7 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
     // Wait for expansion animation to complete before scrolling
     Future.delayed(const Duration(milliseconds: 350), () {
       if (!mounted) return; // Check if widget is still mounted
-      
+
       final RenderBox? renderBox = _quickFiltersKey.currentContext?.findRenderObject() as RenderBox?;
       if (renderBox != null && _scrollController.hasClients) {
         // Get the ancestor render object before the async gap
@@ -96,13 +101,22 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
     return BlocBuilder<FilterCubit, FilterState>(
       builder: (context, state) {
         final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
-        
+
         return Card(
           margin: EdgeInsets.zero,
           elevation: 0,
           child: ExpansionTile(
             controller: _expansibleController,
             title: const FilterInputWidget(), // Breed input directly in title (no label)
+            trailing: AdvancedFiltersDiscoveryOverlay(
+              featureId: FeatureIds.filterAdvancedFilters,
+              child: Icon(
+                _expansibleController.isExpanded 
+                  ? Icons.expand_less 
+                  : Icons.expand_more,
+                size: 28,
+              ),
+            ),
             children: [
               ConstrainedBox(
                 constraints: BoxConstraints(maxHeight: widget.maxHeight ?? 400),
@@ -128,28 +142,28 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
                               vertical: 12,
                             ),
                           ),
-                          items: [
-                            const DropdownMenuItem<String>(
-                              value: null,
-                              child: Text(
-                                'All Coat Styles',
-                                style: TextStyle(color: Colors.grey),
+                            items: [
+                              const DropdownMenuItem<String>(
+                                value: null,
+                                child: Text(
+                                  'All Coat Styles',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
                               ),
-                            ),
-                            ...coatStyles.map((String coatStyle) {
-                              return DropdownMenuItem<String>(
-                                value: coatStyle,
-                                child: Text(coatStyle),
-                              );
-                            }),
-                          ],
+                              ...coatStyles.map((String coatStyle) {
+                                return DropdownMenuItem<String>(
+                                  value: coatStyle,
+                                  child: Text(coatStyle),
+                                );
+                              }),
+                            ],
                           onChanged: (String? newValue) {
                             context.read<FilterCubit>().updateCoatStyle(newValue);
                           },
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Coat texture filter
                         DropdownButtonFormField<String>(
                           initialValue: state.selectedCoatTexture,
@@ -180,9 +194,9 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
                             context.read<FilterCubit>().updateCoatTexture(newValue);
                           },
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Personality traits filter
                         const Text(
                           'Personality Traits (select 0-3):',
@@ -215,9 +229,9 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
                             );
                           }).toList(),
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Quick Filters section
                         Container(
                           key: _quickFiltersKey,
@@ -277,9 +291,9 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
                             ],
                           ),
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Clear filters button
                         if (state.searchQuery.isNotEmpty || state.selectedCoatStyle != null || state.selectedCoatTexture != null || state.selectedPersonalityTraits.isNotEmpty || state.selectedQuickFilters.isNotEmpty || state.toggleFavoriteFilter)
                           Center(
@@ -307,7 +321,7 @@ class FilterExpansionWidgetState extends State<FilterExpansionWidget> {
   Widget _buildQuickFilterChip(BuildContext context, FilterState state, String filterId, String label) {
     final isSelected = state.selectedQuickFilters.contains(filterId);
     final canSelect = state.selectedQuickFilters.length < 3 || isSelected;
-    
+
     return FilterChip(
       label: Text(label),
       selected: isSelected,

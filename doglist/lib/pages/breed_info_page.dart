@@ -16,7 +16,7 @@ class BreedInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
     final Object? arguments = ModalRoute.of(context)?.settings.arguments;
-    
+
     if (arguments is! Map || !arguments.containsKey('dog')) {
       return Scaffold(
         appBar: AppBar(title: Text(appLocalizations.errorTitle)),
@@ -36,7 +36,7 @@ class BreedInfoPage extends StatelessWidget {
       child: BlocBuilder<BreedInfoCubit, BreedInfoState>(
         builder: (BuildContext context, BreedInfoState state) {
           final BreedInfoCubit cubit = context.read<BreedInfoCubit>();
-          
+
           if (state.loading) {
             return Scaffold(
               appBar: AppBar(title: Text(dog.name)),
@@ -102,11 +102,11 @@ class BreedInfoPage extends StatelessWidget {
             // Header with group and popularity
             _buildHeaderSection(dog, extendedInfo, appLocalizations),
             const SizedBox(height: 16),
-            
+
             // Quick Stats Card
             _buildQuickStatsCard(extendedInfo, appLocalizations),
             const SizedBox(height: 16),
-            
+
             // Short Description
             if (extendedInfo.shortDescription.isNotEmpty) ...[
               _buildSectionTitle(appLocalizations.quickOverview),
@@ -119,7 +119,7 @@ class BreedInfoPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
-            
+
             // Long Description
             if (extendedInfo.longDescription.isNotEmpty) ...[
               _buildSectionTitle(appLocalizations.aboutThisBreed),
@@ -132,19 +132,19 @@ class BreedInfoPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
-            
+
             // Physical Traits
             _buildSectionTitle(appLocalizations.physicalTraits),
             const SizedBox(height: 8),
             _buildPhysicalTraitsCard(dog, extendedInfo, appLocalizations),
             const SizedBox(height: 16),
-            
+
             // Behavior
             _buildSectionTitle(appLocalizations.behaviorProfile),
             const SizedBox(height: 8),
             _buildBehaviorCard(dog, extendedInfo, appLocalizations),
             const SizedBox(height: 16),
-            
+
             // Care
             _buildSectionTitle(appLocalizations.careRequirements),
             const SizedBox(height: 8),

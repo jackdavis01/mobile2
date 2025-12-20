@@ -24,7 +24,7 @@ class _FilterPageWrapperState extends State<FilterPageWrapper> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Create cubit only once
     _filterCubit ??= _initializeFilterCubit();
   }

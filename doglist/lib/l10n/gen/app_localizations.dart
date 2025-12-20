@@ -502,10 +502,10 @@ abstract class AppLocalizations {
   /// **'Clean & Tidy'**
   String get cleanTidy;
 
-  /// Navigation drawer header: favorite breed
+  /// Navigation drawer header: best breed
   ///
   /// In en, this message translates to:
-  /// **'Favorite: {breedName}'**
+  /// **'Best: {breedName}'**
   String drawerFavourite(String breedName);
 
   /// Navigation drawer header: number of likes
@@ -657,6 +657,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Author:'**
   String get infoAuthor;
+
+  /// Feature discovery title for quick filters on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Filters'**
+  String get discoveryQuickFiltersTitle;
+
+  /// Feature discovery description for quick filters
+  ///
+  /// In en, this message translates to:
+  /// **'Tap filter chips to quickly find dogs by specific traits like family-friendly or low-maintenance.'**
+  String get discoveryQuickFiltersDescription;
+
+  /// Feature discovery title for filter button on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Filters'**
+  String get discoveryListFilterButtonTitle;
+
+  /// Feature discovery description for filter button on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Tap here to access advanced search and filtering options to find your perfect breed.'**
+  String get discoveryListFilterButtonDescription;
+
+  /// Feature discovery title for favorite button on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Favorites'**
+  String get discoveryListFavoriteTitle;
+
+  /// Feature discovery description for favorite button on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart to save your favorite dog breeds for quick access.'**
+  String get discoveryListFavoriteDescription;
+
+  /// Feature discovery title for favorite filter button on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Show Favorites Only'**
+  String get discoveryListFavoriteFilterTitle;
+
+  /// Feature discovery description for favorite filter button on list page
+  ///
+  /// In en, this message translates to:
+  /// **'Tap this heart icon to filter and show only your favorited breeds.'**
+  String get discoveryListFavoriteFilterDescription;
+
+  /// Feature discovery title for zoom icon on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom Images'**
+  String get discoveryDetailsZoomTitle;
+
+  /// Feature discovery description for zoom icon on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Tap this icon to zoom in and out of the dog breed images for a closer look.'**
+  String get discoveryDetailsZoomDescription;
+
+  /// Feature discovery title for favorite button on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite This Breed'**
+  String get discoveryDetailsFavoriteTitle;
+
+  /// Feature discovery description for favorite button on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the heart icon to add or remove this breed from your favorites list.'**
+  String get discoveryDetailsFavoriteDescription;
+
+  /// Feature discovery title for search bar on filter page
+  ///
+  /// In en, this message translates to:
+  /// **'Search Breeds'**
+  String get discoverySearchBarTitle;
+
+  /// Feature discovery description for search bar
+  ///
+  /// In en, this message translates to:
+  /// **'Type a breed name to quickly find specific dogs.'**
+  String get discoverySearchBarDescription;
+
+  /// Feature discovery title for advanced filters on filter page
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Filters'**
+  String get discoveryAdvancedFiltersTitle;
+
+  /// Feature discovery description for advanced filters
+  ///
+  /// In en, this message translates to:
+  /// **'Expand sections to filter by size, weight, temperament, and more.'**
+  String get discoveryAdvancedFiltersDescription;
+
+  /// Feature discovery title for best dog on navigation drawer
+  ///
+  /// In en, this message translates to:
+  /// **'Your Best Dog'**
+  String get discoveryNavBestDogTitle;
+
+  /// Feature discovery description for best dog
+  ///
+  /// In en, this message translates to:
+  /// **'Your favorite breed appears here. Tap it to view details.'**
+  String get discoveryNavBestDogDescription;
+
+  /// Feature discovery title for navigation menu icon
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation Menu'**
+  String get discoveryNavMenuTitle;
+
+  /// Feature discovery description for navigation menu
+  ///
+  /// In en, this message translates to:
+  /// **'Add or modify best dog, access settings and app information from this menu.'**
+  String get discoveryNavMenuDescription;
+
+  /// Section title for feature discovery settings
+  ///
+  /// In en, this message translates to:
+  /// **'Feature Discovery'**
+  String get featureDiscoverySection;
+
+  /// Switch label for list page feature discovery
+  ///
+  /// In en, this message translates to:
+  /// **'List Page'**
+  String get listPageDiscovery;
+
+  /// Switch label for details page feature discovery
+  ///
+  /// In en, this message translates to:
+  /// **'Details Page'**
+  String get detailsPageDiscovery;
+
+  /// Switch label for filter page feature discovery
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Page'**
+  String get filterPageDiscovery;
+
+  /// Switch label for navigation drawer feature discovery
+  ///
+  /// In en, this message translates to:
+  /// **'Navigation'**
+  String get navigationPageDiscovery;
+
+  /// Help text explaining feature discovery switches
+  ///
+  /// In en, this message translates to:
+  /// **'Enable tutorials to see helpful tips on each page. Tutorials automatically hide after completion but can be re-enabled here.'**
+  String get featureDiscoveryHelpText;
 }
 
 class _AppLocalizationsDelegate

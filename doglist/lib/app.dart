@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import 'businesslogic/user_preferences_bloc_cubit.dart';
@@ -16,7 +17,7 @@ class DogListApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
- 
+
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
 
     return MultiBlocProvider(
@@ -24,22 +25,24 @@ class DogListApp extends StatelessWidget {
         BlocProvider(create: (_) => UserPreferencesCubit()),
         BlocProvider(create: (_) => SettingsCubit()),
       ],
-      child: MaterialApp(
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        title: appLocalizations.materialAppTitle,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+      child: FeatureDiscovery(
+        child: MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          title: appLocalizations.materialAppTitle,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          initialRoute: '/list',
+          routes: {
+            '/list': (context) => ListPage(),
+            '/details': (context) => DetailsPage(),
+            '/filter': (context) => FilterPageWrapper(),
+            '/breed-info': (context) => BreedInfoPage(),
+            '/settings': (context) => const SettingsPage(),
+            '/info': (context) => const InfoPage(),
+          },
         ),
-        initialRoute: '/list',
-        routes: {
-          '/list': (context) => ListPage(),
-          '/details': (context) => DetailsPage(),
-          '/filter': (context) => FilterPageWrapper(),
-          '/breed-info': (context) => BreedInfoPage(),
-          '/settings': (context) => const SettingsPage(),
-          '/info': (context) => const InfoPage(),
-        },
       ),
     );
   }

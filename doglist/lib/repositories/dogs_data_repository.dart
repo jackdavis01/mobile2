@@ -33,7 +33,7 @@ class DogsDataRepository {
         await clearCache();
       }
     }
-    
+
     // Fetch from network (cache invalid, expired, wrong version, or parse error)
     final response = await _apiDogs.fetchRawData();
     await prefs.setString(_jsonKey, response);
@@ -42,7 +42,7 @@ class DogsDataRepository {
       now + NS.expirationIntervalDays * 24 * 60 * 60 * 1000,
     );
     await prefs.setInt(_cacheVersionKey, _currentCacheVersion);
-    
+
     // Parse and return Dog objects
     final List<dynamic> ldData = json.decode(response);
     return ldData.map((map) => Dog.fromMap(map)).toList();
@@ -58,23 +58,23 @@ class DogsDataRepository {
   /// This parses the extended fields from the cached JSON on-demand
   Future<DogExtendedInfo?> getExtendedInfo(String dogId) async {
     final prefs = await SharedPreferences.getInstance();
-    
+
     // Try to get from cache first
     if (prefs.containsKey(_jsonKey)) {
       final jsonString = prefs.getString(_jsonKey)!;
       final List<dynamic> ldData = json.decode(jsonString);
-      
+
       // Find the breed with matching ID
       final breedData = ldData.firstWhere(
         (map) => map['id'] == dogId,
         orElse: () => null,
       );
-      
+
       if (breedData != null) {
         return DogExtendedInfo.fromMap(dogId, breedData);
       }
     }
-    
+
     // If not in cache, fetch from network
     try {
       await getDogs(); // This will cache the data

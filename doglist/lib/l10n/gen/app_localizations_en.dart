@@ -228,7 +228,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String drawerFavourite(String breedName) {
-    return 'Favorite: $breedName';
+    return 'Best: $breedName';
   }
 
   @override
@@ -308,4 +308,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get infoAuthor => 'Author:';
+
+  @override
+  String get discoveryQuickFiltersTitle => 'Quick Filters';
+
+  @override
+  String get discoveryQuickFiltersDescription =>
+      'Tap filter chips to quickly find dogs by specific traits like family-friendly or low-maintenance.';
+
+  @override
+  String get discoveryListFilterButtonTitle => 'Advanced Filters';
+
+  @override
+  String get discoveryListFilterButtonDescription =>
+      'Tap here to access advanced search and filtering options to find your perfect breed.';
+
+  @override
+  String get discoveryListFavoriteTitle => 'Add to Favorites';
+
+  @override
+  String get discoveryListFavoriteDescription =>
+      'Tap the heart to save your favorite dog breeds for quick access.';
+
+  @override
+  String get discoveryListFavoriteFilterTitle => 'Show Favorites Only';
+
+  @override
+  String get discoveryListFavoriteFilterDescription =>
+      'Tap this heart icon to filter and show only your favorited breeds.';
+
+  @override
+  String get discoveryDetailsZoomTitle => 'Zoom Images';
+
+  @override
+  String get discoveryDetailsZoomDescription =>
+      'Tap this icon to zoom in and out of the dog breed images for a closer look.';
+
+  @override
+  String get discoveryDetailsFavoriteTitle => 'Favorite This Breed';
+
+  @override
+  String get discoveryDetailsFavoriteDescription =>
+      'Tap the heart icon to add or remove this breed from your favorites list.';
+
+  @override
+  String get discoverySearchBarTitle => 'Search Breeds';
+
+  @override
+  String get discoverySearchBarDescription =>
+      'Type a breed name to quickly find specific dogs.';
+
+  @override
+  String get discoveryAdvancedFiltersTitle => 'Advanced Filters';
+
+  @override
+  String get discoveryAdvancedFiltersDescription =>
+      'Expand sections to filter by size, weight, temperament, and more.';
+
+  @override
+  String get discoveryNavBestDogTitle => 'Your Best Dog';
+
+  @override
+  String get discoveryNavBestDogDescription =>
+      'Your favorite breed appears here. Tap it to view details.';
+
+  @override
+  String get discoveryNavMenuTitle => 'Navigation Menu';
+
+  @override
+  String get discoveryNavMenuDescription =>
+      'Add or modify best dog, access settings and app information from this menu.';
+
+  @override
+  String get featureDiscoverySection => 'Feature Discovery';
+
+  @override
+  String get listPageDiscovery => 'List Page';
+
+  @override
+  String get detailsPageDiscovery => 'Details Page';
+
+  @override
+  String get filterPageDiscovery => 'Filter Page';
+
+  @override
+  String get navigationPageDiscovery => 'Navigation';
+
+  @override
+  String get featureDiscoveryHelpText =>
+      'Enable tutorials to see helpful tips on each page. Tutorials automatically hide after completion but can be re-enabled here.';
 }
