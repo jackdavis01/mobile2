@@ -11,14 +11,43 @@ import 'pages/filter_page_wrapper.dart';
 import 'pages/breed_info_page.dart';
 import 'pages/settingspage.dart';
 import 'pages/infopage.dart';
+import 'pages/onboarding_page.dart';
+import 'repositories/onboarding_repository.dart';
 
-class DogListApp extends StatelessWidget {
+class DogListApp extends StatefulWidget {
   const DogListApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<DogListApp> createState() => _DogListAppState();
+}
 
+class _DogListAppState extends State<DogListApp> {
+  final OnboardingRepository _onboardingRepository = OnboardingRepository();
+  bool? _hasSeenOnboarding;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkOnboardingStatus();
+  }
+
+  Future<void> _checkOnboardingStatus() async {
+    final hasSeenOnboarding = await _onboardingRepository.hasSeenOnboarding();
+    setState(() {
+      _hasSeenOnboarding = hasSeenOnboarding;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
+    // Show loading while checking onboarding status
+    if (_hasSeenOnboarding == null) {
+      return MaterialApp(
+        home: const Scaffold(body: Center(child: CircularProgressIndicator())),
+      );
+    }
 
     return MultiBlocProvider(
       providers: [
@@ -30,10 +59,8 @@ class DogListApp extends StatelessWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           title: appLocalizations.materialAppTitle,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          initialRoute: '/list',
+          theme: ThemeData(primarySwatch: Colors.blue),
+          initialRoute: _hasSeenOnboarding! ? '/list' : '/onboarding-first',
           routes: {
             '/list': (context) => ListPage(),
             '/details': (context) => DetailsPage(),
@@ -41,6 +68,8 @@ class DogListApp extends StatelessWidget {
             '/breed-info': (context) => BreedInfoPage(),
             '/settings': (context) => const SettingsPage(),
             '/info': (context) => const InfoPage(),
+            '/onboarding': (context) => const OnboardingPage(fromFirstLaunch: false),
+            '/onboarding-first': (context) => const OnboardingPage(fromFirstLaunch: true),
           },
         ),
       ),

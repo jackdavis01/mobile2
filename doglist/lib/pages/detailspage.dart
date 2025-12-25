@@ -38,14 +38,11 @@ class _DetailsPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations appLocalizations =
-        AppLocalizations.of(context) ?? AppLocalizationsEn();
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
 
     final Object? arguments = ModalRoute.of(context)?.settings.arguments;
 
-    if (arguments is! Map ||
-        !arguments.containsKey('dogs') ||
-        !arguments.containsKey('index')) {
+    if (arguments is! Map || !arguments.containsKey('dogs') || !arguments.containsKey('index')) {
       return Scaffold(
         appBar: AppBar(title: Text(appLocalizations.errorTitle)),
         body: Center(child: Text(appLocalizations.dogDetailsNotAvailableError)),
@@ -57,12 +54,9 @@ class _DetailsPageContent extends StatelessWidget {
 
     return BlocProvider<DetailsVerticalCubit>(
       create: (_) => DetailsVerticalCubit(initialDogIndex: initialDogIndex),
-      child: BlocBuilder<DetailsVerticalCubit, DetailsVerticalState>(
-          builder: (context, detailsVerticalState) {
-        final DetailsVerticalCubit detailsVerticalCubit =
-            context.read<DetailsVerticalCubit>();
-        final UserPreferencesCubit userPrefsCubit =
-            context.read<UserPreferencesCubit>();
+      child: BlocBuilder<DetailsVerticalCubit, DetailsVerticalState>(builder: (context, detailsVerticalState) {
+        final DetailsVerticalCubit detailsVerticalCubit = context.read<DetailsVerticalCubit>();
+        final UserPreferencesCubit userPrefsCubit = context.read<UserPreferencesCubit>();
         return Scaffold(
           appBar: AppBar(
             title: Text(dogs[detailsVerticalState.currentDogIndex].name),
@@ -70,18 +64,15 @@ class _DetailsPageContent extends StatelessWidget {
             actions: [
               BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
                 builder: (context, userPrefsState) {
-                  final Dog currentDog =
-                      dogs[detailsVerticalState.currentDogIndex];
-                  final bool isFavorite =
-                      userPrefsCubit.isFavorite(currentDog.id);
+                  final Dog currentDog = dogs[detailsVerticalState.currentDogIndex];
+                  final bool isFavorite = userPrefsCubit.isFavorite(currentDog.id);
 
                   final favoriteButton = IconButton(
                     icon: Icon(
                       isFavorite ? Icons.favorite : Icons.favorite_border,
                       color: isFavorite ? Colors.red : null,
                     ),
-                    onPressed: () async =>
-                        await userPrefsCubit.toggleFavorite(currentDog),
+                    onPressed: () async => await userPrefsCubit.toggleFavorite(currentDog),
                   );
 
                   return DetailsFavoriteButtonDiscoveryOverlay(
@@ -109,19 +100,19 @@ class _DetailsPageContent extends StatelessWidget {
                 Widget wPersonalityTraits = Container();
 
                 try {
-                  wTitle = Text(
-                    "Breed: ${dog.name}",
-                    style: TextStyle(fontSize: 24),
-                    textAlign: TextAlign.center,
+                  wTitle = DetailsVerticalPagingDiscoveryOverlay(
+                    featureId: FeatureIds.detailsVerticalPaging,
+                    child: Text(
+                      "Breed: ${dog.name}",
+                      style: TextStyle(fontSize: 24),
+                      textAlign: TextAlign.center,
+                    ),
                   );
-                  wCoatStyle = Text("Coat style: ${dog.coatStyle}",
-                      style: TextStyle(fontSize: 18));
-                  wCoatTexture = Text("Coat texture: ${dog.coatTexture}",
-                      style: TextStyle(fontSize: 18));
+                  wCoatStyle = Text("Coat style: ${dog.coatStyle}", style: TextStyle(fontSize: 18));
+                  wCoatTexture = Text("Coat texture: ${dog.coatTexture}", style: TextStyle(fontSize: 18));
                   wPersonalityTraits = Column(children: [
                     Text("Personality traits:", style: TextStyle(fontSize: 18)),
-                    Text(dog.personalityTraits.join(", "),
-                        style: TextStyle(fontSize: 16))
+                    Text(dog.personalityTraits.join(", "), style: TextStyle(fontSize: 16))
                   ]);
                 } catch (e) {
                   debugPrint("Error in incoming data: $e");
@@ -146,9 +137,7 @@ class _DetailsPageContent extends StatelessWidget {
                   create: (_) => DetailsImageCubit(
                     initialDogIndex: dogIndex,
                     onZoomChanged: (isZoomed) {
-                      context
-                          .read<DetailsVerticalCubit>()
-                          .setCurrentImagePageIsZoomed(isZoomed);
+                      context.read<DetailsVerticalCubit>().setCurrentImagePageIsZoomed(isZoomed);
                     },
                   ),
                   child: Padding(
@@ -156,282 +145,206 @@ class _DetailsPageContent extends StatelessWidget {
                     child: Column(
                       children: [
                         Expanded(
-                          child:
-                              BlocBuilder<DetailsImageCubit, DetailsImageState>(
-                            builder: (BuildContext context,
-                                DetailsImageState detailsImageState) {
-                              final DetailsImageCubit detailsImageCubit =
-                                  context.read<DetailsImageCubit>();
-                              return Stack(
-                                  alignment: Alignment.topCenter,
-                                  children: [
-                                    PageView.builder(
-                                      controller: detailsImageCubit
-                                          .horizontalPageController,
-                                      itemCount: imageUrls.length,
-                                      physics:
-                                          detailsImageState.currentPageIsZoomed
-                                              ? NeverScrollableScrollPhysics()
-                                              : BouncingScrollPhysics(),
-                                      onPageChanged: (pIndex) {
-                                        detailsImageCubit.updateHorizontalPage(
-                                            pIndex); // Update the current page
-                                      },
-                                      itemBuilder: (context, pageIndex) {
-                                        // final double screenWidth = MediaQuery.of(context).size.width;
-                                        // Start the timer if it hasn't already started.
-                                        final bool showError =
-                                            detailsImageCubit.showError();
-                                        if (!showError) {
-                                          detailsImageCubit.startErrorTimer();
-                                        } else {
-                                          return Center(
-                                            child: SizedBox(
-                                                width: 180,
-                                                child: Text(
-                                                  appLocalizations
-                                                      .pictureLoadingError,
-                                                  style:
-                                                      TextStyle(fontSize: 16.0),
-                                                  textAlign: TextAlign.center,
-                                                )),
-                                          );
-                                        }
-                                        return Stack(children: [
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 16.0,
-                                                    bottom: 8,
-                                                    left: 16.0),
-                                                child: Text(
-                                                    imageTypes[pageIndex],
-                                                    style: TextStyle(
-                                                        fontSize: 20)),
-                                              ),
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                  minHeight: 0,
-                                                  maxHeight: 32,
-                                                ),
-                                                child: SizedBox.shrink(),
-                                              ),
-                                              Expanded(
-                                                child: LayoutBuilder(
-                                                  builder:
-                                                      (context, constraints) {
-                                                    detailsImageCubit
-                                                        .updateViewerSize(List<
-                                                                Size>.from(
-                                                            detailsImageState
-                                                                .lViewerSize)
-                                                          ..[pageIndex] = Size(
-                                                              constraints
-                                                                  .maxWidth,
-                                                              constraints
-                                                                  .maxHeight));
-                                                    return InteractiveViewer(
-                                                      maxScale: 16,
-                                                      transformationController:
-                                                          detailsImageCubit
-                                                                  .lTransformationController[
-                                                              pageIndex],
-                                                      onInteractionUpdate: (_) {
-                                                        final bool isZoomed =
-                                                            detailsImageCubit
-                                                                    .lTransformationController[
-                                                                        pageIndex]
-                                                                    .value
-                                                                    .getMaxScaleOnAxis() >
-                                                                1.0;
-                                                        detailsImageCubit
-                                                            .updateIsZoomed(
-                                                                isZoomed);
-                                                      },
-                                                      onInteractionEnd: (_) {
-                                                        final bool isZoomed =
-                                                            detailsImageCubit
-                                                                    .lTransformationController[
-                                                                        pageIndex]
-                                                                    .value
-                                                                    .getMaxScaleOnAxis() >
-                                                                1.0;
-                                                        detailsImageCubit
-                                                            .updateIsZoomed(
-                                                                isZoomed);
-                                                      },
-                                                      child: Center(
-                                                          child:
-                                                              ImageWithCancel(
-                                                        imageUrl: NS.apiDogUrl +
-                                                            NS.apiDogImagesPage +
-                                                            imageUrls[pageIndex],
-                                                        fit: BoxFit.contain,
-                                                        loadingBuilder: (context,
-                                                            child,
-                                                            loadingProgress) {
-                                                          if (detailsImageCubit
-                                                                  .currentHorizontalPage ==
-                                                              pageIndex) {
-                                                            if (loadingProgress ==
-                                                                null) {
-                                                              detailsImageCubit
-                                                                  .updateIsLoading(
-                                                                      false,
-                                                                      pageIndex:
-                                                                          pageIndex);
-                                                              detailsImageCubit
-                                                                  .cancelErrorTimer(); // Cancel timer if image loads
-                                                              return child;
-                                                            }
-                                                            detailsImageCubit
-                                                                .updateIsLoading(
-                                                                    true,
-                                                                    pageIndex:
-                                                                        pageIndex);
-                                                            detailsImageCubit
-                                                                .startErrorTimer(); // Start timer while loading
-                                                          }
-                                                          return child;
-                                                        },
-                                                        errorBuilder: (context,
-                                                            error, stackTrace) {
-                                                          detailsImageCubit
-                                                              .cancelErrorTimer(); // Cancel timer if error occurs
-                                                          return Center(
-                                                            child: SizedBox(
-                                                                width: 180,
-                                                                child: Text(
-                                                                  appLocalizations
-                                                                      .pictureLoadingError,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          16.0),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                )),
-                                                          );
-                                                        },
-                                                      )),
-                                                    );
+                          child: BlocBuilder<DetailsImageCubit, DetailsImageState>(
+                            builder: (BuildContext context, DetailsImageState detailsImageState) {
+                              final DetailsImageCubit detailsImageCubit = context.read<DetailsImageCubit>();
+                              return Stack(alignment: Alignment.topCenter, children: [
+                                PageView.builder(
+                                  controller: detailsImageCubit.horizontalPageController,
+                                  itemCount: imageUrls.length,
+                                  physics: detailsImageState.currentPageIsZoomed
+                                      ? NeverScrollableScrollPhysics()
+                                      : BouncingScrollPhysics(),
+                                  onPageChanged: (pIndex) {
+                                    detailsImageCubit.updateHorizontalPage(pIndex); // Update the current page
+                                  },
+                                  itemBuilder: (context, pageIndex) {
+                                    // final double screenWidth = MediaQuery.of(context).size.width;
+                                    // Start the timer if it hasn't already started.
+                                    final bool showError = detailsImageCubit.showError();
+                                    if (!showError) {
+                                      detailsImageCubit.startErrorTimer();
+                                    } else {
+                                      return Center(
+                                        child: SizedBox(
+                                            width: 180,
+                                            child: Text(
+                                              appLocalizations.pictureLoadingError,
+                                              style: TextStyle(fontSize: 16.0),
+                                              textAlign: TextAlign.center,
+                                            )),
+                                      );
+                                    }
+                                    return Stack(children: [
+                                      Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(right: 16.0, bottom: 8, left: 16.0),
+                                            child: Text(imageTypes[pageIndex], style: TextStyle(fontSize: 20)),
+                                          ),
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              minHeight: 0,
+                                              maxHeight: 32,
+                                            ),
+                                            child: SizedBox.shrink(),
+                                          ),
+                                          Expanded(
+                                            child: LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                detailsImageCubit.updateViewerSize(
+                                                    List<Size>.from(detailsImageState.lViewerSize)
+                                                      ..[pageIndex] =
+                                                          Size(constraints.maxWidth, constraints.maxHeight));
+                                                return InteractiveViewer(
+                                                  maxScale: 16,
+                                                  transformationController:
+                                                      detailsImageCubit.lTransformationController[pageIndex],
+                                                  onInteractionUpdate: (_) {
+                                                    final bool isZoomed = detailsImageCubit
+                                                            .lTransformationController[pageIndex].value
+                                                            .getMaxScaleOnAxis() >
+                                                        1.0;
+                                                    detailsImageCubit.updateIsZoomed(isZoomed);
                                                   },
-                                                ),
-                                              ),
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                  minHeight: 0,
-                                                  maxHeight: 32,
-                                                ),
-                                                child: SizedBox.shrink(),
-                                              ),
-                                            ],
+                                                  onInteractionEnd: (_) {
+                                                    final bool isZoomed = detailsImageCubit
+                                                            .lTransformationController[pageIndex].value
+                                                            .getMaxScaleOnAxis() >
+                                                        1.0;
+                                                    detailsImageCubit.updateIsZoomed(isZoomed);
+                                                  },
+                                                  child: Center(
+                                                      child: ImageWithCancel(
+                                                    imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + imageUrls[pageIndex],
+                                                    fit: BoxFit.contain,
+                                                    loadingBuilder: (context, child, loadingProgress) {
+                                                      if (detailsImageCubit.currentHorizontalPage == pageIndex) {
+                                                        if (loadingProgress == null) {
+                                                          detailsImageCubit.updateIsLoading(false,
+                                                              pageIndex: pageIndex);
+                                                          detailsImageCubit
+                                                              .cancelErrorTimer(); // Cancel timer if image loads
+                                                          return child;
+                                                        }
+                                                        detailsImageCubit.updateIsLoading(true, pageIndex: pageIndex);
+                                                        detailsImageCubit
+                                                            .startErrorTimer(); // Start timer while loading
+                                                      }
+                                                      return child;
+                                                    },
+                                                    errorBuilder: (context, error, stackTrace) {
+                                                      detailsImageCubit
+                                                          .cancelErrorTimer(); // Cancel timer if error occurs
+                                                      return Center(
+                                                        child: SizedBox(
+                                                            width: 180,
+                                                            child: Text(
+                                                              appLocalizations.pictureLoadingError,
+                                                              style: TextStyle(fontSize: 16.0),
+                                                              textAlign: TextAlign.center,
+                                                            )),
+                                                      );
+                                                    },
+                                                  )),
+                                                );
+                                              },
+                                            ),
                                           ),
-                                          // enlargement icon
-                                          Positioned(
-                                            top: 64,
-                                            right: 16,
-                                            child:
-                                                DetailsZoomIconDiscoveryOverlay(
-                                              featureId:
-                                                  FeatureIds.detailsZoomIcon,
-                                              child: GestureDetector(
-                                                onTap: () => detailsImageCubit
-                                                    .toggleZoom(pageIndex),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.black26,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  padding: EdgeInsets.all(4),
-                                                  child: Icon(
-                                                    size: 42,
-                                                    detailsImageState
-                                                            .currentPageIsZoomed
-                                                        ? Icons.zoom_out
-                                                        : Icons.zoom_in,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              minHeight: 0,
+                                              maxHeight: 32,
+                                            ),
+                                            child: SizedBox.shrink(),
+                                          ),
+                                        ],
+                                      ),
+                                      // enlargement icon
+                                      Positioned(
+                                        top: 64,
+                                        right: 16,
+                                        child: DetailsZoomIconDiscoveryOverlay(
+                                          featureId: FeatureIds.detailsZoomIcon,
+                                          child: GestureDetector(
+                                            onTap: () => detailsImageCubit.toggleZoom(pageIndex),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.black26,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              padding: EdgeInsets.all(4),
+                                              child: Icon(
+                                                size: 42,
+                                                detailsImageState.currentPageIsZoomed ? Icons.zoom_out : Icons.zoom_in,
+                                                color: Colors.white,
                                               ),
                                             ),
                                           ),
-                                        ]);
-                                      },
+                                        ),
+                                      ),
+                                    ]);
+                                  },
+                                ),
+                                // Left arrow
+                                if (detailsImageState.currentHorizontalPage > 0)
+                                  Positioned.fill(
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 16),
+                                        child: Container(
+                                          height: 48,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black26,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: IconButton(
+                                            icon: Icon(Icons.arrow_back, size: 32, color: Colors.white),
+                                            constraints: BoxConstraints(maxHeight: 48),
+                                            onPressed: () {
+                                              detailsImageCubit.horizontalPageController.previousPage(
+                                                duration: Duration(milliseconds: 300),
+                                                curve: Curves.easeInOut,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    // Left arrow
-                                    if (detailsImageState
-                                            .currentHorizontalPage >
-                                        0)
-                                      Positioned.fill(
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(left: 16),
-                                            child: Container(
-                                              height: 48,
-                                              decoration: BoxDecoration(
-                                                color: Colors.black26,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: IconButton(
-                                                icon: Icon(Icons.arrow_back,
-                                                    size: 32,
-                                                    color: Colors.white),
-                                                constraints: BoxConstraints(
-                                                    maxHeight: 48),
-                                                onPressed: () {
-                                                  detailsImageCubit
-                                                      .horizontalPageController
-                                                      .previousPage(
-                                                    duration: Duration(
-                                                        milliseconds: 300),
-                                                    curve: Curves.easeInOut,
-                                                  );
-                                                },
-                                              ),
+                                  ),
+                                // Right arrow
+                                if (detailsImageState.currentHorizontalPage < imageUrls.length - 1)
+                                  Positioned.fill(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 16),
+                                        child: DetailsNavigateArrowDiscoveryOverlay(
+                                          featureId: FeatureIds.detailsNavigateArrow,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.black26,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: IconButton(
+                                              icon: Icon(Icons.arrow_forward, size: 32, color: Colors.white),
+                                              onPressed: () {
+                                                detailsImageCubit.horizontalPageController.nextPage(
+                                                  duration: Duration(milliseconds: 300),
+                                                  curve: Curves.easeInOut,
+                                                );
+                                              },
                                             ),
                                           ),
                                         ),
                                       ),
-                                    // Right arrow
-                                    if (detailsImageState
-                                            .currentHorizontalPage <
-                                        imageUrls.length - 1)
-                                      Positioned.fill(
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(right: 16),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.black26,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: IconButton(
-                                                icon: Icon(Icons.arrow_forward,
-                                                    size: 32,
-                                                    color: Colors.white),
-                                                onPressed: () {
-                                                  detailsImageCubit
-                                                      .horizontalPageController
-                                                      .nextPage(
-                                                    duration: Duration(
-                                                        milliseconds: 300),
-                                                    curve: Curves.easeInOut,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    if (detailsImageState.currentPageIsLoading)
-                                      const Center(
-                                          child: CustomSpinKitThreeInOut()),
-                                  ]);
+                                    ),
+                                  ),
+                                if (detailsImageState.currentPageIsLoading)
+                                  const Center(child: CustomSpinKitThreeInOut()),
+                              ]);
                             },
                           ),
                         ),
@@ -440,8 +353,7 @@ class _DetailsPageContent extends StatelessWidget {
                             padding: EdgeInsets.only(
                               top: 8.0,
                               right: 16.0,
-                              bottom:
-                                  MediaQuery.of(context).padding.bottom + 4.0,
+                              bottom: MediaQuery.of(context).padding.bottom + 4.0,
                               left: 16.0,
                             ),
                             child: Column(children: [
@@ -473,8 +385,7 @@ class _DetailsPageContent extends StatelessWidget {
                                     },
                                     borderRadius: BorderRadius.circular(12),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0, vertical: 8.0),
+                                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [

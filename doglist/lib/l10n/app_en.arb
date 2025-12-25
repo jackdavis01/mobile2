@@ -448,6 +448,22 @@
   "@discoveryDetailsFavoriteDescription": {
     "description": "Feature discovery description for favorite button on details page"
   },
+  "discoveryDetailsNavigateArrowTitle": "Browse Picture Types",
+  "@discoveryDetailsNavigateArrowTitle": {
+    "description": "Feature discovery title for navigation arrow on details page"
+  },
+  "discoveryDetailsNavigateArrowDescription": "Each dog has three types of pictures: Outdoor, Indoor, and Studio. Swipe left or right, or use these arrows to navigate between them.",
+  "@discoveryDetailsNavigateArrowDescription": {
+    "description": "Feature discovery description for navigation arrow on details page"
+  },
+  "discoveryDetailsVerticalPagingTitle": "Browse Between Breeds",
+  "@discoveryDetailsVerticalPagingTitle": {
+    "description": "Feature discovery title for vertical paging on details page"
+  },
+  "discoveryDetailsVerticalPagingDescription": "Swipe up or down on this page to quickly browse through different dog breeds without going back to the list.",
+  "@discoveryDetailsVerticalPagingDescription": {
+    "description": "Feature discovery description for vertical paging on details page"
+  },
   "discoverySearchBarTitle": "Search Breeds",
   "@discoverySearchBarTitle": {
     "description": "Feature discovery title for search bar on filter page"
@@ -503,5 +519,173 @@
   "featureDiscoveryHelpText": "Enable tutorials to see helpful tips on each page. Tutorials automatically hide after completion but can be re-enabled here.",
   "@featureDiscoveryHelpText": {
     "description": "Help text explaining feature discovery switches"
+  },
+  "onboardingScreen1Title": "Welcome to Dog List!",
+  "@onboardingScreen1Title": {
+    "description": "Title for onboarding screen 1"
+  },
+  "onboardingScreen1Description": "Discover 209 dog breeds and find your perfect companion. Explore detailed information, beautiful photos, and comprehensive breed characteristics.",
+  "@onboardingScreen1Description": {
+    "description": "Description for onboarding screen 1"
+  },
+  "onboardingScreen2Title": "Browse Dog Breeds",
+  "@onboardingScreen2Title": {
+    "description": "Title for onboarding screen 2"
+  },
+  "onboardingScreen2Description": "Scroll through all dog breeds with ease. Use quick filters and favorites to find exactly what you're looking for.",
+  "@onboardingScreen2Description": {
+    "description": "Description for onboarding screen 2"
+  },
+  "onboardingScreen2Feature1": "Mark favorites",
+  "@onboardingScreen2Feature1": {
+    "description": "Feature 1 for onboarding screen 2"
+  },
+  "onboardingScreen2Feature2": "Advanced filtering",
+  "@onboardingScreen2Feature2": {
+    "description": "Feature 2 for onboarding screen 2"
+  },
+  "onboardingScreen2Feature3": "Quick filter chips",
+  "@onboardingScreen2Feature3": {
+    "description": "Feature 3 for onboarding screen 2"
+  },
+  "onboardingScreen3Title": "Advanced Filtering",
+  "@onboardingScreen3Title": {
+    "description": "Title for onboarding screen 3"
+  },
+  "onboardingScreen3Description": "Filter breeds by size, temperament, coat type, and more. Find the perfect match for your lifestyle.",
+  "@onboardingScreen3Description": {
+    "description": "Description for onboarding screen 3"
+  },
+  "onboardingScreen3Feature1": "Search by name",
+  "@onboardingScreen3Feature1": {
+    "description": "Feature 1 for onboarding screen 3"
+  },
+  "onboardingScreen3Feature2": "Filter by traits",
+  "@onboardingScreen3Feature2": {
+    "description": "Feature 2 for onboarding screen 3"
+  },
+  "onboardingScreen3Feature3": "Temperament filters",
+  "@onboardingScreen3Feature3": {
+    "description": "Feature 3 for onboarding screen 3"
+  },
+  "onboardingScreen4Title": "Detailed Breed Information",
+  "@onboardingScreen4Title": {
+    "description": "Title for onboarding screen 4"
+  },
+  "onboardingScreen4Description": "View stunning photos of each breed in three picture types: Outdoor, Indoor, and Studio. Swipe between breeds and images effortlessly.",
+  "@onboardingScreen4Description": {
+    "description": "Description for onboarding screen 4"
+  },
+  "onboardingScreen4Feature1": "Swipe through photos",
+  "@onboardingScreen4Feature1": {
+    "description": "Feature 1 for onboarding screen 4"
+  },
+  "onboardingScreen4Feature2": "Zoom images",
+  "@onboardingScreen4Feature2": {
+    "description": "Feature 2 for onboarding screen 4"
+  },
+  "onboardingScreen4Feature3": "Add to favorites",
+  "@onboardingScreen4Feature3": {
+    "description": "Feature 3 for onboarding screen 4"
+  },
+  "onboardingScreen5Title": "Deep Dive Into Breeds",
+  "@onboardingScreen5Title": {
+    "description": "Title for onboarding screen 5"
+  },
+  "onboardingScreen5Description": "Learn everything about each breed including physical traits, behavior profile, care requirements, and fascinating facts.",
+  "@onboardingScreen5Description": {
+    "description": "Description for onboarding screen 5"
+  },
+  "onboardingScreen5Feature1": "Physical traits",
+  "@onboardingScreen5Feature1": {
+    "description": "Feature 1 for onboarding screen 5"
+  },
+  "onboardingScreen5Feature2": "Behavior profile",
+  "@onboardingScreen5Feature2": {
+    "description": "Feature 2 for onboarding screen 5"
+  },
+  "onboardingScreen5Feature3": "Did You Know facts",
+  "@onboardingScreen5Feature3": {
+    "description": "Feature 3 for onboarding screen 5"
+  },
+  "onboardingScreen6Title": "Easy Navigation",
+  "@onboardingScreen6Title": {
+    "description": "Title for onboarding screen 6"
+  },
+  "onboardingScreen6Description": "Access all features quickly from the navigation drawer. Set your best dog and jump to any section with ease.",
+  "@onboardingScreen6Description": {
+    "description": "Description for onboarding screen 6"
+  },
+  "onboardingScreen6Feature1": "Best dog suggestion",
+  "@onboardingScreen6Feature1": {
+    "description": "Feature 1 for onboarding screen 6"
+  },
+  "onboardingScreen6Feature2": "Quick filter access",
+  "@onboardingScreen6Feature2": {
+    "description": "Feature 2 for onboarding screen 6"
+  },
+  "onboardingScreen6Feature3": "Settings & info",
+  "@onboardingScreen6Feature3": {
+    "description": "Feature 3 for onboarding screen 6"
+  },
+  "onboardingScreen7Title": "Customize Your Experience",
+  "@onboardingScreen7Title": {
+    "description": "Title for onboarding screen 7"
+  },
+  "onboardingScreen7Description": "Personalize the app to your preferences. Control quick filter visibility, feature discovery, and more.",
+  "@onboardingScreen7Description": {
+    "description": "Description for onboarding screen 7"
+  },
+  "onboardingScreen7Feature1": "Quick filter options",
+  "@onboardingScreen7Feature1": {
+    "description": "Feature 1 for onboarding screen 7"
+  },
+  "onboardingScreen7Feature2": "Feature discovery",
+  "@onboardingScreen7Feature2": {
+    "description": "Feature 2 for onboarding screen 7"
+  },
+  "onboardingScreen7Feature3": "Personalization",
+  "@onboardingScreen7Feature3": {
+    "description": "Feature 3 for onboarding screen 7"
+  },
+  "onboardingScreen8Title": "Learn More",
+  "@onboardingScreen8Title": {
+    "description": "Title for onboarding screen 8"
+  },
+  "onboardingScreen8Description": "Access app information, version details, and developer info. You can replay this tour anytime from the Info page.",
+  "@onboardingScreen8Description": {
+    "description": "Description for onboarding screen 8"
+  },
+  "onboardingScreen8Feature1": "App information",
+  "@onboardingScreen8Feature1": {
+    "description": "Feature 1 for onboarding screen 8"
+  },
+  "onboardingScreen8Feature2": "Version details",
+  "@onboardingScreen8Feature2": {
+    "description": "Feature 2 for onboarding screen 8"
+  },
+  "onboardingScreen8Feature3": "Replay tour anytime",
+  "@onboardingScreen8Feature3": {
+    "description": "Feature 3 for onboarding screen 8"
+  },
+  "onboardingSkip": "Skip",
+  "@onboardingSkip": {
+    "description": "Skip button text for onboarding"
+  },
+  "onboardingNext": "Next",
+  "@onboardingNext": {
+    "description": "Next button text for onboarding"
+  },
+  "onboardingGetStarted": "Get Started",
+  "@onboardingGetStarted": {
+    "description": "Get Started button text for onboarding"
+  },
+  "onboardingScreensSection": "Onboarding Screens",
+  "@onboardingScreensSection": {
+    "description": "Section title for onboarding screens in info page"
+  },
+  "onboardingScreensStart": "Start",
+  "@onboardingScreensStart": {
+    "description": "Button text to start onboarding from info page"
   }
 }

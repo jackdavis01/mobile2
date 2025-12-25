@@ -8,6 +8,8 @@ class FeatureIds {
   // Details Page
   static const String detailsZoomIcon = 'details_zoom_icon';
   static const String detailsFavoriteButton = 'details_favorite_button';
+  static const String detailsNavigateArrow = 'details_navigate_arrow';
+  static const String detailsVerticalPaging = 'details_vertical_paging';
 
   // Filter Page
   static const String filterSearchBar = 'filter_search_bar';
@@ -29,6 +31,8 @@ class FeatureIds {
   static List<String> get detailsPageFeatures => [
         detailsFavoriteButton,
         detailsZoomIcon,
+        detailsNavigateArrow,
+        detailsVerticalPaging,
       ];
 
   static List<String> get filterPageFeatures => [

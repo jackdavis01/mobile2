@@ -37,28 +37,68 @@ class InfoPage extends StatelessWidget {
               padding: const EdgeInsets.all(15.0),
               children: [
                 const SizedBox(height: 20),
+                // Onboarding Screens Section
+                Center(
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Container(
+                      width: 400,
+                      constraints: const BoxConstraints(minWidth: 300, maxWidth: 400),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            appLocalizations.onboardingScreensSection,
+                            style: const TextStyle(fontSize: 22),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/onboarding');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Theme.of(context).primaryColorDark,
+                              elevation: 1,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: BorderSide(color: Theme.of(context).primaryColorLight),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.info_outline, size: 24, color: Theme.of(context).primaryColor),
+                                const SizedBox(width: 8),
+                                Text(appLocalizations.onboardingScreensStart, style: const TextStyle(fontSize: 18)),
+                                const SizedBox(width: 8),
+                                Icon(Icons.arrow_forward_ios, size: 18, color: Theme.of(context).primaryColor),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 // Application Information Box
                 Center(
                   child: Card(
                     elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Container(
                       constraints: const BoxConstraints(minWidth: 300, maxWidth: 400),
                       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            appLocalizations.infoApplicationInformation,
-                            style: const TextStyle(fontSize: 22),
-                          ),
+                          Text(appLocalizations.infoApplicationInformation, style: const TextStyle(fontSize: 22)),
                           const SizedBox(height: 20),
-                          Text(
-                            appLocalizations.infoApplicationName,
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                          Text(appLocalizations.infoApplicationName, style: const TextStyle(fontSize: 18)),
                           Text(
                             state.appName,
                             style: TextStyle(
@@ -68,10 +108,7 @@ class InfoPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 5),
-                          Text(
-                            appLocalizations.infoPackageName,
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                          Text(appLocalizations.infoPackageName, style: const TextStyle(fontSize: 18)),
                           FittedBox(
                             fit: BoxFit.fitWidth,
                             child: Text(
@@ -84,10 +121,7 @@ class InfoPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 5),
-                          Text(
-                            appLocalizations.infoVersionNumber,
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                          Text(appLocalizations.infoVersionNumber, style: const TextStyle(fontSize: 18)),
                           Text(
                             state.version,
                             style: TextStyle(
@@ -99,10 +133,7 @@ class InfoPage extends StatelessWidget {
                           Row(
                             children: [
                               const Expanded(child: SizedBox.shrink()),
-                              Text(
-                                appLocalizations.infoBuildNumber,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              Text(appLocalizations.infoBuildNumber, style: const TextStyle(fontSize: 18)),
                               Text(
                                 " ${state.buildNumber}",
                                 style: TextStyle(
@@ -117,10 +148,7 @@ class InfoPage extends StatelessWidget {
                           Row(
                             children: [
                               const Expanded(child: SizedBox.shrink()),
-                              Text(
-                                appLocalizations.infoBuildMode,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              Text(appLocalizations.infoBuildMode, style: const TextStyle(fontSize: 18)),
                               Text(
                                 " ${state.buildMode}",
                                 style: TextStyle(
@@ -132,10 +160,7 @@ class InfoPage extends StatelessWidget {
                               const Expanded(child: SizedBox.shrink()),
                             ],
                           ),
-                          Text(
-                            appLocalizations.infoPlatform,
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                          Text(appLocalizations.infoPlatform, style: const TextStyle(fontSize: 18)),
                           Text(
                             platform,
                             style: TextStyle(
@@ -147,10 +172,7 @@ class InfoPage extends StatelessWidget {
                           Row(
                             children: [
                               const Expanded(child: SizedBox.shrink()),
-                              Text(
-                                appLocalizations.infoPrerelease,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              Text(appLocalizations.infoPrerelease, style: const TextStyle(fontSize: 18)),
                               Text(
                                 " $platformPrerelease",
                                 style: TextStyle(
@@ -165,10 +187,7 @@ class InfoPage extends StatelessWidget {
                           Row(
                             children: [
                               const Expanded(child: SizedBox.shrink()),
-                              Text(
-                                appLocalizations.infoChannel,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              Text(appLocalizations.infoChannel, style: const TextStyle(fontSize: 18)),
                               Text(
                                 " $platformChannel",
                                 style: TextStyle(
@@ -183,10 +202,7 @@ class InfoPage extends StatelessWidget {
                           Row(
                             children: [
                               const Expanded(child: SizedBox.shrink()),
-                              Text(
-                                appLocalizations.infoAuthor,
-                                style: const TextStyle(fontSize: 18),
-                              ),
+                              Text(appLocalizations.infoAuthor, style: const TextStyle(fontSize: 18)),
                               Text(
                                 " $author",
                                 style: TextStyle(

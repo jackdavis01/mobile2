@@ -352,6 +352,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap the heart icon to add or remove this breed from your favorites list.';
 
   @override
+  String get discoveryDetailsNavigateArrowTitle => 'Browse Picture Types';
+
+  @override
+  String get discoveryDetailsNavigateArrowDescription =>
+      'Each dog has three types of pictures: Outdoor, Indoor, and Studio. Swipe left or right, or use these arrows to navigate between them.';
+
+  @override
+  String get discoveryDetailsVerticalPagingTitle => 'Browse Between Breeds';
+
+  @override
+  String get discoveryDetailsVerticalPagingDescription =>
+      'Swipe up or down on this page to quickly browse through different dog breeds without going back to the list.';
+
+  @override
   String get discoverySearchBarTitle => 'Search Breeds';
 
   @override
@@ -397,4 +411,138 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get featureDiscoveryHelpText =>
       'Enable tutorials to see helpful tips on each page. Tutorials automatically hide after completion but can be re-enabled here.';
+
+  @override
+  String get onboardingScreen1Title => 'Welcome to Dog List!';
+
+  @override
+  String get onboardingScreen1Description =>
+      'Discover 209 dog breeds and find your perfect companion. Explore detailed information, beautiful photos, and comprehensive breed characteristics.';
+
+  @override
+  String get onboardingScreen2Title => 'Browse Dog Breeds';
+
+  @override
+  String get onboardingScreen2Description =>
+      'Scroll through all dog breeds with ease. Use quick filters and favorites to find exactly what you\'re looking for.';
+
+  @override
+  String get onboardingScreen2Feature1 => 'Mark favorites';
+
+  @override
+  String get onboardingScreen2Feature2 => 'Advanced filtering';
+
+  @override
+  String get onboardingScreen2Feature3 => 'Quick filter chips';
+
+  @override
+  String get onboardingScreen3Title => 'Advanced Filtering';
+
+  @override
+  String get onboardingScreen3Description =>
+      'Filter breeds by size, temperament, coat type, and more. Find the perfect match for your lifestyle.';
+
+  @override
+  String get onboardingScreen3Feature1 => 'Search by name';
+
+  @override
+  String get onboardingScreen3Feature2 => 'Filter by traits';
+
+  @override
+  String get onboardingScreen3Feature3 => 'Temperament filters';
+
+  @override
+  String get onboardingScreen4Title => 'Detailed Breed Information';
+
+  @override
+  String get onboardingScreen4Description =>
+      'View stunning photos of each breed in three picture types: Outdoor, Indoor, and Studio. Swipe between breeds and images effortlessly.';
+
+  @override
+  String get onboardingScreen4Feature1 => 'Swipe through photos';
+
+  @override
+  String get onboardingScreen4Feature2 => 'Zoom images';
+
+  @override
+  String get onboardingScreen4Feature3 => 'Add to favorites';
+
+  @override
+  String get onboardingScreen5Title => 'Deep Dive Into Breeds';
+
+  @override
+  String get onboardingScreen5Description =>
+      'Learn everything about each breed including physical traits, behavior profile, care requirements, and fascinating facts.';
+
+  @override
+  String get onboardingScreen5Feature1 => 'Physical traits';
+
+  @override
+  String get onboardingScreen5Feature2 => 'Behavior profile';
+
+  @override
+  String get onboardingScreen5Feature3 => 'Did You Know facts';
+
+  @override
+  String get onboardingScreen6Title => 'Easy Navigation';
+
+  @override
+  String get onboardingScreen6Description =>
+      'Access all features quickly from the navigation drawer. Set your best dog and jump to any section with ease.';
+
+  @override
+  String get onboardingScreen6Feature1 => 'Best dog suggestion';
+
+  @override
+  String get onboardingScreen6Feature2 => 'Quick filter access';
+
+  @override
+  String get onboardingScreen6Feature3 => 'Settings & info';
+
+  @override
+  String get onboardingScreen7Title => 'Customize Your Experience';
+
+  @override
+  String get onboardingScreen7Description =>
+      'Personalize the app to your preferences. Control quick filter visibility, feature discovery, and more.';
+
+  @override
+  String get onboardingScreen7Feature1 => 'Quick filter options';
+
+  @override
+  String get onboardingScreen7Feature2 => 'Feature discovery';
+
+  @override
+  String get onboardingScreen7Feature3 => 'Personalization';
+
+  @override
+  String get onboardingScreen8Title => 'Learn More';
+
+  @override
+  String get onboardingScreen8Description =>
+      'Access app information, version details, and developer info. You can replay this tour anytime from the Info page.';
+
+  @override
+  String get onboardingScreen8Feature1 => 'App information';
+
+  @override
+  String get onboardingScreen8Feature2 => 'Version details';
+
+  @override
+  String get onboardingScreen8Feature3 => 'Replay tour anytime';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get onboardingScreensSection => 'Onboarding Screens';
+
+  @override
+  String get onboardingScreensStart => 'Start';
 }

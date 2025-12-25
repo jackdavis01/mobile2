@@ -103,6 +103,8 @@ class SettingsRepository {
     final detailsPageFeatures = [
       'details_favorite_button',
       'details_zoom_icon',
+      'details_navigate_arrow',
+      'details_vertical_paging',
     ];
     for (final featureId in detailsPageFeatures) {
       await prefs.remove(featureId);

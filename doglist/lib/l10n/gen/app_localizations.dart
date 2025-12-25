@@ -730,6 +730,30 @@ abstract class AppLocalizations {
   /// **'Tap the heart icon to add or remove this breed from your favorites list.'**
   String get discoveryDetailsFavoriteDescription;
 
+  /// Feature discovery title for navigation arrow on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Picture Types'**
+  String get discoveryDetailsNavigateArrowTitle;
+
+  /// Feature discovery description for navigation arrow on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Each dog has three types of pictures: Outdoor, Indoor, and Studio. Swipe left or right, or use these arrows to navigate between them.'**
+  String get discoveryDetailsNavigateArrowDescription;
+
+  /// Feature discovery title for vertical paging on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Between Breeds'**
+  String get discoveryDetailsVerticalPagingTitle;
+
+  /// Feature discovery description for vertical paging on details page
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe up or down on this page to quickly browse through different dog breeds without going back to the list.'**
+  String get discoveryDetailsVerticalPagingDescription;
+
   /// Feature discovery title for search bar on filter page
   ///
   /// In en, this message translates to:
@@ -813,6 +837,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable tutorials to see helpful tips on each page. Tutorials automatically hide after completion but can be re-enabled here.'**
   String get featureDiscoveryHelpText;
+
+  /// Title for onboarding screen 1
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Dog List!'**
+  String get onboardingScreen1Title;
+
+  /// Description for onboarding screen 1
+  ///
+  /// In en, this message translates to:
+  /// **'Discover 209 dog breeds and find your perfect companion. Explore detailed information, beautiful photos, and comprehensive breed characteristics.'**
+  String get onboardingScreen1Description;
+
+  /// Title for onboarding screen 2
+  ///
+  /// In en, this message translates to:
+  /// **'Browse Dog Breeds'**
+  String get onboardingScreen2Title;
+
+  /// Description for onboarding screen 2
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll through all dog breeds with ease. Use quick filters and favorites to find exactly what you\'re looking for.'**
+  String get onboardingScreen2Description;
+
+  /// Feature 1 for onboarding screen 2
+  ///
+  /// In en, this message translates to:
+  /// **'Mark favorites'**
+  String get onboardingScreen2Feature1;
+
+  /// Feature 2 for onboarding screen 2
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced filtering'**
+  String get onboardingScreen2Feature2;
+
+  /// Feature 3 for onboarding screen 2
+  ///
+  /// In en, this message translates to:
+  /// **'Quick filter chips'**
+  String get onboardingScreen2Feature3;
+
+  /// Title for onboarding screen 3
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced Filtering'**
+  String get onboardingScreen3Title;
+
+  /// Description for onboarding screen 3
+  ///
+  /// In en, this message translates to:
+  /// **'Filter breeds by size, temperament, coat type, and more. Find the perfect match for your lifestyle.'**
+  String get onboardingScreen3Description;
+
+  /// Feature 1 for onboarding screen 3
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name'**
+  String get onboardingScreen3Feature1;
+
+  /// Feature 2 for onboarding screen 3
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by traits'**
+  String get onboardingScreen3Feature2;
+
+  /// Feature 3 for onboarding screen 3
+  ///
+  /// In en, this message translates to:
+  /// **'Temperament filters'**
+  String get onboardingScreen3Feature3;
+
+  /// Title for onboarding screen 4
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed Breed Information'**
+  String get onboardingScreen4Title;
+
+  /// Description for onboarding screen 4
+  ///
+  /// In en, this message translates to:
+  /// **'View stunning photos of each breed in three picture types: Outdoor, Indoor, and Studio. Swipe between breeds and images effortlessly.'**
+  String get onboardingScreen4Description;
+
+  /// Feature 1 for onboarding screen 4
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe through photos'**
+  String get onboardingScreen4Feature1;
+
+  /// Feature 2 for onboarding screen 4
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom images'**
+  String get onboardingScreen4Feature2;
+
+  /// Feature 3 for onboarding screen 4
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get onboardingScreen4Feature3;
+
+  /// Title for onboarding screen 5
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Dive Into Breeds'**
+  String get onboardingScreen5Title;
+
+  /// Description for onboarding screen 5
+  ///
+  /// In en, this message translates to:
+  /// **'Learn everything about each breed including physical traits, behavior profile, care requirements, and fascinating facts.'**
+  String get onboardingScreen5Description;
+
+  /// Feature 1 for onboarding screen 5
+  ///
+  /// In en, this message translates to:
+  /// **'Physical traits'**
+  String get onboardingScreen5Feature1;
+
+  /// Feature 2 for onboarding screen 5
+  ///
+  /// In en, this message translates to:
+  /// **'Behavior profile'**
+  String get onboardingScreen5Feature2;
+
+  /// Feature 3 for onboarding screen 5
+  ///
+  /// In en, this message translates to:
+  /// **'Did You Know facts'**
+  String get onboardingScreen5Feature3;
+
+  /// Title for onboarding screen 6
+  ///
+  /// In en, this message translates to:
+  /// **'Easy Navigation'**
+  String get onboardingScreen6Title;
+
+  /// Description for onboarding screen 6
+  ///
+  /// In en, this message translates to:
+  /// **'Access all features quickly from the navigation drawer. Set your best dog and jump to any section with ease.'**
+  String get onboardingScreen6Description;
+
+  /// Feature 1 for onboarding screen 6
+  ///
+  /// In en, this message translates to:
+  /// **'Best dog suggestion'**
+  String get onboardingScreen6Feature1;
+
+  /// Feature 2 for onboarding screen 6
+  ///
+  /// In en, this message translates to:
+  /// **'Quick filter access'**
+  String get onboardingScreen6Feature2;
+
+  /// Feature 3 for onboarding screen 6
+  ///
+  /// In en, this message translates to:
+  /// **'Settings & info'**
+  String get onboardingScreen6Feature3;
+
+  /// Title for onboarding screen 7
+  ///
+  /// In en, this message translates to:
+  /// **'Customize Your Experience'**
+  String get onboardingScreen7Title;
+
+  /// Description for onboarding screen 7
+  ///
+  /// In en, this message translates to:
+  /// **'Personalize the app to your preferences. Control quick filter visibility, feature discovery, and more.'**
+  String get onboardingScreen7Description;
+
+  /// Feature 1 for onboarding screen 7
+  ///
+  /// In en, this message translates to:
+  /// **'Quick filter options'**
+  String get onboardingScreen7Feature1;
+
+  /// Feature 2 for onboarding screen 7
+  ///
+  /// In en, this message translates to:
+  /// **'Feature discovery'**
+  String get onboardingScreen7Feature2;
+
+  /// Feature 3 for onboarding screen 7
+  ///
+  /// In en, this message translates to:
+  /// **'Personalization'**
+  String get onboardingScreen7Feature3;
+
+  /// Title for onboarding screen 8
+  ///
+  /// In en, this message translates to:
+  /// **'Learn More'**
+  String get onboardingScreen8Title;
+
+  /// Description for onboarding screen 8
+  ///
+  /// In en, this message translates to:
+  /// **'Access app information, version details, and developer info. You can replay this tour anytime from the Info page.'**
+  String get onboardingScreen8Description;
+
+  /// Feature 1 for onboarding screen 8
+  ///
+  /// In en, this message translates to:
+  /// **'App information'**
+  String get onboardingScreen8Feature1;
+
+  /// Feature 2 for onboarding screen 8
+  ///
+  /// In en, this message translates to:
+  /// **'Version details'**
+  String get onboardingScreen8Feature2;
+
+  /// Feature 3 for onboarding screen 8
+  ///
+  /// In en, this message translates to:
+  /// **'Replay tour anytime'**
+  String get onboardingScreen8Feature3;
+
+  /// Skip button text for onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// Next button text for onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// Get Started button text for onboarding
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboardingGetStarted;
+
+  /// Section title for onboarding screens in info page
+  ///
+  /// In en, this message translates to:
+  /// **'Onboarding Screens'**
+  String get onboardingScreensSection;
+
+  /// Button text to start onboarding from info page
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get onboardingScreensStart;
 }
 
 class _AppLocalizationsDelegate
