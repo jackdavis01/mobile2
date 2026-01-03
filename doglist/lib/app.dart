@@ -56,6 +56,7 @@ class _DogListAppState extends State<DogListApp> {
       ],
       child: FeatureDiscovery(
         child: MaterialApp(
+          debugShowCheckedModeBanner: true,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           title: appLocalizations.materialAppTitle,

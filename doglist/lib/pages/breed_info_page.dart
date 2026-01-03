@@ -27,12 +27,13 @@ class BreedInfoPage extends StatelessWidget {
     final Dog dog = arguments['dog'] as Dog;
 
     return BlocProvider(
-      create: (_) => BreedInfoCubit()..loadExtendedInfo(
-        dog,
-        (error) => error == 'breedInfoLoadError' 
-          ? appLocalizations.breedInfoLoadError 
-          : appLocalizations.breedInfoLoadErrorDetails(error),
-      ),
+      create: (_) => BreedInfoCubit()
+        ..loadExtendedInfo(
+          dog,
+          (error) => error == 'breedInfoLoadError'
+              ? appLocalizations.breedInfoLoadError
+              : appLocalizations.breedInfoLoadErrorDetails(error),
+        ),
       child: BlocBuilder<BreedInfoCubit, BreedInfoState>(
         builder: (BuildContext context, BreedInfoState state) {
           final BreedInfoCubit cubit = context.read<BreedInfoCubit>();
@@ -64,9 +65,9 @@ class BreedInfoPage extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () => cubit.reloadData(
                           dog,
-                          (error) => error == 'breedInfoLoadError' 
-                            ? appLocalizations.breedInfoLoadError 
-                            : appLocalizations.breedInfoLoadErrorDetails(error),
+                          (error) => error == 'breedInfoLoadError'
+                              ? appLocalizations.breedInfoLoadError
+                              : appLocalizations.breedInfoLoadErrorDetails(error),
                         ),
                         child: Text(appLocalizations.reloadButton),
                       ),
@@ -125,9 +126,45 @@ class BreedInfoPage extends StatelessWidget {
               _buildSectionTitle(appLocalizations.aboutThisBreed),
               const SizedBox(height: 8),
               _buildCard(
-                child: Text(
-                  extendedInfo.longDescription,
-                  style: const TextStyle(fontSize: 17, height: 1.5),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final screenWidth = MediaQuery.of(context).size.width;
+                    final shouldUseColumns = screenWidth >= 600;
+
+                    if (shouldUseColumns) {
+                      // Split text into two parts for 2-column layout
+                      final text = extendedInfo.longDescription;
+                      final words = text.split(' ');
+                      final midPoint = (words.length / 2).ceil();
+                      final firstHalf = words.sublist(0, midPoint).join(' ');
+                      final secondHalf = words.sublist(midPoint).join(' ');
+
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              firstHalf,
+                              style: const TextStyle(fontSize: 17, height: 1.5),
+                            ),
+                          ),
+                          const SizedBox(width: 24),
+                          Expanded(
+                            child: Text(
+                              secondHalf,
+                              style: const TextStyle(fontSize: 17, height: 1.5),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      // Single column for narrow screens
+                      return Text(
+                        extendedInfo.longDescription,
+                        style: const TextStyle(fontSize: 17, height: 1.5),
+                      );
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 16),
@@ -241,21 +278,9 @@ class BreedInfoPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildStatItem(
-            Icons.straighten, 
-            info.height > 0 ? '${info.height}"' : 'N/A', 
-            appLocalizations.height
-          ),
-          _buildStatItem(
-            Icons.fitness_center, 
-            info.weight > 0 ? '${info.weight} lbs' : 'N/A', 
-            appLocalizations.weight
-          ),
-          _buildStatItem(
-            Icons.favorite, 
-            info.lifespan > 0 ? '${info.lifespan} yrs' : 'N/A', 
-            appLocalizations.lifespan
-          ),
+          _buildStatItem(Icons.straighten, info.height > 0 ? '${info.height}"' : 'N/A', appLocalizations.height),
+          _buildStatItem(Icons.fitness_center, info.weight > 0 ? '${info.weight} lbs' : 'N/A', appLocalizations.weight),
+          _buildStatItem(Icons.favorite, info.lifespan > 0 ? '${info.lifespan} yrs' : 'N/A', appLocalizations.lifespan),
         ],
       ),
     );
@@ -458,23 +483,35 @@ class BreedInfoPage extends StatelessWidget {
 
   String _getSizeText(int size, AppLocalizations appLocalizations) {
     switch (size) {
-      case 1: return appLocalizations.sizeExtraSmall;
-      case 2: return appLocalizations.sizeSmall;
-      case 3: return appLocalizations.sizeMedium;
-      case 4: return appLocalizations.sizeLarge;
-      case 5: return appLocalizations.sizeExtraLarge;
-      default: return appLocalizations.unknown;
+      case 1:
+        return appLocalizations.sizeExtraSmall;
+      case 2:
+        return appLocalizations.sizeSmall;
+      case 3:
+        return appLocalizations.sizeMedium;
+      case 4:
+        return appLocalizations.sizeLarge;
+      case 5:
+        return appLocalizations.sizeExtraLarge;
+      default:
+        return appLocalizations.unknown;
     }
   }
 
   String _getCoatLengthText(int length, AppLocalizations appLocalizations) {
     switch (length) {
-      case 1: return appLocalizations.coatLengthVeryShort;
-      case 2: return appLocalizations.coatLengthShort;
-      case 3: return appLocalizations.coatLengthMedium;
-      case 4: return appLocalizations.coatLengthLong;
-      case 5: return appLocalizations.coatLengthVeryLong;
-      default: return appLocalizations.unknown;
+      case 1:
+        return appLocalizations.coatLengthVeryShort;
+      case 2:
+        return appLocalizations.coatLengthShort;
+      case 3:
+        return appLocalizations.coatLengthMedium;
+      case 4:
+        return appLocalizations.coatLengthLong;
+      case 5:
+        return appLocalizations.coatLengthVeryLong;
+      default:
+        return appLocalizations.unknown;
     }
   }
 }
