@@ -7,6 +7,7 @@ import '../businesslogic/list_bloc_cubit.dart';
 import '../businesslogic/user_preferences_bloc_cubit.dart';
 import '../businesslogic/settings_bloc_cubit.dart';
 import '../businesslogic/settings_bloc_state.dart';
+import '../businesslogic/like_bloc_cubit.dart';
 import '../models/dog.dart';
 import '../widgets/spinkitwidgets.dart';
 import '../widgets/ad_banner.dart';
@@ -62,6 +63,8 @@ class _ListPageContent extends StatelessWidget {
         // Only do this once per build, not on every UserPreferencesState change
         WidgetsBinding.instance.addPostFrameCallback((_) {
           listCubit.updateFilteredItems(userPrefsCubit.state.favorites);
+          // Load all like counts (guarded internally to prevent multiple loads)
+          context.read<LikeCubit>().loadAllLikeCounts();
         });
 
         return Scaffold(
@@ -284,6 +287,7 @@ class _ListPageContent extends StatelessWidget {
 
                                         return DogListItem(
                                           dog: item,
+                                          type: DogListItemType.list, // Show like button instead of best star
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 12.0, vertical: 4.0),
                                           imageSize: 72.0,

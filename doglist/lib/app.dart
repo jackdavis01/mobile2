@@ -5,6 +5,7 @@ import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import 'businesslogic/user_preferences_bloc_cubit.dart';
 import 'businesslogic/settings_bloc_cubit.dart';
+import 'businesslogic/like_bloc_cubit.dart';
 import 'pages/listpage.dart';
 import 'pages/detailspage.dart';
 import 'pages/filter_page_wrapper.dart';
@@ -53,6 +54,7 @@ class _DogListAppState extends State<DogListApp> {
       providers: [
         BlocProvider(create: (_) => UserPreferencesCubit()),
         BlocProvider(create: (_) => SettingsCubit()),
+        BlocProvider(create: (_) => LikeCubit()),
       ],
       child: FeatureDiscovery(
         child: MaterialApp(

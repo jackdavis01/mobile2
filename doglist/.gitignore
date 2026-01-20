@@ -49,6 +49,8 @@ app.*.map.json
 
 # Environment variables and sensitive configuration
 .env
+*.g.dart
+.env
 !.env.public
 *.g.dart
 

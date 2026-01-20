@@ -8,6 +8,14 @@ import '../widgets/spinkitwidgets.dart';
 import '../widgets/feature_overlays.dart';
 import '../businesslogic/user_preferences_bloc_cubit.dart';
 import '../businesslogic/user_preferences_bloc_state.dart';
+import '../businesslogic/like_bloc_cubit.dart';
+import '../businesslogic/like_bloc_state.dart';
+import 'like_cooldown_dialog.dart';
+
+enum DogListItemType {
+  list,   // Show like icon (for list page)
+  filter, // Show best dog icon (for filter page)
+}
 
 class DogListItem extends StatelessWidget {
   final Dog dog;
@@ -17,6 +25,7 @@ class DogListItem extends StatelessWidget {
   final EdgeInsets padding;
   final double imageSize;
   final bool enableDiscovery;
+  final DogListItemType type;
 
   const DogListItem({
     super.key,
@@ -27,6 +36,7 @@ class DogListItem extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
     this.imageSize = 56.0,
     this.enableDiscovery = false,
+    this.type = DogListItemType.filter,
   });
 
   @override
@@ -82,43 +92,101 @@ class DogListItem extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
+                      height: 1.28
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4.0),
                   Text(
                     "${dog.coatStyle}, ${dog.coatTexture}",
                     style: TextStyle(
                       fontSize: 14,
+                      height: 1.28,
                       color: Colors.grey.shade600,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  // Like count row
+                  BlocBuilder<LikeCubit, LikeState>(
+                    builder: (context, state) {
+                      final likeCount = state.likeCounts[dog.id] ?? 0;
+                      return Text(
+                        '👍 $likeCount ${likeCount == 1 ? 'like' : 'likes'}',
+                        style: TextStyle(
+                          fontSize: 15,
+                          height: 1.28,
+                          color: Colors.purple.shade900,
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
-            // Best star button
-            BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
-              builder: (context, state) {
-                final cubit = context.read<UserPreferencesCubit>();
-                final isBest = cubit.isBest(dog.id);
+            // Like button (list mode) or Best star button (filter mode)
+            if (type == DogListItemType.list)
+              BlocBuilder<LikeCubit, LikeState>(
+                builder: (context, state) {
+                  return FutureBuilder<bool>(
+                    future: context.read<LikeCubit>().isLikedByUser(dog.id),
+                    builder: (context, snapshot) {
+                      final isLiked = snapshot.data ?? false;
+                      return IconButton(
+                        padding: EdgeInsets.only(bottom: 2.5),
+                        icon: Icon(
+                          isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
+                          color: isLiked ? Colors.amber : null,
+                          size: 29.0,
+                        ),
+                        onPressed: () async {
+                          if (isLiked) {
+                            // Show cooldown dialog
+                            showDialog(
+                              context: context,
+                              builder: (dialogContext) => LikeCooldownDialog(
+                                dogId: dog.id,
+                                dogName: dog.name,
+                              ),
+                            );
+                          } else {
+                            // Like the dog
+                            final success = await context.read<LikeCubit>().likeDog(dog.id);
+                            if (success && context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Liked ${dog.name}! 👍'),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      );
+                    },
+                  );
+                },
+              )
+            else
+              BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
+                builder: (context, state) {
+                  final cubit = context.read<UserPreferencesCubit>();
+                  final isBest = cubit.isBest(dog.id);
 
-                return IconButton(
-                  padding: EdgeInsets.only(bottom: 2.5),
-                  icon: Icon(
-                    isBest ? Icons.star : Icons.star_border,
-                    color: isBest ? Colors.amber : null,
-                    size: 29.0,
-                  ),
-                  onPressed: () async {
-                    await cubit.toggleBestDog(dog.id);
-                    onBestToggled?.call();
-                  },
-                );
-              },
-            ),
+                  return IconButton(
+                    padding: EdgeInsets.only(bottom: 2.5),
+                    icon: Icon(
+                      isBest ? Icons.star : Icons.star_border,
+                      color: isBest ? Colors.amber : null,
+                      size: 29.0,
+                    ),
+                    onPressed: () async {
+                      await cubit.toggleBestDog(dog.id);
+                      onBestToggled?.call();
+                    },
+                  );
+                },
+              ),
             // Favorite button
             BlocBuilder<UserPreferencesCubit, UserPreferencesState>(
               builder: (context, state) {
