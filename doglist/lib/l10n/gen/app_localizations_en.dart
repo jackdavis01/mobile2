@@ -545,4 +545,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingScreensStart => 'Start';
+
+  @override
+  String get likeAlreadyLikedTitle => 'Already Liked!';
+
+  @override
+  String likeAlreadyLikedMessage(String dogName) {
+    return 'You\'ve already liked $dogName today.';
+  }
+
+  @override
+  String get likeCanLikeSoon => 'You can like this dog again soon!';
+
+  @override
+  String get likeCanLikeAgainIn => 'You can like again in:';
+
+  @override
+  String likeComeBackAt(String time) {
+    return 'Come back at $time to like again!';
+  }
+
+  @override
+  String get likeDialogOk => 'OK';
+
+  @override
+  String likeCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count likes',
+      one: '1 like',
+      zero: '0 likes',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String likeFailedToLike(String dogName) {
+    return 'Failed to like $dogName';
+  }
+
+  @override
+  String get likeRetry => 'Retry';
+
+  @override
+  String likeSuccess(String dogName) {
+    return 'Liked $dogName! 👍';
+  }
+
+  @override
+  String likeFailedToLoadCounts(String error) {
+    return 'Failed to load like counts: $error';
+  }
+
+  @override
+  String likeFailedToLoadSpecificCounts(String error) {
+    return 'Failed to load specific like counts: $error';
+  }
+
+  @override
+  String get likeFailedGeneric => 'Failed to like this dog';
+
+  @override
+  String get likeUnexpectedError => 'An unexpected error occurred';
+
+  @override
+  String get topDogsTitle => 'Top 3 dogs';
+
+  @override
+  String get topDogsNoDataAvailable => 'No top dogs available';
+
+  @override
+  String get topDogsRetry => 'Retry';
+
+  @override
+  String get topDogsGoToList => 'Go to Dog List';
+
+  @override
+  String get topDogsBreedsButton => 'Dog breeds';
+
+  @override
+  String get topDogsFilterButton => 'Filter breeds';
+
+  @override
+  String topDogsRank(int rank) {
+    return 'Top $rank';
+  }
+
+  @override
+  String get topDogsDogNotFound => 'Dog not found';
+
+  @override
+  String get topDogsOfflineCache => 'Showing cached data (offline)';
+
+  @override
+  String topDogsLoadError(String error) {
+    return 'Failed to load top dogs: $error';
+  }
+
+  @override
+  String get topDogsUnableToLoad => 'Unable to load top dogs';
 }

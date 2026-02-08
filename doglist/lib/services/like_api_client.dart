@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/like_request.dart';
 import '../models/like_response.dart';
@@ -40,26 +43,51 @@ class LikeApiClient {
 
       if (response.statusCode == 200) {
         return LikeResponse.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 429) {
+        return LikeResponse(
+          success: false,
+          error: 'Too many requests. Please try again later.',
+        );
+      } else if (response.statusCode >= 500) {
+        return LikeResponse(
+          success: false,
+          error: 'Server is temporarily unavailable. Please try again.',
+        );
       } else {
         return LikeResponse(
           success: false,
-          error: 'Server error: ${response.statusCode}',
+          error: 'Unable to like this dog (Error ${response.statusCode})',
         );
       }
+    } on TimeoutException {
+      return LikeResponse(
+        success: false,
+        error: 'Request timed out. Please check your connection.',
+      );
+    } on SocketException {
+      return LikeResponse(
+        success: false,
+        error: 'No internet connection. Please check your network.',
+      );
     } on http.ClientException catch (e) {
       return LikeResponse(
         success: false,
         error: 'Network error: ${e.message}',
       );
+    } on FormatException {
+      return LikeResponse(
+        success: false,
+        error: 'Invalid server response. Please try again.',
+      );
     } catch (e) {
       return LikeResponse(
         success: false,
-        error: 'Unexpected error: $e',
+        error: 'An unexpected error occurred',
       );
     }
   }
 
-  /// Fetch all dog like counts in a single request.
+  /// Fetch all like counts for all dog breeds.
   /// Returns a map of dogId -> likeCount.
   /// No parameters required, but requires X-API-Key header.
   Future<Map<String, int>> getAllLikes() async {
@@ -71,20 +99,31 @@ class LikeApiClient {
               'X-API-Key': _headerKey,
             },
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final allLikesResponse = AllLikesResponse.fromJson(
           json.decode(response.body),
         );
         return allLikesResponse.likes;
+      } else if (response.statusCode >= 500) {
+        throw Exception('Server temporarily unavailable');
       } else {
-        throw Exception('Failed to fetch all likes: ${response.statusCode}');
+        throw Exception('Failed to load like counts (Error ${response.statusCode})');
       }
+    } on TimeoutException {
+      throw Exception('Connection timed out. Please check your network.');
+    } on SocketException {
+      throw Exception('No internet connection');
     } on http.ClientException catch (e) {
       throw Exception('Network error: ${e.message}');
+    } on FormatException {
+      throw Exception('Invalid server response');
     } catch (e) {
-      throw Exception('Error fetching all likes: $e');
+      if (e.toString().contains('Exception:')) {
+        rethrow;
+      }
+      throw Exception('Unable to load like counts');
     }
   }
 
@@ -93,27 +132,53 @@ class LikeApiClient {
   Future<Map<String, int>> getBulkLikes(List<String> dogIds) async {
     try {
       final dogIdsParam = dogIds.join(',');
+      final url = '$_baseUrl/api/v1/likes/bulk?dogIds=$dogIdsParam';
+      
+      debugPrint('[LikeApiClient] Calling getBulkLikes for ${dogIds.length} dogs');
+      debugPrint('[LikeApiClient] URL: $url');
+      debugPrint('[LikeApiClient] DogIds: $dogIdsParam');
+      
       final response = await http
           .get(
-            Uri.parse('$_baseUrl/api/v1/like/bulk?dogIds=$dogIdsParam'),
+            Uri.parse(url),
             headers: {
               'X-API-Key': _headerKey,
             },
           )
           .timeout(const Duration(seconds: 10));
 
+      debugPrint('[LikeApiClient] Response status: ${response.statusCode}');
+      debugPrint('[LikeApiClient] Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final bulkResponse = BulkLikesResponse.fromJson(
           json.decode(response.body),
         );
+        debugPrint('[LikeApiClient] Successfully parsed ${bulkResponse.likes.length} like counts');
         return bulkResponse.likes;
+      } else if (response.statusCode >= 500) {
+        throw Exception('Server temporarily unavailable');
       } else {
-        throw Exception('Failed to fetch bulk likes: ${response.statusCode}');
+        throw Exception('Failed to load like counts (Error ${response.statusCode})');
       }
+    } on TimeoutException {
+      debugPrint('[LikeApiClient] Request timed out');
+      throw Exception('Connection timed out');
+    } on SocketException catch (e) {
+      debugPrint('[LikeApiClient] Socket exception: $e');
+      throw Exception('No internet connection');
     } on http.ClientException catch (e) {
+      debugPrint('[LikeApiClient] Client exception: ${e.message}');
       throw Exception('Network error: ${e.message}');
+    } on FormatException catch (e) {
+      debugPrint('[LikeApiClient] Format exception: $e');
+      throw Exception('Invalid server response');
     } catch (e) {
-      throw Exception('Error fetching bulk likes: $e');
+      debugPrint('[LikeApiClient] Unexpected error: $e');
+      if (e.toString().contains('Exception:')) {
+        rethrow;
+      }
+      throw Exception('Unable to load like counts');
     }
   }
 }

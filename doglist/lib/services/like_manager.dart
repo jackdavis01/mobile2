@@ -43,12 +43,19 @@ class LikeManager {
 
     // On success, update cooldown and cache
     if (response.success) {
-      await _cooldownService.setLastLikeTime(dogId, DateTime.now());
+      await _cooldownService.setLastLikeTime(dogId, DateTime.now().toUtc());
       if (response.totalLikes != null) {
         _cacheService.setCachedCount(dogId, response.totalLikes!);
       }
       debugPrint('[LikeManager] Successfully liked $dogId - total: ${response.totalLikes}');
     } else {
+      // If backend says already liked today, update local cooldown service with the data
+      if (response.error == 'ALREADY_LIKED_TODAY' && response.canLikeAgainAt != null) {
+        // Calculate when the dog was last liked (24 hours before canLikeAgainAt)
+        final lastLikeTime = response.canLikeAgainAt!.subtract(const Duration(hours: 24));
+        await _cooldownService.setLastLikeTime(dogId, lastLikeTime);
+        debugPrint('[LikeManager] Updated local cooldown for $dogId - can like again at: ${response.canLikeAgainAt}');
+      }
       debugPrint('[LikeManager] Failed to like $dogId: ${response.error}');
     }
 
@@ -57,16 +64,20 @@ class LikeManager {
 
   /// Load all dog like counts from the backend.
   /// Updates cache with all results.
+  /// Falls back to cached data if API call fails (offline mode).
   Future<Map<String, int>> loadAllLikeCounts() async {
     try {
       debugPrint('[LikeManager] Loading all like counts...');
       final allCounts = await _apiClient.getAllLikes();
       _cacheService.setCachedCounts(allCounts);
-      debugPrint('[LikeManager] Loaded ${allCounts.length} like counts');
+      debugPrint('[LikeManager] Loaded ${allCounts.length} like counts from API');
       return allCounts;
     } catch (e) {
       debugPrint('[LikeManager] Error loading all likes: $e');
-      return {};
+      // Fall back to cached data (offline mode)
+      final cachedCounts = _cacheService.getAllCachedCounts(includeExpired: true);
+      debugPrint('[LikeManager] Using ${cachedCounts.length} cached counts (offline mode)');
+      return cachedCounts;
     }
   }
 

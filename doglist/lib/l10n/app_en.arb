@@ -687,5 +687,159 @@
   "onboardingScreensStart": "Start",
   "@onboardingScreensStart": {
     "description": "Button text to start onboarding from info page"
+  },
+  "likeAlreadyLikedTitle": "Already Liked!",
+  "@likeAlreadyLikedTitle": {
+    "description": "Title for the dialog shown when user has already liked a dog"
+  },
+  "likeAlreadyLikedMessage": "You've already liked {dogName} today.",
+  "@likeAlreadyLikedMessage": {
+    "description": "Message shown when user has already liked a dog",
+    "placeholders": {
+      "dogName": {
+        "type": "String",
+        "description": "The name of the dog"
+      }
+    }
+  },
+  "likeCanLikeSoon": "You can like this dog again soon!",
+  "@likeCanLikeSoon": {
+    "description": "Message shown when cooldown information is not available"
+  },
+  "likeCanLikeAgainIn": "You can like again in:",
+  "@likeCanLikeAgainIn": {
+    "description": "Label for cooldown countdown display"
+  },
+  "likeComeBackAt": "Come back at {time} to like again!",
+  "@likeComeBackAt": {
+    "description": "Message telling user when they can like again",
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "description": "The formatted time when user can like again"
+      }
+    }
+  },
+  "likeDialogOk": "OK",
+  "@likeDialogOk": {
+    "description": "OK button text for like cooldown dialog"
+  },
+  "likeCount": "{count, plural, =0{0 likes} =1{1 like} other{{count} likes}}",
+  "@likeCount": {
+    "description": "Shows the number of likes for a dog",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "description": "The number of likes"
+      }
+    }
+  },
+  "likeFailedToLike": "Failed to like {dogName}",
+  "@likeFailedToLike": {
+    "description": "Error message when liking a dog fails",
+    "placeholders": {
+      "dogName": {
+        "type": "String",
+        "description": "The name of the dog"
+      }
+    }
+  },
+  "likeRetry": "Retry",
+  "@likeRetry": {
+    "description": "Retry button text for failed like action"
+  },
+  "likeSuccess": "Liked {dogName}! 👍",
+  "@likeSuccess": {
+    "description": "Success message when a dog is liked",
+    "placeholders": {
+      "dogName": {
+        "type": "String",
+        "description": "The name of the dog"
+      }
+    }
+  },
+  "likeFailedToLoadCounts": "Failed to load like counts: {error}",
+  "@likeFailedToLoadCounts": {
+    "description": "Error message when loading all like counts fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "likeFailedToLoadSpecificCounts": "Failed to load specific like counts: {error}",
+  "@likeFailedToLoadSpecificCounts": {
+    "description": "Error message when loading specific like counts fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "likeFailedGeneric": "Failed to like this dog",
+  "@likeFailedGeneric": {
+    "description": "Generic error message when liking fails"
+  },
+  "likeUnexpectedError": "An unexpected error occurred",
+  "@likeUnexpectedError": {
+    "description": "Error message for unexpected errors during like operation"
+  },
+  "topDogsTitle": "Top 3 dogs",
+  "@topDogsTitle": {
+    "description": "Title for the top 3 dogs page and navigation menu"
+  },
+  "topDogsNoDataAvailable": "No top dogs available",
+  "@topDogsNoDataAvailable": {
+    "description": "Error message when no top dogs data is available"
+  },
+  "topDogsRetry": "Retry",
+  "@topDogsRetry": {
+    "description": "Retry button text for failed top dogs loading"
+  },
+  "topDogsGoToList": "Go to Dog List",
+  "@topDogsGoToList": {
+    "description": "Button text to navigate to the main dog list"
+  },
+  "topDogsBreedsButton": "Dog breeds",
+  "@topDogsBreedsButton": {
+    "description": "Button text to navigate to dog breeds list"
+  },
+  "topDogsFilterButton": "Filter breeds",
+  "@topDogsFilterButton": {
+    "description": "Button text to navigate to filter page"
+  },
+  "topDogsRank": "Top {rank}",
+  "@topDogsRank": {
+    "description": "Rank badge text for top dogs",
+    "placeholders": {
+      "rank": {
+        "type": "int",
+        "description": "The rank number (1, 2, or 3)"
+      }
+    }
+  },
+  "topDogsDogNotFound": "Dog not found",
+  "@topDogsDogNotFound": {
+    "description": "Error message when a dog is not found"
+  },
+  "topDogsOfflineCache": "Showing cached data (offline)",
+  "@topDogsOfflineCache": {
+    "description": "Message shown when displaying cached data while offline"
+  },
+  "topDogsLoadError": "Failed to load top dogs: {error}",
+  "@topDogsLoadError": {
+    "description": "Error message when loading top dogs fails",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "The error message"
+      }
+    }
+  },
+  "topDogsUnableToLoad": "Unable to load top dogs",
+  "@topDogsUnableToLoad": {
+    "description": "Generic error message when unable to load top dogs"
   }
 }

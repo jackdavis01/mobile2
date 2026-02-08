@@ -13,7 +13,9 @@ import 'pages/breed_info_page.dart';
 import 'pages/settingspage.dart';
 import 'pages/infopage.dart';
 import 'pages/onboarding_page.dart';
+import 'pages/top_dogs_page.dart';
 import 'repositories/onboarding_repository.dart';
+import 'services/like_cache_service.dart';
 
 class DogListApp extends StatefulWidget {
   const DogListApp({super.key});
@@ -29,7 +31,15 @@ class _DogListAppState extends State<DogListApp> {
   @override
   void initState() {
     super.initState();
-    _checkOnboardingStatus();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // Initialize like cache service with persistent storage
+    await LikeCacheService().initialize();
+    
+    // Check onboarding status
+    await _checkOnboardingStatus();
   }
 
   Future<void> _checkOnboardingStatus() async {
@@ -63,8 +73,9 @@ class _DogListAppState extends State<DogListApp> {
           supportedLocales: AppLocalizations.supportedLocales,
           title: appLocalizations.materialAppTitle,
           theme: ThemeData(primarySwatch: Colors.blue),
-          initialRoute: _hasSeenOnboarding! ? '/list' : '/onboarding-first',
+          initialRoute: _hasSeenOnboarding! ? '/top-dogs' : '/onboarding-first',
           routes: {
+            '/top-dogs': (context) => const TopDogsPage(),
             '/list': (context) => ListPage(),
             '/details': (context) => DetailsPage(),
             '/filter': (context) => FilterPageWrapper(),

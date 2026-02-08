@@ -23,7 +23,7 @@ class LikeResponse {
       dogId: json['dogId'] as String?,
       totalLikes: json['totalLikes'] as int?,
       canLikeAgainAt: json['canLikeAgainAt'] != null
-          ? DateTime.parse(json['canLikeAgainAt'] as String)
+          ? DateTime.parse(json['canLikeAgainAt'] as String).toUtc()
           : null,
       error: json['error'] as String?,
       remainingSeconds: json['remainingSeconds'] as int?,

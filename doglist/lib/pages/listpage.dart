@@ -54,6 +54,11 @@ class _ListPageContent extends StatelessWidget {
         AppLocalizations.of(context) ?? AppLocalizationsEn();
 
     return BlocBuilder<ListCubit, ListState>(
+      buildWhen: (previous, current) {
+        // Only rebuild when items or favorite filter toggle changes
+        return previous.items != current.items ||
+               previous.toggleFavoriteFilter != current.toggleFavoriteFilter;
+      },
       builder: (BuildContext context, ListState listState) {
         final ListCubit listCubit = context.read<ListCubit>();
         final UserPreferencesCubit userPrefsCubit =

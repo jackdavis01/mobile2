@@ -70,7 +70,7 @@ class LikeCooldownService {
     final lastLikeTime = await getLastLikeTime(dogId);
     if (lastLikeTime == null) return true;
 
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final cooldownEnd = lastLikeTime.add(const Duration(hours: 24));
     return now.isAfter(cooldownEnd);
   }
@@ -81,7 +81,7 @@ class LikeCooldownService {
     final lastLikeTime = await getLastLikeTime(dogId);
     if (lastLikeTime == null) return null;
 
-    final now = DateTime.now();
+    final now = DateTime.now().toUtc();
     final cooldownEnd = lastLikeTime.add(const Duration(hours: 24));
     
     if (now.isAfter(cooldownEnd)) {

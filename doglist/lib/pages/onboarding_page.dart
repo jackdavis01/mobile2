@@ -45,8 +45,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (!mounted) return;
 
     if (widget.fromFirstLaunch) {
-      // First launch: navigate to list page and clear stack
-      Navigator.of(context).pushNamedAndRemoveUntil('/list', (route) => false);
+      // First launch: navigate to top dogs page and clear stack
+      Navigator.of(context).pushNamedAndRemoveUntil('/top-dogs', (route) => false);
     } else {
       // Manual access from Info page: just go back
       Navigator.of(context).pop();

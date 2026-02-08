@@ -12,7 +12,7 @@ class NavigationDrawerCubit extends Cubit<NavigationDrawerState> {
     loadBestDog();
   }
 
-  Future<void> loadBestDog() async {
+  Future<void> loadBestDog({Map<String, int>? likeCounts}) async {
     try {
       final String? bestDogId = await _userPrefsRepository.getBestDogId();
       if (bestDogId != null) {
@@ -21,21 +21,28 @@ class NavigationDrawerCubit extends Cubit<NavigationDrawerState> {
           (dog) => dog.id == bestDogId,
           orElse: () => allDogs.first,
         );
+        
+        // Get like count for best dog if likeCounts provided
+        int? bestDogLikes;
+        if (likeCounts != null && likeCounts.containsKey(bestDogId)) {
+          bestDogLikes = likeCounts[bestDogId];
+        }
+        
         emit(state.copyWith(
           dogBreedName: bestDog.name,
           bestDogImageUrl: bestDog.images.smallOutdoors,
           bestDogId: bestDog.id,
+          likes: bestDogLikes,
+          clearLikes: bestDogLikes == null,
         ));
       } else {
         emit(state.copyWith(
           clearDogBreedName: true,
           clearBestDogImageUrl: true,
           clearBestDogId: true,
+          clearLikes: true,
         ));
       }
-      // Count favorites as likes
-      final List<Dog> favorites = await _userPrefsRepository.getFavorites();
-      emit(state.copyWith(likes: favorites.length));
     } catch (e) {
       // Handle error silently
     }
@@ -45,16 +52,8 @@ class NavigationDrawerCubit extends Cubit<NavigationDrawerState> {
     emit(state.copyWith(dogBreedName: name));
   }
 
-  void updateLikes(int likes) {
-    emit(state.copyWith(likes: likes));
-  }
-
-  void incrementLikes() {
-    emit(state.copyWith(likes: state.likes + 1));
-  }
-
-  void decrementLikes() {
-    emit(state.copyWith(likes: state.likes - 1));
+  void updateLikes(int? likes) {
+    emit(state.copyWith(likes: likes, clearLikes: likes == null));
   }
 
   Future<List<Dog>> getAllDogs() async {

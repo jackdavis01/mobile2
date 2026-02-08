@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'like_bloc_state.dart';
 import '../services/like_manager.dart';
@@ -5,6 +7,11 @@ import '../services/like_manager.dart';
 class LikeCubit extends Cubit<LikeState> {
   final LikeManager _likeManager = LikeManager();
   bool _hasLoadedAllCounts = false;
+  
+  // Batching for lazy loading expired counts
+  final Set<String> _pendingRefreshDogIds = {};
+  Timer? _batchRefreshTimer;
+  static const Duration _batchDelay = Duration(milliseconds: 500);
 
   LikeCubit() : super(LikeState.initial());
 
@@ -12,21 +19,20 @@ class LikeCubit extends Cubit<LikeState> {
   Future<void> loadAllLikeCounts() async {
     // Prevent multiple simultaneous loads
     if (_hasLoadedAllCounts || state.isLoading) return;
-    
+
     _hasLoadedAllCounts = true;
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
       final counts = await _likeManager.loadAllLikeCounts();
-      emit(state.copyWith(
-        likeCounts: Map.from(counts),
-        isLoading: false,
-      ));
+      emit(state.copyWith(likeCounts: Map.from(counts), isLoading: false));
+      
+      // Clear any pending batch refresh since we just loaded everything
+      _batchRefreshTimer?.cancel();
+      _pendingRefreshDogIds.clear();
+      debugPrint('[LikeCubit] Loaded all counts (${counts.length}), cleared pending refreshes');
     } catch (e) {
       _hasLoadedAllCounts = false; // Allow retry on error
-      emit(state.copyWith(
-        isLoading: false,
-        error: 'Failed to load like counts: $e',
-      ));
+      emit(state.copyWith(isLoading: false, error: 'FAILED_TO_LOAD_COUNTS'));
     }
   }
 
@@ -34,51 +40,50 @@ class LikeCubit extends Cubit<LikeState> {
   Future<void> loadLikeCounts(List<String> dogIds) async {
     if (dogIds.isEmpty) return;
 
+    debugPrint('[LikeCubit] loadLikeCounts called for: ${dogIds.join(", ")}');
+
     try {
       final counts = await _likeManager.getLikeCounts(dogIds);
+      debugPrint('[LikeCubit] Received ${counts.length} counts from LikeManager');
       final updatedCounts = Map<String, int>.from(state.likeCounts)..addAll(counts);
       emit(state.copyWith(likeCounts: updatedCounts));
     } catch (e) {
-      emit(state.copyWith(
-        error: 'Failed to load specific like counts: $e',
-      ));
+      debugPrint('[LikeCubit] Error loading like counts: $e');
+      emit(state.copyWith(error: 'FAILED_TO_LOAD_SPECIFIC_COUNTS'));
     }
   }
 
   /// Like a dog (returns true if successful, false if on cooldown or error)
   Future<bool> likeDog(String dogId) async {
-    emit(state.copyWith(clearError: true));
-    
+    emit(state.copyWith(isLoading: true, clearError: true));
+
     try {
       final response = await _likeManager.likeDog(dogId);
-      
+
       if (response.success) {
         final updatedCounts = Map<String, int>.from(state.likeCounts);
         updatedCounts[dogId] = response.totalLikes ?? 0;
-        
+
         final updatedCooldowns = Map<String, DateTime>.from(state.cooldownEndTimes);
         if (response.canLikeAgainAt != null) {
           updatedCooldowns[dogId] = response.canLikeAgainAt!;
         }
-        
-        emit(state.copyWith(
-          likeCounts: updatedCounts,
-          cooldownEndTimes: updatedCooldowns,
-        ));
+
+        emit(state.copyWith(likeCounts: updatedCounts, cooldownEndTimes: updatedCooldowns, isLoading: false));
         return true;
       } else {
         // User is on cooldown or other error
         if (response.canLikeAgainAt != null) {
           final updatedCooldowns = Map<String, DateTime>.from(state.cooldownEndTimes);
           updatedCooldowns[dogId] = response.canLikeAgainAt!;
-          emit(state.copyWith(cooldownEndTimes: updatedCooldowns));
+          emit(state.copyWith(cooldownEndTimes: updatedCooldowns, isLoading: false, error: response.error));
+        } else {
+          emit(state.copyWith(isLoading: false, error: response.error ?? 'FAILED_TO_LIKE'));
         }
         return false;
       }
     } catch (e) {
-      emit(state.copyWith(
-        error: 'Failed to like dog: $e',
-      ));
+      emit(state.copyWith(isLoading: false, error: 'UNEXPECTED_ERROR'));
       return false;
     }
   }
@@ -129,5 +134,40 @@ class LikeCubit extends Cubit<LikeState> {
       updatedCounts[dogId] = currentCount - 1;
       emit(state.copyWith(likeCounts: updatedCounts));
     }
+  }
+
+  /// Queue a dog for like count refresh (batched with debounce)
+  void queueLikeCountRefresh(String dogId) {
+    // Check if already queued to avoid resetting timer unnecessarily
+    final bool isNewDog = !_pendingRefreshDogIds.contains(dogId);
+    
+    _pendingRefreshDogIds.add(dogId);
+    
+    if (isNewDog) {
+      debugPrint('[LikeCubit] Queued $dogId for refresh (total queued: ${_pendingRefreshDogIds.length})');
+      
+      // Only reset timer if this is a new dog
+      _batchRefreshTimer?.cancel();
+      _batchRefreshTimer = Timer(_batchDelay, _executeBatchRefresh);
+    }
+  }
+
+  /// Execute batched refresh for all queued dog IDs
+  Future<void> _executeBatchRefresh() async {
+    if (_pendingRefreshDogIds.isEmpty) return;
+    
+    final dogIds = _pendingRefreshDogIds.toList();
+    _pendingRefreshDogIds.clear();
+    
+    debugPrint('[LikeCubit] Executing batch refresh for ${dogIds.length} dogs: ${dogIds.join(", ")}');
+    
+    // Load counts for the batched dogs
+    await loadLikeCounts(dogIds);
+  }
+
+  @override
+  Future<void> close() {
+    _batchRefreshTimer?.cancel();
+    return super.close();
   }
 }

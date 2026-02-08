@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '/l10n/gen/app_localizations.dart';
+import '/l10n/gen/app_localizations_en.dart';
 import '../businesslogic/like_bloc_cubit.dart';
 
 class LikeCooldownDialog extends StatelessWidget {
@@ -34,14 +36,15 @@ class LikeCooldownDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
     final likeCubit = context.read<LikeCubit>();
 
     return AlertDialog(
-      title: const Row(
+      title: Row(
         children: [
           Icon(Icons.thumb_up, color: Colors.amber, size: 28),
           SizedBox(width: 8),
-          Text('Already Liked!'),
+          Text(appLocalizations.likeAlreadyLikedTitle),
         ],
       ),
       content: Column(
@@ -49,7 +52,7 @@ class LikeCooldownDialog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'You\'ve already liked $dogName today.',
+            appLocalizations.likeAlreadyLikedMessage(dogName),
             style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 16),
@@ -58,19 +61,19 @@ class LikeCooldownDialog extends StatelessWidget {
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text(
-                  'You can like this dog again soon!',
+                  appLocalizations.likeCanLikeSoon,
                   style: TextStyle(fontSize: 15, color: Colors.grey.shade700),
                 );
               }
 
               final remaining = snapshot.data!;
-              final canLikeAgainAt = DateTime.now().add(remaining);
+              final canLikeAgainAt = DateTime.now().toUtc().add(remaining).toLocal();
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'You can like again in:',
+                    appLocalizations.likeCanLikeAgainIn,
                     style: TextStyle(fontSize: 15, color: Colors.purple.shade700),
                   ),
                   const SizedBox(height: 8),
@@ -102,7 +105,7 @@ class LikeCooldownDialog extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Come back at ${_formatTime(canLikeAgainAt)} to like again!',
+                    appLocalizations.likeComeBackAt(_formatTime(canLikeAgainAt)),
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.purple.shade700,
@@ -118,8 +121,8 @@ class LikeCooldownDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text(
-            'OK',
+          child: Text(
+            appLocalizations.likeDialogOk,
             style: TextStyle(fontSize: 18),
           ),
         ),

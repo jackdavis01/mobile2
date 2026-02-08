@@ -8,6 +8,8 @@ import '../businesslogic/navigation_drawer_bloc_state.dart';
 import '../businesslogic/user_preferences_bloc_cubit.dart';
 import '../businesslogic/user_preferences_bloc_state.dart';
 import '../businesslogic/settings_bloc_cubit.dart';
+import '../businesslogic/like_bloc_cubit.dart';
+import '../businesslogic/like_bloc_state.dart';
 import '../widgets/feature_discovery_wrapper.dart';
 import '../widgets/feature_overlays.dart';
 import '../parameters/feature_ids.dart';
@@ -22,8 +24,9 @@ class DogNavDrawer extends StatelessWidget {
       create: (_) => NavigationDrawerCubit(),
       child: Builder(
         builder: (context) {
-          // Refresh best dog when drawer is built
-          context.read<NavigationDrawerCubit>().loadBestDog();
+          // Refresh best dog when drawer is built with like counts
+          final likeCounts = context.read<LikeCubit>().state.likeCounts;
+          context.read<NavigationDrawerCubit>().loadBestDog(likeCounts: likeCounts);
           return FeatureDiscoveryWrapper(
             pageKey: 'navigation',
             featureIds: FeatureIds.navigationPageFeatures,
@@ -47,6 +50,10 @@ class _DogNavDrawerContent extends StatelessWidget {
 
   void _navigateToInfoPage(BuildContext context) {
     Navigator.pushNamed(context, '/info');
+  }
+
+  void _navigateToTopDogsPage(BuildContext context) {
+    Navigator.pushNamed(context, '/top-dogs');
   }
 
   Future<void> _handleBestDogTap(BuildContext context, NavigationDrawerState drawerState) async {
@@ -90,20 +97,32 @@ class _DogNavDrawerContent extends StatelessWidget {
         BlocListener<UserPreferencesCubit, UserPreferencesState>(
           listener: (context, userPrefsState) {
             // Refresh drawer when best dog or favorites change
-            context.read<NavigationDrawerCubit>().loadBestDog();
+            final likeCounts = context.read<LikeCubit>().state.likeCounts;
+            context.read<NavigationDrawerCubit>().loadBestDog(likeCounts: likeCounts);
+          },
+        ),
+        BlocListener<LikeCubit, LikeState>(
+          listener: (context, likeState) {
+            // Refresh drawer when like counts change
+            context.read<NavigationDrawerCubit>().loadBestDog(likeCounts: likeState.likeCounts);
           },
         ),
       ],
       child: BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
         builder: (BuildContext context, NavigationDrawerState drawerState) {
         final String displayName = drawerState.dogBreedName ?? appLocalizations.none;
+        
+        // Format likes display - show "Likes: X" if available or just "Likes:" if null
+        final String likesText = drawerState.likes != null 
+            ? appLocalizations.drawerLikes(drawerState.likes!) 
+            : 'Likes:';
 
         Widget drawerHeader = Container(
           padding: const EdgeInsets.only(right: 16),
           color: Theme.of(context).primaryColor,
           child: UserAccountsDrawerHeader(
             accountName: Text(appLocalizations.drawerFavourite(displayName), style: const TextStyle(fontSize: 18.0)),
-            accountEmail: Text(appLocalizations.drawerLikes(drawerState.likes), style: const TextStyle(fontSize: 18.0)),
+            accountEmail: Text(likesText, style: const TextStyle(fontSize: 18.0)),
             currentAccountPictureSize: const Size.square(62.0),
             currentAccountPicture: NavigationBestDogDiscoveryOverlay(
               featureId: FeatureIds.navBestDog,
@@ -165,6 +184,12 @@ class _DogNavDrawerContent extends StatelessWidget {
           children: <Widget>[
             drawerHeader,
             const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(Icons.emoji_events),
+              minLeadingWidth: 0,
+              title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
+              onTap: () => _navigateToTopDogsPage(context),
+            ),
             ListTile(
               leading: const Icon(Icons.settings),
               minLeadingWidth: 0,

@@ -254,7 +254,7 @@ class DetailsVerticalPagingDiscoveryOverlay extends StatelessWidget {
     return DescribedFeatureOverlay(
       featureId: featureId,
       tapTarget: Icon(Icons.unfold_more, size: 42, color: Colors.blue.shade800),
-      contentLocation: ContentLocation.below,
+      contentLocation: ContentLocation.above,
       title: Text(appLocalizations.discoveryDetailsVerticalPagingTitle, style: const TextStyle(fontSize: 18)),
       description: Text(
         appLocalizations.discoveryDetailsVerticalPagingDescription,

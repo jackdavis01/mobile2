@@ -38,6 +38,16 @@ class _FilterPageContent extends StatelessWidget {
     final GlobalKey<FilterExpansionWidgetState> filterKey = GlobalKey<FilterExpansionWidgetState>();
 
     return BlocBuilder<FilterCubit, FilterState>(
+      buildWhen: (previous, current) {
+        // Rebuild when filtered dogs, filter state, or UI flags change
+        return previous.filteredDogs != current.filteredDogs ||
+               previous.toggleFavoriteFilter != current.toggleFavoriteFilter ||
+               previous.hasActiveFilters != current.hasActiveFilters ||
+               previous.shouldScrollToQuickFilters != current.shouldScrollToQuickFilters ||
+               previous.matchCount != current.matchCount ||
+               previous.searchQuery != current.searchQuery ||
+               previous.isSearchQueryValid != current.isSearchQueryValid;
+      },
       builder: (context, state) {
         // Auto-expand filter section and scroll to Quick Filters if the flag is set
         // This only happens once when the initial quick filter is applied

@@ -1089,6 +1089,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start'**
   String get onboardingScreensStart;
+
+  /// Title for the dialog shown when user has already liked a dog
+  ///
+  /// In en, this message translates to:
+  /// **'Already Liked!'**
+  String get likeAlreadyLikedTitle;
+
+  /// Message shown when user has already liked a dog
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve already liked {dogName} today.'**
+  String likeAlreadyLikedMessage(String dogName);
+
+  /// Message shown when cooldown information is not available
+  ///
+  /// In en, this message translates to:
+  /// **'You can like this dog again soon!'**
+  String get likeCanLikeSoon;
+
+  /// Label for cooldown countdown display
+  ///
+  /// In en, this message translates to:
+  /// **'You can like again in:'**
+  String get likeCanLikeAgainIn;
+
+  /// Message telling user when they can like again
+  ///
+  /// In en, this message translates to:
+  /// **'Come back at {time} to like again!'**
+  String likeComeBackAt(String time);
+
+  /// OK button text for like cooldown dialog
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get likeDialogOk;
+
+  /// Shows the number of likes for a dog
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 likes} =1{1 like} other{{count} likes}}'**
+  String likeCount(int count);
+
+  /// Error message when liking a dog fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to like {dogName}'**
+  String likeFailedToLike(String dogName);
+
+  /// Retry button text for failed like action
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get likeRetry;
+
+  /// Success message when a dog is liked
+  ///
+  /// In en, this message translates to:
+  /// **'Liked {dogName}! 👍'**
+  String likeSuccess(String dogName);
+
+  /// Error message when loading all like counts fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load like counts: {error}'**
+  String likeFailedToLoadCounts(String error);
+
+  /// Error message when loading specific like counts fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load specific like counts: {error}'**
+  String likeFailedToLoadSpecificCounts(String error);
+
+  /// Generic error message when liking fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to like this dog'**
+  String get likeFailedGeneric;
+
+  /// Error message for unexpected errors during like operation
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred'**
+  String get likeUnexpectedError;
+
+  /// Title for the top 3 dogs page and navigation menu
+  ///
+  /// In en, this message translates to:
+  /// **'Top 3 dogs'**
+  String get topDogsTitle;
+
+  /// Error message when no top dogs data is available
+  ///
+  /// In en, this message translates to:
+  /// **'No top dogs available'**
+  String get topDogsNoDataAvailable;
+
+  /// Retry button text for failed top dogs loading
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get topDogsRetry;
+
+  /// Button text to navigate to the main dog list
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Dog List'**
+  String get topDogsGoToList;
+
+  /// Button text to navigate to dog breeds list
+  ///
+  /// In en, this message translates to:
+  /// **'Dog breeds'**
+  String get topDogsBreedsButton;
+
+  /// Button text to navigate to filter page
+  ///
+  /// In en, this message translates to:
+  /// **'Filter breeds'**
+  String get topDogsFilterButton;
+
+  /// Rank badge text for top dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Top {rank}'**
+  String topDogsRank(int rank);
+
+  /// Error message when a dog is not found
+  ///
+  /// In en, this message translates to:
+  /// **'Dog not found'**
+  String get topDogsDogNotFound;
+
+  /// Message shown when displaying cached data while offline
+  ///
+  /// In en, this message translates to:
+  /// **'Showing cached data (offline)'**
+  String get topDogsOfflineCache;
+
+  /// Error message when loading top dogs fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load top dogs: {error}'**
+  String topDogsLoadError(String error);
+
+  /// Generic error message when unable to load top dogs
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load top dogs'**
+  String get topDogsUnableToLoad;
 }
 
 class _AppLocalizationsDelegate
