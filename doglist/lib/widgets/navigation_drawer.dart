@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
+import '../platform/platform_info.dart';
 import '../businesslogic/navigation_drawer_bloc_cubit.dart';
 import '../businesslogic/navigation_drawer_bloc_state.dart';
 import '../businesslogic/user_preferences_bloc_cubit.dart';
@@ -112,17 +113,19 @@ class _DogNavDrawerContent extends StatelessWidget {
         builder: (BuildContext context, NavigationDrawerState drawerState) {
         final String displayName = drawerState.dogBreedName ?? appLocalizations.none;
         
-        // Format likes display - show "Likes: X" if available or just "Likes:" if null
-        final String likesText = drawerState.likes != null 
-            ? appLocalizations.drawerLikes(drawerState.likes!) 
-            : 'Likes:';
+        // Format likes display - show "Likes: X" if available or just "Likes:" if null (hide on web)
+        final String? likesText = PlatformInfo.isWeb 
+            ? null 
+            : (drawerState.likes != null 
+                ? appLocalizations.drawerLikes(drawerState.likes!) 
+                : 'Likes:');
 
         Widget drawerHeader = Container(
           padding: const EdgeInsets.only(right: 16),
           color: Theme.of(context).primaryColor,
           child: UserAccountsDrawerHeader(
             accountName: Text(appLocalizations.drawerFavourite(displayName), style: const TextStyle(fontSize: 18.0)),
-            accountEmail: Text(likesText, style: const TextStyle(fontSize: 18.0)),
+            accountEmail: likesText != null ? Text(likesText, style: const TextStyle(fontSize: 18.0)) : null,
             currentAccountPictureSize: const Size.square(62.0),
             currentAccountPicture: NavigationBestDogDiscoveryOverlay(
               featureId: FeatureIds.navBestDog,
@@ -184,12 +187,14 @@ class _DogNavDrawerContent extends StatelessWidget {
           children: <Widget>[
             drawerHeader,
             const SizedBox(height: 8),
-            ListTile(
-              leading: const Icon(Icons.emoji_events),
-              minLeadingWidth: 0,
-              title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
-              onTap: () => _navigateToTopDogsPage(context),
-            ),
+            // Hide Top 3 dogs menu item on web
+            if (!PlatformInfo.isWeb)
+              ListTile(
+                leading: const Icon(Icons.emoji_events),
+                minLeadingWidth: 0,
+                title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
+                onTap: () => _navigateToTopDogsPage(context),
+              ),
             ListTile(
               leading: const Icon(Icons.settings),
               minLeadingWidth: 0,

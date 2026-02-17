@@ -786,6 +786,14 @@
   "@likeUnexpectedError": {
     "description": "Error message for unexpected errors during like operation"
   },
+  "likeWebDialogTitle": "Download the App",
+  "@likeWebDialogTitle": {
+    "description": "Title for the dialog shown on web when user tries to like a dog"
+  },
+  "likeWebDialogMessage": "If you want to like the dogs, please download the App from the Google Play Store or from the Apple App Store.",
+  "@likeWebDialogMessage": {
+    "description": "Message shown on web when user tries to like a dog"
+  },
   "topDogsTitle": "Top 3 dogs",
   "@topDogsTitle": {
     "description": "Title for the top 3 dogs page and navigation menu"

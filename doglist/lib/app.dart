@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
+import 'platform/platform_info.dart';
 import 'businesslogic/user_preferences_bloc_cubit.dart';
 import 'businesslogic/settings_bloc_cubit.dart';
 import 'businesslogic/like_bloc_cubit.dart';
@@ -73,7 +74,9 @@ class _DogListAppState extends State<DogListApp> {
           supportedLocales: AppLocalizations.supportedLocales,
           title: appLocalizations.materialAppTitle,
           theme: ThemeData(primarySwatch: Colors.blue),
-          initialRoute: _hasSeenOnboarding! ? '/top-dogs' : '/onboarding-first',
+          initialRoute: _hasSeenOnboarding! 
+              ? (PlatformInfo.isWeb ? '/list' : '/top-dogs') 
+              : '/onboarding-first',
           routes: {
             '/top-dogs': (context) => const TopDogsPage(),
             '/list': (context) => ListPage(),

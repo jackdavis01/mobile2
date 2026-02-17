@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
+import '../platform/platform_info.dart';
 import '../repositories/onboarding_repository.dart';
 import '../widgets/carousel_indicator.dart';
 import '../widgets/onboarding_screen_1_welcome.dart';
@@ -45,8 +46,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (!mounted) return;
 
     if (widget.fromFirstLaunch) {
-      // First launch: navigate to top dogs page and clear stack
-      Navigator.of(context).pushNamedAndRemoveUntil('/top-dogs', (route) => false);
+      // First launch: navigate to appropriate starting page and clear stack
+      // Web goes to list, mobile goes to top dogs
+      final route = PlatformInfo.isWeb ? '/list' : '/top-dogs';
+      Navigator.of(context).pushNamedAndRemoveUntil(route, (route) => false);
     } else {
       // Manual access from Info page: just go back
       Navigator.of(context).pop();

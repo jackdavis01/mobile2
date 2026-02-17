@@ -610,6 +610,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get likeUnexpectedError => 'An unexpected error occurred';
 
   @override
+  String get likeWebDialogTitle => 'Download the App';
+
+  @override
+  String get likeWebDialogMessage =>
+      'If you want to like the dogs, please download the App from the Google Play Store or from the Apple App Store.';
+
+  @override
   String get topDogsTitle => 'Top 3 dogs';
 
   @override

@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
+import '../platform/platform_info.dart';
 
 /// Service to generate and persist a unique device identifier (UDID).
 /// Used for anonymous tracking of likes per device.
@@ -37,11 +37,11 @@ class UdidService {
     String udid;
 
     try {
-      if (Platform.isAndroid) {
+      if (PlatformInfo.isAndroid) {
         final androidInfo = await deviceInfo.androidInfo;
         udid = androidInfo.id; // Android ID
         debugPrint('[UdidService] Generated Android UDID: $udid');
-      } else if (Platform.isIOS) {
+      } else if (PlatformInfo.isIOS) {
         final iosInfo = await deviceInfo.iosInfo;
         udid = iosInfo.identifierForVendor ?? 'unknown-ios-${DateTime.now().millisecondsSinceEpoch}';
         debugPrint('[UdidService] Generated iOS UDID: $udid');

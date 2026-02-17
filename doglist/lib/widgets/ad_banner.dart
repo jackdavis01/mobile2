@@ -1,9 +1,9 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:unity_levelplay_mediation/unity_levelplay_mediation.dart';
 import '../parameters/ads_config.dart';
+import '../platform/platform_info.dart';
 
 /// AdBanner widget that implements AdMob primary and Unity LevelPlay (IronSource) fallback banner system
 /// This follows the modern best practices for banner ad implementation in Flutter
@@ -41,7 +41,7 @@ class _AdBannerState extends State<AdBanner>
       return;
     }
 
-    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    if (!kIsWeb && (PlatformInfo.isIOS || PlatformInfo.isAndroid)) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _initializeAds();
@@ -117,7 +117,7 @@ class _AdBannerState extends State<AdBanner>
   /// Initialize Unity LevelPlay SDK
   Future<void> _initializeIronSource() async {
     try {
-      final appKey = Platform.isAndroid 
+      final appKey = PlatformInfo.isAndroid 
           ? AdsConfig.currentIronSourceAppKeyAndroid
           : AdsConfig.currentIronSourceAppKeyIos;
 
@@ -157,7 +157,7 @@ class _AdBannerState extends State<AdBanner>
 
       // Create and load AdMob banner
       _admobBannerAd = BannerAd(
-        adUnitId: Platform.isAndroid 
+        adUnitId: PlatformInfo.isAndroid 
             ? AdsConfig.currentAdmobAndroidBannerId
             : AdsConfig.currentAdmobIosBannerId,
         size: size,
@@ -216,7 +216,7 @@ class _AdBannerState extends State<AdBanner>
     if (!_isIronSourceInitialized || _isIronSourceAdLoaded) return;
 
     try {
-      final adUnitId = Platform.isAndroid 
+      final adUnitId = PlatformInfo.isAndroid 
           ? AdsConfig.currentIronSourceAndroidBannerId
           : AdsConfig.currentIronSourceIosBannerId;
 
@@ -272,7 +272,7 @@ class _AdBannerState extends State<AdBanner>
     }
 
     // Only show ads on supported platforms
-    if (kIsWeb || (!Platform.isIOS && !Platform.isAndroid)) {
+    if (kIsWeb || (!PlatformInfo.isIOS && !PlatformInfo.isAndroid)) {
       return const SizedBox.shrink();
     }
 

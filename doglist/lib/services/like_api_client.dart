@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/like_request.dart';
@@ -64,11 +63,6 @@ class LikeApiClient {
         success: false,
         error: 'Request timed out. Please check your connection.',
       );
-    } on SocketException {
-      return LikeResponse(
-        success: false,
-        error: 'No internet connection. Please check your network.',
-      );
     } on http.ClientException catch (e) {
       return LikeResponse(
         success: false,
@@ -113,8 +107,6 @@ class LikeApiClient {
       }
     } on TimeoutException {
       throw Exception('Connection timed out. Please check your network.');
-    } on SocketException {
-      throw Exception('No internet connection');
     } on http.ClientException catch (e) {
       throw Exception('Network error: ${e.message}');
     } on FormatException {
@@ -164,9 +156,6 @@ class LikeApiClient {
     } on TimeoutException {
       debugPrint('[LikeApiClient] Request timed out');
       throw Exception('Connection timed out');
-    } on SocketException catch (e) {
-      debugPrint('[LikeApiClient] Socket exception: $e');
-      throw Exception('No internet connection');
     } on http.ClientException catch (e) {
       debugPrint('[LikeApiClient] Client exception: ${e.message}');
       throw Exception('Network error: ${e.message}');

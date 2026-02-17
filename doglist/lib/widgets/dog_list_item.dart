@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
+import '../platform/platform_info.dart';
 import '../models/dog.dart';
 import '../parameters/netservices.dart';
 import '../parameters/feature_ids.dart';
@@ -130,8 +131,9 @@ class DogListItem extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  // Like count row
-                  BlocBuilder<LikeCubit, LikeState>(
+                  // Like count row - hidden on web
+                  if (!PlatformInfo.isWeb)
+                    BlocBuilder<LikeCubit, LikeState>(
                     builder: (context, state) {
                       final likeCount = state.likeCounts[dog.id] ?? 0;
                       
@@ -190,6 +192,23 @@ class DogListItem extends StatelessWidget {
                         onPressed: isLoading
                             ? null
                             : () async {
+                                // On web, show dialog to download app
+                                if (PlatformInfo.isWeb) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(appLocalizations.likeWebDialogTitle),
+                                      content: Text(appLocalizations.likeWebDialogMessage),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.of(context).pop(),
+                                          child: Text(appLocalizations.likeDialogOk),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                  return;
+                                }
                                 if (isLiked) {
                                   // Show cooldown dialog
                                   showDialog(

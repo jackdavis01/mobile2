@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/top_dogs_response.dart';
@@ -64,13 +63,6 @@ class TopDogsApiClient {
         success: false,
         dogs: [],
         error: 'Request timed out. Please check your connection.',
-      );
-    } on SocketException {
-      debugPrint('[TopDogsApiClient] No internet connection');
-      return TopDogsResponse(
-        success: false,
-        dogs: [],
-        error: 'No internet connection. Please check your network.',
       );
     } on http.ClientException catch (e) {
       debugPrint('[TopDogsApiClient] Network error: ${e.message}');

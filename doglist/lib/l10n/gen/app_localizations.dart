@@ -1174,6 +1174,18 @@ abstract class AppLocalizations {
   /// **'An unexpected error occurred'**
   String get likeUnexpectedError;
 
+  /// Title for the dialog shown on web when user tries to like a dog
+  ///
+  /// In en, this message translates to:
+  /// **'Download the App'**
+  String get likeWebDialogTitle;
+
+  /// Message shown on web when user tries to like a dog
+  ///
+  /// In en, this message translates to:
+  /// **'If you want to like the dogs, please download the App from the Google Play Store or from the Apple App Store.'**
+  String get likeWebDialogMessage;
+
   /// Title for the top 3 dogs page and navigation menu
   ///
   /// In en, this message translates to:
