@@ -26,6 +26,12 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
       
+      - name: Setup environment file
+        run: cp .env.public .env
+      
+      - name: Generate code
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+      
       - name: Build web
         run: flutter build web --release --base-href /mobile2/
       
