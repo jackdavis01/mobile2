@@ -31,6 +31,30 @@ abstract class AdsConfig {
   @EnviedField(varName: 'TEST_ADMOB_IOS_BANNER_ID')
   static final String testAdmobIosBannerId = _AdsConfig.testAdmobIosBannerId;
 
+  @EnviedField(varName: 'TEST_ADMOB_ANDROID_INTERSTITIAL_ID')
+  static final String testAdmobAndroidInterstitialId = _AdsConfig.testAdmobAndroidInterstitialId;
+
+  @EnviedField(varName: 'TEST_ADMOB_IOS_INTERSTITIAL_ID')
+  static final String testAdmobIosInterstitialId = _AdsConfig.testAdmobIosInterstitialId;
+
+  @EnviedField(varName: 'TEST_ADMOB_ANDROID_NATIVE_ID')
+  static final String testAdmobAndroidNativeId = _AdsConfig.testAdmobAndroidNativeId;
+
+  @EnviedField(varName: 'TEST_ADMOB_IOS_NATIVE_ID')
+  static final String testAdmobIosNativeId = _AdsConfig.testAdmobIosNativeId;
+
+  @EnviedField(varName: 'TEST_ADMOB_ANDROID_REWARDED_ID')
+  static final String testAdmobAndroidRewardedId = _AdsConfig.testAdmobAndroidRewardedId;
+
+  @EnviedField(varName: 'TEST_ADMOB_IOS_REWARDED_ID')
+  static final String testAdmobIosRewardedId = _AdsConfig.testAdmobIosRewardedId;
+
+  @EnviedField(varName: 'TEST_ADMOB_ANDROID_REWARDED_INTERSTITIAL_ID')
+  static final String testAdmobAndroidRewardedInterstitialId = _AdsConfig.testAdmobAndroidRewardedInterstitialId;
+
+  @EnviedField(varName: 'TEST_ADMOB_IOS_REWARDED_INTERSTITIAL_ID')
+  static final String testAdmobIosRewardedInterstitialId = _AdsConfig.testAdmobIosRewardedInterstitialId;
+
   /// AdMob Production Configuration
   @EnviedField(varName: 'PRODUCTION_ADMOB_APP_ID_ANDROID', obfuscate: true)
   static final String productionAdmobAppIdAndroid = _AdsConfig.productionAdmobAppIdAndroid;
@@ -43,6 +67,30 @@ abstract class AdsConfig {
 
   @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_BANNER_ID', obfuscate: true)
   static final String productionAdmobIosBannerId = _AdsConfig.productionAdmobIosBannerId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_ANDROID_INTERSTITIAL_ID', obfuscate: true)
+  static final String productionAdmobAndroidInterstitialId = _AdsConfig.productionAdmobAndroidInterstitialId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_INTERSTITIAL_ID', obfuscate: true)
+  static final String productionAdmobIosInterstitialId = _AdsConfig.productionAdmobIosInterstitialId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_ANDROID_NATIVE_ID', obfuscate: true)
+  static final String productionAdmobAndroidNativeId = _AdsConfig.productionAdmobAndroidNativeId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_NATIVE_ID', obfuscate: true)
+  static final String productionAdmobIosNativeId = _AdsConfig.productionAdmobIosNativeId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_ANDROID_REWARDED_ID', obfuscate: true)
+  static final String productionAdmobAndroidRewardedId = _AdsConfig.productionAdmobAndroidRewardedId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_REWARDED_ID', obfuscate: true)
+  static final String productionAdmobIosRewardedId = _AdsConfig.productionAdmobIosRewardedId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_ANDROID_REWARDED_INTERSTITIAL_ID', obfuscate: true)
+  static final String productionAdmobAndroidRewardedInterstitialId = _AdsConfig.productionAdmobAndroidRewardedInterstitialId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_REWARDED_INTERSTITIAL_ID', obfuscate: true)
+  static final String productionAdmobIosRewardedInterstitialId = _AdsConfig.productionAdmobIosRewardedInterstitialId;
 
   /// Test IronSource Configuration
   @EnviedField(varName: 'TEST_IRONSOURCE_APP_KEY_ANDROID')
@@ -57,6 +105,24 @@ abstract class AdsConfig {
   @EnviedField(varName: 'TEST_IRONSOURCE_IOS_BANNER_ID')
   static final String testIronSourceIosBannerId = _AdsConfig.testIronSourceIosBannerId;
 
+  @EnviedField(varName: 'TEST_IRONSOURCE_ANDROID_INTERSTITIAL_ID')
+  static final String testIronSourceAndroidInterstitialId = _AdsConfig.testIronSourceAndroidInterstitialId;
+
+  @EnviedField(varName: 'TEST_IRONSOURCE_IOS_INTERSTITIAL_ID')
+  static final String testIronSourceIosInterstitialId = _AdsConfig.testIronSourceIosInterstitialId;
+
+  @EnviedField(varName: 'TEST_IRONSOURCE_ANDROID_NATIVE_ID')
+  static final String testIronSourceAndroidNativeId = _AdsConfig.testIronSourceAndroidNativeId;
+
+  @EnviedField(varName: 'TEST_IRONSOURCE_IOS_NATIVE_ID')
+  static final String testIronSourceIosNativeId = _AdsConfig.testIronSourceIosNativeId;
+
+  @EnviedField(varName: 'TEST_IRONSOURCE_ANDROID_REWARDED_ID')
+  static final String testIronSourceAndroidRewardedId = _AdsConfig.testIronSourceAndroidRewardedId;
+
+  @EnviedField(varName: 'TEST_IRONSOURCE_IOS_REWARDED_ID')
+  static final String testIronSourceIosRewardedId = _AdsConfig.testIronSourceIosRewardedId;
+
   /// IronSource Production Configuration
   @EnviedField(varName: 'PRODUCTION_IRONSOURCE_APP_KEY_ANDROID', obfuscate: true)
   static final String productionIronSourceAppKeyAndroid = _AdsConfig.productionIronSourceAppKeyAndroid;
@@ -69,6 +135,24 @@ abstract class AdsConfig {
 
   @EnviedField(varName: 'PRODUCTION_IRONSOURCE_IOS_BANNER_ID', obfuscate: true)
   static final String productionIronSourceIosBannerId = _AdsConfig.productionIronSourceIosBannerId;
+
+  @EnviedField(varName: 'PRODUCTION_IRONSOURCE_ANDROID_INTERSTITIAL_ID', obfuscate: true)
+  static final String productionIronSourceAndroidInterstitialId = _AdsConfig.productionIronSourceAndroidInterstitialId;
+
+  @EnviedField(varName: 'PRODUCTION_IRONSOURCE_IOS_INTERSTITIAL_ID', obfuscate: true)
+  static final String productionIronSourceIosInterstitialId = _AdsConfig.productionIronSourceIosInterstitialId;
+
+  @EnviedField(varName: 'PRODUCTION_IRONSOURCE_ANDROID_NATIVE_ID', obfuscate: true)
+  static final String productionIronSourceAndroidNativeId = _AdsConfig.productionIronSourceAndroidNativeId;
+
+  @EnviedField(varName: 'PRODUCTION_IRONSOURCE_IOS_NATIVE_ID', obfuscate: true)
+  static final String productionIronSourceIosNativeId = _AdsConfig.productionIronSourceIosNativeId;
+
+  @EnviedField(varName: 'PRODUCTION_IRONSOURCE_ANDROID_REWARDED_ID', obfuscate: true)
+  static final String productionIronSourceAndroidRewardedId = _AdsConfig.productionIronSourceAndroidRewardedId;
+
+  @EnviedField(varName: 'PRODUCTION_IRONSOURCE_IOS_REWARDED_ID', obfuscate: true)
+  static final String productionIronSourceIosRewardedId = _AdsConfig.productionIronSourceIosRewardedId;
 
   /// Test Device IDs
   @EnviedField(varName: 'TEST_DEVICE_ANDROID_1')
