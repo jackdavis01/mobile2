@@ -1,11 +1,11 @@
 {
-    "name": "doglist",
-    "short_name": "doglist",
+    "name": "Dog List",
+    "short_name": "Dog List",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "A Dog List Flutter Web project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

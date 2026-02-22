@@ -9,6 +9,10 @@ import 'platform/platform_info.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensures that SystemChrome settings are applied
 
+  if (PlatformInfo.isWeb) {
+    debugPrint('Running on Web - Skipping Mobile Ads and ATT initialization');
+  } else {
+
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Allow only portrait mode
@@ -33,6 +37,14 @@ void main() async {
 
   // Only initialize Mobile Ads SDK if ads are enabled
   if (AdsConfig.areAdsEnabled) {
+    // Configure test device IDs for AdMob
+    final testDeviceIds = AdsConfig.admobTestDeviceIds;
+    if (testDeviceIds.isNotEmpty) {
+      final configuration = RequestConfiguration(testDeviceIds: testDeviceIds);
+      MobileAds.instance.updateRequestConfiguration(configuration);
+      debugPrint('AdMob configured with ${testDeviceIds.length} test device(s): $testDeviceIds');
+    }
+    
     MobileAds.instance.initialize().then((_) {
       debugPrint('Mobile Ads SDK initialized successfully');
     }).catchError((e) {
@@ -40,6 +52,7 @@ void main() async {
     });
   } else {
     debugPrint('Mobile Ads SDK initialization skipped (ads disabled)');
+  }
   }
 
   runApp(const DogListApp());

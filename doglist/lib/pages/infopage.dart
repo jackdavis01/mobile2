@@ -12,7 +12,7 @@ class InfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
 
-    const String platform = 'Flutter 3.38.7';
+    const String platform = 'Flutter 3.41.1';
     const String platformPrerelease = '-';
     const String platformChannel = 'stable';
     const String author = 'Jack Davis';

@@ -77,6 +77,9 @@ abstract class AdsConfig {
   @EnviedField(varName: 'TEST_DEVICE_ANDROID_2')
   static final String testDeviceAndroid2 = _AdsConfig.testDeviceAndroid2;
 
+  @EnviedField(varName: 'TEST_DEVICE_ANDROID_3')
+  static final String testDeviceAndroid3 = _AdsConfig.testDeviceAndroid3;
+
   @EnviedField(varName: 'TEST_DEVICE_IOS_1')
   static final String testDeviceIos1 = _AdsConfig.testDeviceIos1;
 
@@ -105,6 +108,7 @@ abstract class AdsConfig {
   static List<String> get admobTestDeviceIds => [
     AdsConfig.testDeviceAndroid1,
     AdsConfig.testDeviceAndroid2,
+    AdsConfig.testDeviceAndroid3,
     AdsConfig.testDeviceIos1,
   ].where((id) => id.isNotEmpty && id != 'YOUR_TEST_DEVICE_ID').toList();
 

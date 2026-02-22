@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../platform/platform_info.dart';
 import 'like_bloc_state.dart';
 import '../services/like_manager.dart';
 
@@ -20,6 +21,12 @@ class LikeCubit extends Cubit<LikeState> {
     // Prevent multiple simultaneous loads
     if (_hasLoadedAllCounts || state.isLoading) return;
 
+    // Skip loading all like counts on web to avoid unnecessary API calls
+    if (PlatformInfo.isWeb) {
+      debugPrint('Running on Web - loadAllLikeCounts is disabled');
+      return;
+    }
+
     _hasLoadedAllCounts = true;
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
@@ -38,7 +45,14 @@ class LikeCubit extends Cubit<LikeState> {
 
   /// Load like counts for specific dogs (uses cache-first strategy)
   Future<void> loadLikeCounts(List<String> dogIds) async {
+
     if (dogIds.isEmpty) return;
+
+    // Skip loading specific like counts on web to avoid unnecessary API calls
+    if (PlatformInfo.isWeb) {
+      debugPrint('Running on Web - loadLikeCounts is disabled');
+      return;
+    }
 
     debugPrint('[LikeCubit] loadLikeCounts called for: ${dogIds.join(", ")}');
 

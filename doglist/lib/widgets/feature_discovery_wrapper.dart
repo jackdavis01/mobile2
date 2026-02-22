@@ -32,7 +32,7 @@ class FeatureDiscoveryWrapper extends StatefulWidget {
 }
 
 class _FeatureDiscoveryWrapperState extends State<FeatureDiscoveryWrapper> {
-  late PageFeatureDiscovery? _pageDiscovery;
+  PageFeatureDiscovery? _pageDiscovery;
   bool? _lastEnabledState;
   bool _discoveryPending = false;
   bool _hasShownDiscovery = false;
