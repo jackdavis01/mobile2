@@ -18,6 +18,7 @@ import '../widgets/feature_discovery_wrapper.dart';
 import '../widgets/feature_overlays.dart';
 import '../parameters/feature_ids.dart';
 import '../parameters/ads_config.dart';
+import '../platform/platform_info.dart';
 
 class ListPage extends StatelessWidget {
   const ListPage({super.key});
@@ -273,8 +274,8 @@ class _ListPageContent extends StatelessWidget {
                                   )
                                 : Padding(
                                     padding: EdgeInsets.only(
-                                        bottom: AdsConfig.areAdsEnabled
-                                            ? 60
+                                        bottom: AdsConfig.areAdsEnabled && (PlatformInfo.isAndroid || PlatformInfo.isIOS)
+                                            ? 64
                                             : 0), // Space for banner ad only if ads enabled
                                     child: ListView.builder(
                                       padding: MediaQuery.of(context)
