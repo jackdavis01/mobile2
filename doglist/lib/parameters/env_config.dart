@@ -27,6 +27,12 @@ abstract class EnvConfig {
   @EnviedField(varName: 'API_BODY_KEY_PROD')
   static const String apiBodyKeyProd = _EnvConfig.apiBodyKeyProd;
   
+  @EnviedField(varName: 'API_BODY_REWARDED_KEY_DEV')
+  static const String apiBodyRewardedKeyDev = _EnvConfig.apiBodyRewardedKeyDev;
+  
+  @EnviedField(varName: 'API_BODY_REWARDED_KEY_PROD')
+  static const String apiBodyRewardedKeyProd = _EnvConfig.apiBodyRewardedKeyProd;
+  
   @EnviedField(varName: 'LIKE_CACHE_DURATION_MINUTES', defaultValue: 5)
   static const int likeCacheDurationMinutes = _EnvConfig.likeCacheDurationMinutes;
   
@@ -43,4 +49,8 @@ abstract class EnvConfig {
   /// Returns the appropriate API body key based on current environment
   static String get apiBodyKey => 
       environment == 'prod' ? apiBodyKeyProd : apiBodyKeyDev;
+      
+  /// Returns the appropriate rewarded API body key based on current environment
+  static String get apiBodyRewardedKey => 
+      environment == 'prod' ? apiBodyRewardedKeyProd : apiBodyRewardedKeyDev;
 }

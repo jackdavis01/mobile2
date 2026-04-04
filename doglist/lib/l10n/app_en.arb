@@ -794,6 +794,42 @@
   "@likeWebDialogMessage": {
     "description": "Message shown on web when user tries to like a dog"
   },
+  "likeRewardedDialogTitle": "Already Liked Today!",
+  "@likeRewardedDialogTitle": {
+    "description": "Title for the rewarded ad cooldown dialog"
+  },
+  "likeRewardedWatchAdButton": "Watch Ad to Like Now",
+  "@likeRewardedWatchAdButton": {
+    "description": "Button text to watch ad for rewarded like"
+  },
+  "likeRewardedLoading": "Loading...",
+  "@likeRewardedLoading": {
+    "description": "Loading state text for ad button"
+  },
+  "likeRewardedProcessing": "Processing...",
+  "@likeRewardedProcessing": {
+    "description": "Processing state text after watching ad"
+  },
+  "likeRewardedNotNow": "Not Now",
+  "@likeRewardedNotNow": {
+    "description": "Button text to dismiss rewarded ad dialog"
+  },
+  "likeRewardedClose": "Close",
+  "@likeRewardedClose": {
+    "description": "Button text to close dialog when ads disabled"
+  },
+  "likeRewardedAdNotReady": "Ad not ready yet. Please try again in a moment.",
+  "@likeRewardedAdNotReady": {
+    "description": "Message shown when ad is not ready to show"
+  },
+  "likeRewardedFailed": "Failed to submit like. Please try again.",
+  "@likeRewardedFailed": {
+    "description": "Error message when rewarded like submission fails"
+  },
+  "likeRewardedIncomplete": "You need to watch the full ad to like this dog again.",
+  "@likeRewardedIncomplete": {
+    "description": "Message shown when user dismisses ad without watching completely"
+  },
   "topDogsTitle": "Top 3 dogs",
   "@topDogsTitle": {
     "description": "Title for the top 3 dogs page and navigation menu"

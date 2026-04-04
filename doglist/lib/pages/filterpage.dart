@@ -12,6 +12,9 @@ import '../widgets/dog_list_item.dart';
 import '../widgets/feature_discovery_wrapper.dart';
 import '../parameters/feature_ids.dart';
 import '../models/dog.dart';
+import '../widgets/ad_banner.dart';
+import '../parameters/ads_config.dart';
+import '../platform/platform_info.dart';
 
 class FilterPage extends StatelessWidget {
   const FilterPage({super.key});
@@ -86,12 +89,14 @@ class _FilterPageContent extends StatelessWidget {
               ),
             ],
           ),
-          body: LayoutBuilder(
-            builder: (context, constraints) {
-              // Calculate 1/2 of the available height for the filter expansion widget
-              final filterMaxHeight = (constraints.maxHeight * 1 / 2);
+          body: Stack(
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Calculate 1/2 of the available height for the filter expansion widget
+                  final filterMaxHeight = (constraints.maxHeight * 1 / 2);
 
-              return Column(
+                  return Column(
                 children: [
                   // Permanent stripe showing match count
                   Container(
@@ -131,7 +136,15 @@ class _FilterPageContent extends StatelessWidget {
                   ),
                 ],
               );
-            },
+                },
+              ),
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: AdBanner(),
+              ),
+            ],
           ),
         );
       },
@@ -255,9 +268,10 @@ class _FilterPageContent extends StatelessWidget {
     }
 
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final adPadding = AdsConfig.areAdsEnabled && (PlatformInfo.isAndroid || PlatformInfo.isIOS) ? 64.0 : 0.0;
 
     return ListView.builder(
-      padding: bottomPadding > 0 ? EdgeInsets.only(bottom: bottomPadding) : EdgeInsets.zero,
+      padding: EdgeInsets.only(bottom: bottomPadding + adPadding),
       itemCount: state.filteredDogs.length,
       itemBuilder: (context, index) {
         final Dog dog = state.filteredDogs[index];

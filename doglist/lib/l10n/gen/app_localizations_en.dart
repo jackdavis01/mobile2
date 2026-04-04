@@ -617,6 +617,35 @@ class AppLocalizationsEn extends AppLocalizations {
       'If you want to like the dogs, please download the App from the Google Play Store or from the Apple App Store.';
 
   @override
+  String get likeRewardedDialogTitle => 'Already Liked Today!';
+
+  @override
+  String get likeRewardedWatchAdButton => 'Watch Ad to Like Now';
+
+  @override
+  String get likeRewardedLoading => 'Loading...';
+
+  @override
+  String get likeRewardedProcessing => 'Processing...';
+
+  @override
+  String get likeRewardedNotNow => 'Not Now';
+
+  @override
+  String get likeRewardedClose => 'Close';
+
+  @override
+  String get likeRewardedAdNotReady =>
+      'Ad not ready yet. Please try again in a moment.';
+
+  @override
+  String get likeRewardedFailed => 'Failed to submit like. Please try again.';
+
+  @override
+  String get likeRewardedIncomplete =>
+      'You need to watch the full ad to like this dog again.';
+
+  @override
   String get topDogsTitle => 'Top 3 dogs';
 
   @override

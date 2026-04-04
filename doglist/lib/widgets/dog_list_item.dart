@@ -14,7 +14,9 @@ import '../businesslogic/user_preferences_bloc_state.dart';
 import '../businesslogic/like_bloc_cubit.dart';
 import '../businesslogic/like_bloc_state.dart';
 import '../services/like_cache_service.dart';
+import '../services/rewarded_ad_manager.dart';
 import 'like_cooldown_dialog.dart';
+import 'like_cooldown_with_reward_dialog.dart';
 
 enum DogListItemType {
   list,   // Show like icon (for list page)
@@ -210,13 +212,19 @@ class DogListItem extends StatelessWidget {
                                   return;
                                 }
                                 if (isLiked) {
-                                  // Show cooldown dialog
+                                  // Show appropriate dialog based on ad availability
+                                  final adReady = RewardedAdManager().isAdReady();
                                   showDialog(
                                     context: context,
-                                    builder: (dialogContext) => LikeCooldownDialog(
-                                      dogId: dog.id,
-                                      dogName: dog.name,
-                                    ),
+                                    builder: (dialogContext) => adReady
+                                        ? LikeCooldownWithRewardDialog(
+                                            dogId: dog.id,
+                                            dogName: dog.name,
+                                          )
+                                        : LikeCooldownDialog(
+                                            dogId: dog.id,
+                                            dogName: dog.name,
+                                          ),
                                   );
                                 } else {
                                   // Optimistic update
@@ -234,14 +242,20 @@ class DogListItem extends StatelessWidget {
                                       // Get the latest state from the cubit (state variable may be stale)
                                       final latestState = likeCubit.state;
                                       
-                                      // Show cooldown dialog for ALREADY_LIKED_TODAY error
+                                      // Show appropriate dialog based on ad availability for ALREADY_LIKED_TODAY error
                                       if (latestState.error == 'ALREADY_LIKED_TODAY') {
+                                        final adReady = RewardedAdManager().isAdReady();
                                         showDialog(
                                           context: context,
-                                          builder: (dialogContext) => LikeCooldownDialog(
-                                            dogId: dog.id,
-                                            dogName: dog.name,
-                                          ),
+                                          builder: (dialogContext) => adReady
+                                              ? LikeCooldownWithRewardDialog(
+                                                  dogId: dog.id,
+                                                  dogName: dog.name,
+                                                )
+                                              : LikeCooldownDialog(
+                                                  dogId: dog.id,
+                                                  dogName: dog.name,
+                                                ),
                                         );
                                       } else {
                                         // Show snackbar for other errors

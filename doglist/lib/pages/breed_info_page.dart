@@ -8,6 +8,9 @@ import '../businesslogic/breed_info_bloc_cubit.dart';
 import '../businesslogic/breed_info_bloc_state.dart';
 import '../widgets/rating_bar_widget.dart';
 import '../widgets/spinkitwidgets.dart';
+import '../widgets/ad_banner.dart';
+import '../parameters/ads_config.dart';
+import '../platform/platform_info.dart';
 
 class BreedInfoPage extends StatelessWidget {
   const BreedInfoPage({super.key});
@@ -90,14 +93,16 @@ class BreedInfoPage extends StatelessWidget {
         title: Text(dog.name),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          left: 16.0,
-          right: 16.0,
-          top: 16.0,
-          bottom: MediaQuery.of(context).padding.bottom + 4.0,
-        ),
-        child: Column(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 16.0,
+              bottom: MediaQuery.of(context).padding.bottom + 4.0 + (AdsConfig.areAdsEnabled && (PlatformInfo.isAndroid || PlatformInfo.isIOS) ? 64.0 : 0.0),
+            ),
+            child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header with group and popularity
@@ -188,7 +193,15 @@ class BreedInfoPage extends StatelessWidget {
             _buildCareCard(dog, extendedInfo, appLocalizations),
             const SizedBox(height: 24),
           ],
-        ),
+            ),
+          ),
+          const Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: AdBanner(),
+          ),
+        ],
       ),
     );
   }

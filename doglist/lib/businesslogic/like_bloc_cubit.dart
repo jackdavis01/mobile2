@@ -102,6 +102,29 @@ class LikeCubit extends Cubit<LikeState> {
     }
   }
 
+  /// Like a dog with rewarded ad (bypasses 24h restriction)
+  Future<bool> likeRewardedDog(String dogId) async {
+    emit(state.copyWith(isLoading: true, clearError: true));
+
+    try {
+      final response = await _likeManager.likeRewardedDog(dogId);
+
+      if (response.success) {
+        final updatedCounts = Map<String, int>.from(state.likeCounts);
+        updatedCounts[dogId] = response.totalLikes ?? 0;
+
+        emit(state.copyWith(likeCounts: updatedCounts, isLoading: false));
+        return true;
+      } else {
+        emit(state.copyWith(isLoading: false, error: response.error ?? 'FAILED_TO_LIKE'));
+        return false;
+      }
+    } catch (e) {
+      emit(state.copyWith(isLoading: false, error: 'UNEXPECTED_ERROR'));
+      return false;
+    }
+  }
+
   /// Get the like count for a specific dog (from state)
   int getLikeCount(String dogId) {
     return state.likeCounts[dogId] ?? 0;

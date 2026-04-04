@@ -16,6 +16,9 @@ import '../widgets/spinkitwidgets.dart';
 import '../widgets/feature_discovery_wrapper.dart';
 import '../widgets/feature_overlays.dart';
 import '../parameters/feature_ids.dart';
+import '../widgets/ad_banner.dart';
+import '../parameters/ads_config.dart';
+import '../platform/platform_info.dart';
 
 class DetailsPage extends StatelessWidget {
   const DetailsPage({super.key});
@@ -83,12 +86,14 @@ class _DetailsPageContent extends StatelessWidget {
               ),
             ],
           ),
-          body: LayoutBuilder(
-            builder: (context, constraints) {
-              // Get available vertical space for the body
-              final double availableHeight = constraints.maxHeight;
+          body: Stack(
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Get available vertical space for the body
+                  final double availableHeight = constraints.maxHeight;
 
-              return PageView.builder(
+                  return PageView.builder(
                   scrollDirection: Axis.vertical,
                   physics: detailsVerticalState.currentImagePageIsZoomed
                       ? NeverScrollableScrollPhysics()
@@ -112,7 +117,7 @@ class _DetailsPageContent extends StatelessWidget {
                     final double estimatedTextSectionHeight = 200.0; // Approximate height of text section
                     final double estimatedImageHeight =
                         availableHeight - estimatedPhotoSpaceOverhead - estimatedTextSectionHeight;
-                    final bool shouldHideOptionalFields = estimatedImageHeight < (availableHeight * 0.6);
+                    final bool shouldHideOptionalFields = estimatedImageHeight < (availableHeight * 0.63);
 
                     try {
                       wTitle = DetailsVerticalPagingDiscoveryOverlay(
@@ -159,7 +164,9 @@ class _DetailsPageContent extends StatelessWidget {
                         },
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
+                        padding: EdgeInsets.only(
+                          bottom: 16.0 + (AdsConfig.areAdsEnabled && (PlatformInfo.isAndroid || PlatformInfo.isIOS) ? 64.0 : 0.0),
+                        ),
                         child: Column(
                           children: [
                             Expanded(
@@ -447,7 +454,15 @@ class _DetailsPageContent extends StatelessWidget {
                       ),
                     );
                   });
-            },
+                },
+              ),
+              const Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: AdBanner(),
+              ),
+            ],
           ),
         );
       }),

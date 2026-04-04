@@ -1186,6 +1186,60 @@ abstract class AppLocalizations {
   /// **'If you want to like the dogs, please download the App from the Google Play Store or from the Apple App Store.'**
   String get likeWebDialogMessage;
 
+  /// Title for the rewarded ad cooldown dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Already Liked Today!'**
+  String get likeRewardedDialogTitle;
+
+  /// Button text to watch ad for rewarded like
+  ///
+  /// In en, this message translates to:
+  /// **'Watch Ad to Like Now'**
+  String get likeRewardedWatchAdButton;
+
+  /// Loading state text for ad button
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get likeRewardedLoading;
+
+  /// Processing state text after watching ad
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get likeRewardedProcessing;
+
+  /// Button text to dismiss rewarded ad dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Not Now'**
+  String get likeRewardedNotNow;
+
+  /// Button text to close dialog when ads disabled
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get likeRewardedClose;
+
+  /// Message shown when ad is not ready to show
+  ///
+  /// In en, this message translates to:
+  /// **'Ad not ready yet. Please try again in a moment.'**
+  String get likeRewardedAdNotReady;
+
+  /// Error message when rewarded like submission fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit like. Please try again.'**
+  String get likeRewardedFailed;
+
+  /// Message shown when user dismisses ad without watching completely
+  ///
+  /// In en, this message translates to:
+  /// **'You need to watch the full ad to like this dog again.'**
+  String get likeRewardedIncomplete;
+
   /// Title for the top 3 dogs page and navigation menu
   ///
   /// In en, this message translates to:

@@ -5,6 +5,7 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'app.dart';
 import 'parameters/ads_config.dart';
 import 'platform/platform_info.dart';
+import 'services/rewarded_ad_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensures that SystemChrome settings are applied
@@ -13,46 +14,50 @@ void main() async {
     debugPrint('Running on Web - Skipping Mobile Ads and ATT initialization');
   } else {
 
-  // Set preferred orientations
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp, // Allow only portrait mode
-  ]);
+    // Set preferred orientations
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp, // Allow only portrait mode
+    ]);
 
-  // Request App Tracking Transparency permission on iOS (regardless of ads state)
-  // This ensures permission is requested even if ads are temporarily disabled
-  if (PlatformInfo.isIOS) {
-    try {
-      final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-      debugPrint('ATT Status: $status');
-      
-      // Request permission if not yet determined
-      if (status == TrackingStatus.notDetermined) {
-        final newStatus = await AppTrackingTransparency.requestTrackingAuthorization();
-        debugPrint('ATT Permission Requested. New Status: $newStatus');
+    // Request App Tracking Transparency permission on iOS (regardless of ads state)
+    // This ensures permission is requested even if ads are temporarily disabled
+    if (PlatformInfo.isIOS) {
+      try {
+        final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+        debugPrint('ATT Status: $status');
+        
+        // Request permission if not yet determined
+        if (status == TrackingStatus.notDetermined) {
+          final newStatus = await AppTrackingTransparency.requestTrackingAuthorization();
+          debugPrint('ATT Permission Requested. New Status: $newStatus');
+        }
+      } catch (e) {
+        debugPrint('Error requesting ATT permission: $e');
       }
-    } catch (e) {
-      debugPrint('Error requesting ATT permission: $e');
     }
-  }
 
-  // Only initialize Mobile Ads SDK if ads are enabled
-  if (AdsConfig.areAdsEnabled) {
-    // Configure test device IDs for AdMob
-    final testDeviceIds = AdsConfig.admobTestDeviceIds;
-    if (testDeviceIds.isNotEmpty) {
-      final configuration = RequestConfiguration(testDeviceIds: testDeviceIds);
-      MobileAds.instance.updateRequestConfiguration(configuration);
-      debugPrint('AdMob configured with ${testDeviceIds.length} test device(s): $testDeviceIds');
+    // Only initialize Mobile Ads SDK if ads are enabled
+    if (AdsConfig.areAdsEnabled) {
+      // Configure test device IDs for AdMob
+      final testDeviceIds = AdsConfig.admobTestDeviceIds;
+      if (testDeviceIds.isNotEmpty) {
+        final configuration = RequestConfiguration(testDeviceIds: testDeviceIds);
+        MobileAds.instance.updateRequestConfiguration(configuration);
+        debugPrint('AdMob configured with ${testDeviceIds.length} test device(s): $testDeviceIds');
+      }
+      
+      MobileAds.instance.initialize().then((_) {
+        debugPrint('Mobile Ads SDK initialized successfully');
+        
+        // Preload rewarded ad for like feature
+        RewardedAdManager().loadAd();
+        debugPrint('Rewarded ad preloading started');
+      }).catchError((e) {
+        debugPrint('Mobile Ads SDK initialization failed: $e');
+      });
+    } else {
+      debugPrint('Mobile Ads SDK initialization skipped (ads disabled)');
     }
-    
-    MobileAds.instance.initialize().then((_) {
-      debugPrint('Mobile Ads SDK initialized successfully');
-    }).catchError((e) {
-      debugPrint('Mobile Ads SDK initialization failed: $e');
-    });
-  } else {
-    debugPrint('Mobile Ads SDK initialization skipped (ads disabled)');
-  }
   }
 
   runApp(const DogListApp());

@@ -62,6 +62,29 @@ class LikeManager {
     return response;
   }
 
+  /// Like a dog breed with rewarded ad (bypasses 24h cooldown).
+  /// This does NOT check cooldown since rewarded likes bypass the restriction.
+  Future<LikeResponse> likeRewardedDog(String dogId) async {
+    // Get UDID
+    final udid = await _udidService.getUdid();
+
+    // Call rewarded API endpoint
+    debugPrint('[LikeManager] Calling rewarded API to like $dogId with UDID: $udid');
+    final response = await _apiClient.likeRewardedDog(dogId, udid);
+
+    // On success, update cache (but NOT cooldown, since rewarded likes don't trigger cooldown)
+    if (response.success) {
+      if (response.totalLikes != null) {
+        _cacheService.setCachedCount(dogId, response.totalLikes!);
+      }
+      debugPrint('[LikeManager] Successfully liked $dogId with rewarded ad - total: ${response.totalLikes}');
+    } else {
+      debugPrint('[LikeManager] Failed to like $dogId with rewarded ad: ${response.error}');
+    }
+
+    return response;
+  }
+
   /// Load all dog like counts from the backend.
   /// Updates cache with all results.
   /// Falls back to cached data if API call fails (offline mode).

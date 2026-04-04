@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/like_request.dart';
+import '../models/rewarded_like_request.dart';
 import '../models/like_response.dart';
 import '../models/bulk_likes_response.dart';
 import '../models/all_likes_response.dart';
@@ -18,6 +19,7 @@ class LikeApiClient {
   final String _baseUrl = EnvConfig.apiBaseUrl;
   final String _headerKey = EnvConfig.apiHeaderKey;
   final String _bodyKey = EnvConfig.apiBodyKey;
+  final String _bodyRewardedKey = EnvConfig.apiBodyRewardedKey;
 
   /// Like a specific dog breed.
   /// Returns [LikeResponse] with success status and like count.
@@ -32,6 +34,69 @@ class LikeApiClient {
       final response = await http
           .post(
             Uri.parse('$_baseUrl/api/v1/like'),
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': _headerKey,
+            },
+            body: json.encode(request.toJson()),
+          )
+          .timeout(const Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        return LikeResponse.fromJson(json.decode(response.body));
+      } else if (response.statusCode == 429) {
+        return LikeResponse(
+          success: false,
+          error: 'Too many requests. Please try again later.',
+        );
+      } else if (response.statusCode >= 500) {
+        return LikeResponse(
+          success: false,
+          error: 'Server is temporarily unavailable. Please try again.',
+        );
+      } else {
+        return LikeResponse(
+          success: false,
+          error: 'Unable to like this dog (Error ${response.statusCode})',
+        );
+      }
+    } on TimeoutException {
+      return LikeResponse(
+        success: false,
+        error: 'Request timed out. Please check your connection.',
+      );
+    } on http.ClientException catch (e) {
+      return LikeResponse(
+        success: false,
+        error: 'Network error: ${e.message}',
+      );
+    } on FormatException {
+      return LikeResponse(
+        success: false,
+        error: 'Invalid server response. Please try again.',
+      );
+    } catch (e) {
+      return LikeResponse(
+        success: false,
+        error: 'An unexpected error occurred',
+      );
+    }
+  }
+
+  /// Like a specific dog breed with rewarded ad (bypasses 24h restriction).
+  /// Returns [LikeResponse] with success status and like count.
+  Future<LikeResponse> likeRewardedDog(String dogId, String udid) async {
+    try {
+      final request = RewardedLikeRequest(
+        apiKey: _bodyKey,
+        apiKeyRewarded: _bodyRewardedKey,
+        udid: udid,
+        dogId: dogId,
+      );
+
+      final response = await http
+          .post(
+            Uri.parse('$_baseUrl/api/v1/like/rewarded'),
             headers: {
               'Content-Type': 'application/json',
               'X-API-Key': _headerKey,
