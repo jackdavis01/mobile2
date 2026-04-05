@@ -14,7 +14,7 @@ import 'pages/breed_info_page.dart';
 import 'pages/settingspage.dart';
 import 'pages/infopage.dart';
 import 'pages/onboarding_page.dart';
-import 'pages/top_dogs_page.dart';
+
 import 'repositories/onboarding_repository.dart';
 import 'services/like_cache_service.dart';
 
@@ -38,7 +38,7 @@ class _DogListAppState extends State<DogListApp> {
   Future<void> _initializeApp() async {
     // Initialize like cache service with persistent storage
     await LikeCacheService().initialize();
-    
+
     // Check onboarding status
     await _checkOnboardingStatus();
   }
@@ -74,12 +74,10 @@ class _DogListAppState extends State<DogListApp> {
           supportedLocales: AppLocalizations.supportedLocales,
           title: appLocalizations.materialAppTitle,
           theme: ThemeData(primarySwatch: Colors.blue),
-          initialRoute: _hasSeenOnboarding! 
-              ? (PlatformInfo.isWeb ? '/list' : '/top-dogs') 
-              : '/onboarding-first',
+          initialRoute: _hasSeenOnboarding! ? (PlatformInfo.isWeb ? '/list' : '/top-dogs') : '/onboarding-first',
           routes: {
-            '/top-dogs': (context) => const TopDogsPage(),
-            '/list': (context) => ListPage(),
+            '/top-dogs': (context) => const ListPage(showTopDogsOnStart: true),
+            '/list': (context) => const ListPage(),
             '/details': (context) => DetailsPage(),
             '/filter': (context) => FilterPageWrapper(),
             '/breed-info': (context) => BreedInfoPage(),

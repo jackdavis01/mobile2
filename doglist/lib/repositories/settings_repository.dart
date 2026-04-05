@@ -84,6 +84,7 @@ class SettingsRepository {
     final prefs = await SharedPreferences.getInstance();
     // Feature IDs from FeatureIds.listPageFeatures
     final listPageFeatures = [
+      'list_like_button',
       'nav_menu_icon',
       'list_quick_filters',
       'list_filter_button',
@@ -116,10 +117,7 @@ class SettingsRepository {
   Future<void> clearFilterPageFeatureDiscoveryPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     // Feature IDs from FeatureIds.filterPageFeatures
-    final filterPageFeatures = [
-      'filter_search_bar',
-      'filter_advanced_filters',
-    ];
+    final filterPageFeatures = ['filter_search_bar', 'filter_advanced_filters'];
     for (final featureId in filterPageFeatures) {
       await prefs.remove(featureId);
     }
@@ -130,9 +128,7 @@ class SettingsRepository {
   Future<void> clearNavigationPageFeatureDiscoveryPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     // Feature IDs from FeatureIds.navigationPageFeatures
-    final navigationPageFeatures = [
-      'nav_best_dog',
-    ];
+    final navigationPageFeatures = ['nav_best_dog'];
     for (final featureId in navigationPageFeatures) {
       await prefs.remove(featureId);
     }

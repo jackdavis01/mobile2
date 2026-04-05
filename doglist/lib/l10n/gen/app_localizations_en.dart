@@ -18,15 +18,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterTitle => 'Filter';
 
   @override
-  String get internetConnectionError =>
-      'Please check your internet connection!';
+  String get internetConnectionError => 'Please check your internet connection!';
 
   @override
   String get reloadButton => 'Reload';
 
   @override
-  String get pictureLoadingError =>
-      'Error during loading picture, check the internet connection';
+  String get pictureLoadingError => 'Error during loading picture, check the internet connection';
 
   @override
   String get errorTitle => 'Error';
@@ -38,8 +36,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterSearchHint => 'Search for dog breed...';
 
   @override
-  String get filterErrorMinLength =>
-      'Please enter at least 3 characters to search';
+  String get filterErrorMinLength => 'Please enter at least 3 characters to search';
 
   @override
   String filterMatchesCount(int count) {
@@ -317,6 +314,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tap filter chips to quickly find dogs by specific traits like family-friendly or low-maintenance.';
 
   @override
+  String get discoveryListLikeButtonTitle => 'Like Dogs';
+
+  @override
+  String get discoveryListLikeButtonDescription =>
+      'Tap the thumbs up to like a dog breed. You can give each dog one free like per day.';
+
+  @override
   String get discoveryListFilterButtonTitle => 'Advanced Filters';
 
   @override
@@ -327,8 +331,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discoveryListFavoriteTitle => 'Add to Favorites';
 
   @override
-  String get discoveryListFavoriteDescription =>
-      'Tap the heart to save your favorite dog breeds for quick access.';
+  String get discoveryListFavoriteDescription => 'Tap the heart to save your favorite dog breeds for quick access.';
 
   @override
   String get discoveryListFavoriteFilterTitle => 'Show Favorites Only';
@@ -369,22 +372,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discoverySearchBarTitle => 'Search Breeds';
 
   @override
-  String get discoverySearchBarDescription =>
-      'Type a breed name to quickly find specific dogs.';
+  String get discoverySearchBarDescription => 'Type a breed name to quickly find specific dogs.';
 
   @override
   String get discoveryAdvancedFiltersTitle => 'Advanced Filters';
 
   @override
-  String get discoveryAdvancedFiltersDescription =>
-      'Expand sections to filter by size, weight, temperament, and more.';
+  String get discoveryAdvancedFiltersDescription => 'Expand sections to filter by size, weight, temperament, and more.';
 
   @override
   String get discoveryNavBestDogTitle => 'Your Best Dog';
 
   @override
-  String get discoveryNavBestDogDescription =>
-      'Your favorite breed appears here. Tap it to view details.';
+  String get discoveryNavBestDogDescription => 'Your favorite breed appears here. Tap it to view details.';
 
   @override
   String get discoveryNavMenuTitle => 'Navigation Menu';
@@ -635,15 +635,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get likeRewardedClose => 'Close';
 
   @override
-  String get likeRewardedAdNotReady =>
-      'Ad not ready yet. Please try again in a moment.';
+  String get likeRewardedAdNotReady => 'Ad not ready yet. Please try again in a moment.';
 
   @override
   String get likeRewardedFailed => 'Failed to submit like. Please try again.';
 
   @override
-  String get likeRewardedIncomplete =>
-      'You need to watch the full ad to like this dog again.';
+  String get likeRewardedIncomplete => 'You need to watch the full ad to like this dog again.';
 
   @override
   String get topDogsTitle => 'Top 3 dogs';

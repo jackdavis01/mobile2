@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
+
 class PlatformInfo {
-  static bool get isIOS => false;
-  static bool get isAndroid => false;
-  static bool get isWeb => true;
+  static bool get isIOS => defaultTargetPlatform == TargetPlatform.iOS;
+  static bool get isAndroid => defaultTargetPlatform == TargetPlatform.android;
+  static bool get isWeb => kIsWeb;
 }

@@ -17,7 +17,9 @@ import '../parameters/feature_ids.dart';
 import '../parameters/netservices.dart';
 
 class DogNavDrawer extends StatelessWidget {
-  const DogNavDrawer({super.key});
+  final VoidCallback? onTopDogsTap;
+
+  const DogNavDrawer({super.key, this.onTopDogsTap});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class DogNavDrawer extends StatelessWidget {
             onCompleted: () {
               context.read<SettingsCubit>().markNavigationPageDiscoveryCompleted();
             },
-            child: const _DogNavDrawerContent(),
+            child: _DogNavDrawerContent(onTopDogsTap: onTopDogsTap),
           );
         },
       ),
@@ -43,7 +45,9 @@ class DogNavDrawer extends StatelessWidget {
 }
 
 class _DogNavDrawerContent extends StatelessWidget {
-  const _DogNavDrawerContent();
+  final VoidCallback? onTopDogsTap;
+
+  const _DogNavDrawerContent({this.onTopDogsTap});
 
   void _navigateToSettingsPage(BuildContext context) {
     Navigator.pushNamed(context, '/settings');
@@ -54,6 +58,11 @@ class _DogNavDrawerContent extends StatelessWidget {
   }
 
   void _navigateToTopDogsPage(BuildContext context) {
+    if (onTopDogsTap != null) {
+      onTopDogsTap!();
+      return;
+    }
+
     Navigator.pushNamed(context, '/top-dogs');
   }
 
@@ -67,14 +76,7 @@ class _DogNavDrawerContent extends StatelessWidget {
         final bestDogIndex = allDogs.indexWhere((dog) => dog.id == drawerState.bestDogId);
 
         if (bestDogIndex >= 0 && context.mounted) {
-          await Navigator.pushNamed(
-            context,
-            '/details',
-            arguments: {
-              'dogs': allDogs,
-              'index': bestDogIndex,
-            },
-          );
+          await Navigator.pushNamed(context, '/details', arguments: {'dogs': allDogs, 'index': bestDogIndex});
         }
       } catch (e) {
         // If error, fall back to filter page
@@ -111,118 +113,101 @@ class _DogNavDrawerContent extends StatelessWidget {
       ],
       child: BlocBuilder<NavigationDrawerCubit, NavigationDrawerState>(
         builder: (BuildContext context, NavigationDrawerState drawerState) {
-        final String displayName = drawerState.dogBreedName ?? appLocalizations.none;
-        
-        // Format likes display - show "Likes: X" if available or just "Likes:" if null (hide on web)
-        final String? likesText = PlatformInfo.isWeb 
-            ? null 
-            : (drawerState.likes != null 
-                ? appLocalizations.drawerLikes(drawerState.likes!) 
-                : 'Likes:');
+          final String displayName = drawerState.dogBreedName ?? appLocalizations.none;
 
-        Widget drawerHeader = Container(
-          padding: const EdgeInsets.only(right: 16),
-          color: Theme.of(context).primaryColor,
-          child: UserAccountsDrawerHeader(
-            accountName: Text(appLocalizations.drawerFavourite(displayName), style: const TextStyle(fontSize: 18.0)),
-            accountEmail: likesText != null ? Text(likesText, style: const TextStyle(fontSize: 18.0)) : null,
-            currentAccountPictureSize: const Size.square(62.0),
-            currentAccountPicture: NavigationBestDogDiscoveryOverlay(
-              featureId: FeatureIds.navBestDog,
-              child: GestureDetector(
-                onTap: () => _handleBestDogTap(context, drawerState),
-                child: drawerState.bestDogImageUrl != null
-                    ? CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + drawerState.bestDogImageUrl!,
-                            cacheManager: LongTermCacheManager(),
-                            width: 62.0,
-                            height: 62.0,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => const Icon(
-                              Icons.add,
-                              size: 40,
-                              color: Colors.blue,
-                            ),
-                            errorWidget: (context, url, error) => const Icon(
-                              Icons.add,
-                              size: 40,
-                              color: Colors.blue,
+          // Format likes display - show "Likes: X" if available or just "Likes:" if null (hide on web)
+          final String? likesText = PlatformInfo.isWeb
+              ? null
+              : (drawerState.likes != null ? appLocalizations.drawerLikes(drawerState.likes!) : 'Likes:');
+
+          Widget drawerHeader = Container(
+            padding: const EdgeInsets.only(right: 16),
+            color: Theme.of(context).primaryColor,
+            child: UserAccountsDrawerHeader(
+              accountName: Text(appLocalizations.drawerFavourite(displayName), style: const TextStyle(fontSize: 18.0)),
+              accountEmail: likesText != null ? Text(likesText, style: const TextStyle(fontSize: 18.0)) : null,
+              currentAccountPictureSize: const Size.square(62.0),
+              currentAccountPicture: NavigationBestDogDiscoveryOverlay(
+                featureId: FeatureIds.navBestDog,
+                child: GestureDetector(
+                  onTap: () => _handleBestDogTap(context, drawerState),
+                  child: drawerState.bestDogImageUrl != null
+                      ? CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: NS.apiDogUrl + NS.apiDogImagesPage + drawerState.bestDogImageUrl!,
+                              cacheManager: LongTermCacheManager(),
+                              width: 62.0,
+                              height: 62.0,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => const Icon(Icons.add, size: 40, color: Colors.blue),
+                              errorWidget: (context, url, error) => const Icon(Icons.add, size: 40, color: Colors.blue),
                             ),
                           ),
+                        )
+                      : const CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: Icon(Icons.add, size: 40, color: Colors.blue),
                         ),
-                      )
-                    : const CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.add,
-                          size: 40,
-                          color: Colors.blue,
-                        ),
-                      ),
+                ),
               ),
+              margin: const EdgeInsets.only(bottom: 0),
+              otherAccountsPictures: <Widget>[
+                CircleAvatar(
+                  child: IconButton(
+                    onPressed: () => _navigateToSettingsPage(context),
+                    icon: const Icon(Icons.settings),
+                  ),
+                ),
+                CircleAvatar(
+                  child: IconButton(onPressed: () => _navigateToInfoPage(context), icon: const Icon(Icons.info)),
+                ),
+              ],
             ),
-            margin: const EdgeInsets.only(bottom: 0),
-            otherAccountsPictures: <Widget>[
-              CircleAvatar(
-                child: IconButton(
-                  onPressed: () => _navigateToSettingsPage(context),
-                  icon: const Icon(Icons.settings),
+          );
+
+          final drawerItems = ListView(
+            controller: scrollController,
+            children: <Widget>[
+              drawerHeader,
+              const SizedBox(height: 8),
+              // Hide Top 3 dogs menu item on web
+              if (!PlatformInfo.isWeb)
+                ListTile(
+                  leading: const Icon(Icons.emoji_events, color: Colors.orange),
+                  minLeadingWidth: 0,
+                  title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
+                  onTap: () => _navigateToTopDogsPage(context),
                 ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                minLeadingWidth: 0,
+                title: Text(appLocalizations.settingsTitle, style: const TextStyle(fontSize: 18.0)),
+                onTap: () => _navigateToSettingsPage(context),
               ),
-              CircleAvatar(
-                child: IconButton(
-                  onPressed: () => _navigateToInfoPage(context),
-                  icon: const Icon(Icons.info),
-                ),
+              ListTile(
+                leading: const Icon(Icons.info),
+                minLeadingWidth: 0,
+                title: Text(appLocalizations.infoTitle, style: const TextStyle(fontSize: 18.0)),
+                onTap: () => _navigateToInfoPage(context),
               ),
             ],
-          ),
-        );
+          );
 
-        final drawerItems = ListView(
-          controller: scrollController,
-          children: <Widget>[
-            drawerHeader,
-            const SizedBox(height: 8),
-            // Hide Top 3 dogs menu item on web
-            if (!PlatformInfo.isWeb)
-              ListTile(
-                leading: const Icon(Icons.emoji_events),
-                minLeadingWidth: 0,
-                title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
-                onTap: () => _navigateToTopDogsPage(context),
+          return SafeArea(
+            child: Drawer(
+              child: Scrollbar(
+                controller: scrollController,
+                thumbVisibility: true,
+                trackVisibility: true,
+                thickness: 10,
+                radius: const Radius.circular(6),
+                child: drawerItems,
               ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              minLeadingWidth: 0,
-              title: Text(appLocalizations.settingsTitle, style: const TextStyle(fontSize: 18.0)),
-              onTap: () => _navigateToSettingsPage(context),
             ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              minLeadingWidth: 0,
-              title: Text(appLocalizations.infoTitle, style: const TextStyle(fontSize: 18.0)),
-              onTap: () => _navigateToInfoPage(context),
-            ),
-          ],
-        );
-
-        return SafeArea(
-          child: Drawer(
-            child: Scrollbar(
-              controller: scrollController,
-              thumbVisibility: true,
-              trackVisibility: true,
-              thickness: 10,
-              radius: const Radius.circular(6),
-              child: drawerItems,
-            ),
-          ),
-        );
-      },
+          );
+        },
       ),
     );
   }

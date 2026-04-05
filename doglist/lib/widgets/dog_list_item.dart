@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/link.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import '../platform/platform_info.dart';
@@ -19,11 +20,16 @@ import 'like_cooldown_dialog.dart';
 import 'like_cooldown_with_reward_dialog.dart';
 
 enum DogListItemType {
-  list,   // Show like icon (for list page)
+  list, // Show like icon (for list page)
   filter, // Show best dog icon (for filter page)
 }
 
 class DogListItem extends StatelessWidget {
+  static final Uri _googlePlayStoreUri = Uri.parse(
+    'https://play.google.com/store/apps/details?id=com.proflutter.doglist',
+  );
+  static final Uri _appleAppStoreUri = Uri.parse('https://apps.apple.com/us/app/dog-list/id6756811861');
+
   final Dog dog;
   final VoidCallback onTap;
   final VoidCallback? onFavoriteToggled;
@@ -47,7 +53,7 @@ class DogListItem extends StatelessWidget {
 
   String _getLocalizedError(String? errorCode, String dogName, AppLocalizations localizations) {
     if (errorCode == null) return localizations.likeFailedToLike(dogName);
-    
+
     switch (errorCode) {
       case 'FAILED_TO_LOAD_COUNTS':
         return localizations.likeFailedToLoadCounts('');
@@ -63,10 +69,60 @@ class DogListItem extends StatelessWidget {
     }
   }
 
+  Widget _buildStoreLink(String label, Uri uri, {bool emphasize = false}) {
+    return Link(
+      uri: uri,
+      target: LinkTarget.blank,
+      builder: (context, followLink) => InkWell(
+        onTap: followLink,
+        borderRadius: BorderRadius.circular(6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: emphasize ? 20 : 18,
+              color: emphasize ? Colors.blue.shade800 : Colors.blue,
+              fontWeight: emphasize ? FontWeight.w600 : FontWeight.w400,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildWebStoreLinks() {
+    final bool preferAndroidStore = PlatformInfo.isAndroid;
+    final bool preferIosStore = PlatformInfo.isIOS;
+
+    if (preferAndroidStore) {
+      return [
+        _buildStoreLink('Google Play Store', _googlePlayStoreUri, emphasize: true),
+        const SizedBox(height: 8),
+        _buildStoreLink('Apple App Store', _appleAppStoreUri),
+      ];
+    }
+
+    if (preferIosStore) {
+      return [
+        _buildStoreLink('Apple App Store', _appleAppStoreUri, emphasize: true),
+        const SizedBox(height: 8),
+        _buildStoreLink('Google Play Store', _googlePlayStoreUri),
+      ];
+    }
+
+    return [
+      _buildStoreLink('Google Play Store', _googlePlayStoreUri),
+      const SizedBox(height: 8),
+      _buildStoreLink('Apple App Store', _appleAppStoreUri),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
-    
+
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -87,9 +143,7 @@ class DogListItem extends StatelessWidget {
                   height: imageSize,
                   child: const FittedBox(
                     fit: BoxFit.contain,
-                    child: Center(
-                      child: CustomSpinKitThreeInOut(),
-                    ),
+                    child: Center(child: CustomSpinKitThreeInOut()),
                   ),
                 ),
                 errorWidget: (context, url, error) => SizedBox(
@@ -97,11 +151,7 @@ class DogListItem extends StatelessWidget {
                   height: imageSize,
                   child: FittedBox(
                     fit: BoxFit.contain,
-                    child: Icon(
-                      Icons.image,
-                      size: imageSize,
-                      color: Colors.grey,
-                    ),
+                    child: Icon(Icons.image, size: imageSize, color: Colors.grey),
                   ),
                 ),
               ),
@@ -115,53 +165,41 @@ class DogListItem extends StatelessWidget {
                 children: [
                   Text(
                     dog.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      height: 1.28
-                    ),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, height: 1.28),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     "${dog.coatStyle}, ${dog.coatTexture}",
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.28,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 14, height: 1.28, color: Colors.grey.shade600),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   // Like count row - hidden on web
                   if (!PlatformInfo.isWeb)
                     BlocBuilder<LikeCubit, LikeState>(
-                    builder: (context, state) {
-                      final likeCount = state.likeCounts[dog.id] ?? 0;
-                      
-                      // Check if cache expired and queue refresh (lazy loading)
-                      // Only queue if we have a count in state (meaning initial load completed)
-                      // but cache is expired (meaning it's stale)
-                      final cacheService = LikeCacheService();
-                      final hasCachedCount = cacheService.hasCachedCount(dog.id);
-                      final hasStateCount = state.likeCounts.containsKey(dog.id);
-                      
-                      if (hasStateCount && !hasCachedCount) {
-                        // We have a count in state but cache expired - queue for refresh
-                        debugPrint('[DogListItem] Cache expired for ${dog.id}, queueing refresh');
-                        context.read<LikeCubit>().queueLikeCountRefresh(dog.id);
-                      }
-                      
-                      return Text(
-                        '👍 ${appLocalizations.likeCount(likeCount)}',
-                        style: TextStyle(
-                          fontSize: 15,
-                          height: 1.28,
-                          color: Colors.purple.shade900,
-                        ),
-                      );
-                    },
-                  ),
+                      builder: (context, state) {
+                        final likeCount = state.likeCounts[dog.id] ?? 0;
+
+                        // Check if cache expired and queue refresh (lazy loading)
+                        // Only queue if we have a count in state (meaning initial load completed)
+                        // but cache is expired (meaning it's stale)
+                        final cacheService = LikeCacheService();
+                        final hasCachedCount = cacheService.hasCachedCount(dog.id);
+                        final hasStateCount = state.likeCounts.containsKey(dog.id);
+
+                        if (hasStateCount && !hasCachedCount) {
+                          // We have a count in state but cache expired - queue for refresh
+                          debugPrint('[DogListItem] Cache expired for ${dog.id}, queueing refresh');
+                          context.read<LikeCubit>().queueLikeCountRefresh(dog.id);
+                        }
+
+                        return Text(
+                          '👍 ${appLocalizations.likeCount(likeCount)}',
+                          style: TextStyle(fontSize: 15, height: 1.28, color: Colors.purple.shade900),
+                        );
+                      },
+                    ),
                 ],
               ),
             ),
@@ -174,17 +212,14 @@ class DogListItem extends StatelessWidget {
                     builder: (context, snapshot) {
                       final isLiked = snapshot.data ?? false;
                       final isLoading = state.isLoading;
-                      
-                      return IconButton(
+
+                      final likeButton = IconButton(
                         padding: EdgeInsets.only(bottom: 1.0),
                         icon: isLoading
                             ? SizedBox(
                                 width: 25,
                                 height: 25,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.amber,
-                                ),
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.amber),
                               )
                             : Icon(
                                 isLiked ? Icons.thumb_up : Icons.thumb_up_outlined,
@@ -200,11 +235,25 @@ class DogListItem extends StatelessWidget {
                                     context: context,
                                     builder: (context) => AlertDialog(
                                       title: Text(appLocalizations.likeWebDialogTitle),
-                                      content: Text(appLocalizations.likeWebDialogMessage),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            appLocalizations.likeWebDialogMessage,
+                                            style: const TextStyle(fontSize: 18),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          ..._buildWebStoreLinks(),
+                                        ],
+                                      ),
                                       actions: [
                                         TextButton(
                                           onPressed: () => Navigator.of(context).pop(),
-                                          child: Text(appLocalizations.likeDialogOk),
+                                          child: Text(
+                                            appLocalizations.likeDialogOk,
+                                            style: const TextStyle(fontSize: 20),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -217,55 +266,44 @@ class DogListItem extends StatelessWidget {
                                   showDialog(
                                     context: context,
                                     builder: (dialogContext) => adReady
-                                        ? LikeCooldownWithRewardDialog(
-                                            dogId: dog.id,
-                                            dogName: dog.name,
-                                          )
-                                        : LikeCooldownDialog(
-                                            dogId: dog.id,
-                                            dogName: dog.name,
-                                          ),
+                                        ? LikeCooldownWithRewardDialog(dogId: dog.id, dogName: dog.name)
+                                        : LikeCooldownDialog(dogId: dog.id, dogName: dog.name),
                                   );
                                 } else {
                                   // Optimistic update
                                   final likeCubit = context.read<LikeCubit>();
                                   likeCubit.incrementLikeCountOptimistically(dog.id);
-                                  
+
                                   // Like the dog
                                   final success = await likeCubit.likeDog(dog.id);
-                                  
+
                                   if (!success) {
                                     // Revert on failure
                                     likeCubit.revertLikeCount(dog.id);
-                                    
+
                                     if (context.mounted) {
                                       // Get the latest state from the cubit (state variable may be stale)
                                       final latestState = likeCubit.state;
-                                      
+
                                       // Show appropriate dialog based on ad availability for ALREADY_LIKED_TODAY error
                                       if (latestState.error == 'ALREADY_LIKED_TODAY') {
                                         final adReady = RewardedAdManager().isAdReady();
                                         showDialog(
                                           context: context,
                                           builder: (dialogContext) => adReady
-                                              ? LikeCooldownWithRewardDialog(
-                                                  dogId: dog.id,
-                                                  dogName: dog.name,
-                                                )
-                                              : LikeCooldownDialog(
-                                                  dogId: dog.id,
-                                                  dogName: dog.name,
-                                                ),
+                                              ? LikeCooldownWithRewardDialog(dogId: dog.id, dogName: dog.name)
+                                              : LikeCooldownDialog(dogId: dog.id, dogName: dog.name),
                                         );
                                       } else {
                                         // Show snackbar for other errors
-                                        final errorMsg = _getLocalizedError(latestState.error, dog.name, appLocalizations);
+                                        final errorMsg = _getLocalizedError(
+                                          latestState.error,
+                                          dog.name,
+                                          appLocalizations,
+                                        );
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            content: Text(
-                                              errorMsg,
-                                              style: const TextStyle(fontSize: 15),
-                                            ),
+                                            content: Text(errorMsg, style: const TextStyle(fontSize: 15)),
                                             backgroundColor: Colors.red.shade700,
                                             duration: const Duration(seconds: 4),
                                             action: SnackBarAction(
@@ -298,6 +336,12 @@ class DogListItem extends StatelessWidget {
                                 }
                               },
                       );
+
+                      if (enableDiscovery) {
+                        return ListLikeButtonDiscoveryOverlay(featureId: FeatureIds.listLikeButton, child: likeButton);
+                      }
+
+                      return likeButton;
                     },
                   );
                 },

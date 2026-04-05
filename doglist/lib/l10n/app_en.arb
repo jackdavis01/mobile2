@@ -408,6 +408,14 @@
   "@discoveryQuickFiltersDescription": {
     "description": "Feature discovery description for quick filters"
   },
+  "discoveryListLikeButtonTitle": "Like Dogs",
+  "@discoveryListLikeButtonTitle": {
+    "description": "Feature discovery title for like button on list page"
+  },
+  "discoveryListLikeButtonDescription": "Tap the thumbs up to like a dog breed. You can give each dog one free like per day.",
+  "@discoveryListLikeButtonDescription": {
+    "description": "Feature discovery description for like button on list page"
+  },
   "discoveryListFilterButtonTitle": "Advanced Filters",
   "@discoveryListFilterButtonTitle": {
     "description": "Feature discovery title for filter button on list page"

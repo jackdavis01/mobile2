@@ -8,11 +8,7 @@ class QuickFilterDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const QuickFilterDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const QuickFilterDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +28,30 @@ class QuickFilterDiscoveryOverlay extends StatelessWidget {
       contentLocation: ContentLocation.below,
       overflowMode: OverflowMode.wrapBackground,
       title: Text(appLocalizations.discoveryQuickFiltersTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryQuickFiltersDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryQuickFiltersDescription, style: const TextStyle(fontSize: 17)),
+      backgroundColor: Theme.of(context).primaryColor,
+      child: child,
+    );
+  }
+}
+
+// List Page - Like Button
+class ListLikeButtonDiscoveryOverlay extends StatelessWidget {
+  final String featureId;
+  final Widget child;
+
+  const ListLikeButtonDiscoveryOverlay({super.key, required this.featureId, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
+    return DescribedFeatureOverlay(
+      featureId: featureId,
+      tapTarget: const Icon(Icons.thumb_up, size: 24, color: Colors.amber),
+      contentLocation: ContentLocation.below,
+      title: Text(appLocalizations.discoveryListLikeButtonTitle, style: const TextStyle(fontSize: 18)),
+      description: Text(appLocalizations.discoveryListLikeButtonDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -47,11 +63,7 @@ class ListFilterButtonDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const ListFilterButtonDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const ListFilterButtonDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +74,7 @@ class ListFilterButtonDiscoveryOverlay extends StatelessWidget {
       tapTarget: Icon(Icons.filter_alt_outlined, size: 32, color: Colors.blue[800]),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryListFilterButtonTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryListFilterButtonDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryListFilterButtonDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -77,11 +86,7 @@ class ListFavoriteButtonDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const ListFavoriteButtonDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const ListFavoriteButtonDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +97,7 @@ class ListFavoriteButtonDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.favorite, size: 24, color: Colors.red),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryListFavoriteTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryListFavoriteDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryListFavoriteDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -107,11 +109,7 @@ class ListFavoriteFilterButtonDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const ListFavoriteFilterButtonDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const ListFavoriteFilterButtonDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -122,10 +120,7 @@ class ListFavoriteFilterButtonDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.favorite, size: 28, color: Colors.red),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryListFavoriteFilterTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryListFavoriteFilterDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryListFavoriteFilterDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -137,11 +132,7 @@ class DetailsZoomIconDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const DetailsZoomIconDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const DetailsZoomIconDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -150,19 +141,13 @@ class DetailsZoomIconDiscoveryOverlay extends StatelessWidget {
     return DescribedFeatureOverlay(
       featureId: featureId,
       tapTarget: Container(
-        decoration: BoxDecoration(
-          color: Colors.black26,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
         padding: const EdgeInsets.all(4),
         child: const Icon(Icons.zoom_in, size: 42, color: Colors.white),
       ),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryDetailsZoomTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryDetailsZoomDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryDetailsZoomDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -174,11 +159,7 @@ class DetailsFavoriteButtonDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const DetailsFavoriteButtonDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const DetailsFavoriteButtonDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -189,10 +170,7 @@ class DetailsFavoriteButtonDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.favorite, size: 24, color: Colors.red),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryDetailsFavoriteTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryDetailsFavoriteDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryDetailsFavoriteDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -204,11 +182,7 @@ class DetailsNavigateArrowDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const DetailsNavigateArrowDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const DetailsNavigateArrowDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -217,10 +191,7 @@ class DetailsNavigateArrowDiscoveryOverlay extends StatelessWidget {
     return DescribedFeatureOverlay(
       featureId: featureId,
       tapTarget: Container(
-        decoration: BoxDecoration(
-          color: Colors.black26,
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: Colors.black26, shape: BoxShape.circle),
         padding: const EdgeInsets.all(8),
         child: const Icon(Icons.arrow_forward, size: 32, color: Colors.white),
       ),
@@ -241,11 +212,7 @@ class DetailsVerticalPagingDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const DetailsVerticalPagingDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const DetailsVerticalPagingDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -271,11 +238,7 @@ class SearchBarDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const SearchBarDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const SearchBarDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -286,10 +249,7 @@ class SearchBarDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.search, size: 28),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoverySearchBarTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoverySearchBarDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoverySearchBarDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -301,11 +261,7 @@ class AdvancedFiltersDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const AdvancedFiltersDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const AdvancedFiltersDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -316,10 +272,7 @@ class AdvancedFiltersDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.expand_more, size: 28),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryAdvancedFiltersTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryAdvancedFiltersDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryAdvancedFiltersDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -331,11 +284,7 @@ class NavigationBestDogDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const NavigationBestDogDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const NavigationBestDogDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -346,10 +295,7 @@ class NavigationBestDogDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.add, size: 40, color: Colors.blue),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryNavBestDogTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryNavBestDogDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryNavBestDogDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );
@@ -361,11 +307,7 @@ class NavigationMenuDiscoveryOverlay extends StatelessWidget {
   final String featureId;
   final Widget child;
 
-  const NavigationMenuDiscoveryOverlay({
-    super.key,
-    required this.featureId,
-    required this.child,
-  });
+  const NavigationMenuDiscoveryOverlay({super.key, required this.featureId, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -376,10 +318,7 @@ class NavigationMenuDiscoveryOverlay extends StatelessWidget {
       tapTarget: const Icon(Icons.menu, size: 28),
       contentLocation: ContentLocation.below,
       title: Text(appLocalizations.discoveryNavMenuTitle, style: const TextStyle(fontSize: 18)),
-      description: Text(
-        appLocalizations.discoveryNavMenuDescription,
-        style: const TextStyle(fontSize: 17),
-      ),
+      description: Text(appLocalizations.discoveryNavMenuDescription, style: const TextStyle(fontSize: 17)),
       backgroundColor: Theme.of(context).primaryColor,
       child: child,
     );

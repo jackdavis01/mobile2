@@ -23,9 +23,9 @@ class FeatureDiscoveryWrapper extends StatefulWidget {
     this.child,
     this.delayDiscoveryUntilDrawerClosed = false,
   }) : assert(
-          (builder != null && child == null) || (builder == null && child != null),
-          'Either builder or child must be provided, but not both',
-        );
+         (builder != null && child == null) || (builder == null && child != null),
+         'Either builder or child must be provided, but not both',
+       );
 
   @override
   State<FeatureDiscoveryWrapper> createState() => _FeatureDiscoveryWrapperState();
@@ -38,7 +38,8 @@ class _FeatureDiscoveryWrapperState extends State<FeatureDiscoveryWrapper> {
   bool _hasShownDiscovery = false;
   bool _needsInitialization = false;
   bool _pendingShouldClear = false;
-  bool _isFirstInitialization = true; // Track if this is the very first initialization
+  bool _discoveryBlocked = false;
+  bool _discoveryTriggerScheduled = false;
 
   @override
   void didChangeDependencies() {
@@ -92,27 +93,10 @@ class _FeatureDiscoveryWrapperState extends State<FeatureDiscoveryWrapper> {
 
     // Mark as pending if we need to delay
     if (widget.delayDiscoveryUntilDrawerClosed) {
-      // For pages that delay, set pending and trigger via drawer close callback
+      // For delayed pages, discovery stays pending until the page explicitly signals
+      // that all blocking UI (drawer / overlays) has been closed.
       _discoveryPending = true;
-
-      // On first initialization only (fresh app start), check if drawer is already closed
-      // and auto-trigger. This handles the case where app starts with drawer closed.
-      // Don't do this on subsequent initializations (e.g., returning from Settings)
-      // to avoid interfering with drawer state management.
-      if (_isFirstInitialization) {
-        _isFirstInitialization = false; // Mark that first init is done
-
-        // Check drawer state after a delay to allow UI to stabilize
-        Future.delayed(const Duration(milliseconds: 400), () {
-          if (mounted && _discoveryPending) {
-            final scaffold = Scaffold.maybeOf(context);
-            // If drawer is not open (or scaffold not available), trigger discovery
-            if (scaffold?.isDrawerOpen != true) {
-              _triggerPendingDiscovery();
-            }
-          }
-        });
-      }
+      _discoveryBlocked = true;
     } else {
       // Start discovery immediately (with delay to ensure widget is fully rendered)
       SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -128,24 +112,31 @@ class _FeatureDiscoveryWrapperState extends State<FeatureDiscoveryWrapper> {
   }
 
   void _onDrawerOpened() {
-    // Keep discovery pending so it can trigger when drawer closes
+    // Keep discovery pending so it can trigger when the blocking UI closes
+    _discoveryBlocked = true;
     if (!_hasShownDiscovery) {
       _discoveryPending = true;
     }
   }
 
   void _triggerPendingDiscovery() {
-    if (_discoveryPending && !_hasShownDiscovery) {
-      _hasShownDiscovery = true;
-      _discoveryPending = false;
-      // Add delay to ensure drawer close animation completes before showing discovery
-      // Drawer animation typically takes ~300ms, we add a bit extra for safety
+    _discoveryBlocked = false;
+
+    if (_discoveryPending && !_hasShownDiscovery && !_discoveryTriggerScheduled) {
+      _discoveryTriggerScheduled = true;
+      // Add delay to ensure drawer/overlay close animation completes before showing discovery
       Future.delayed(const Duration(milliseconds: 350), () {
-        if (mounted) {
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            _pageDiscovery?.showDiscovery();
-          });
+        _discoveryTriggerScheduled = false;
+
+        if (!mounted || _discoveryBlocked || !_discoveryPending || _hasShownDiscovery) {
+          return;
         }
+
+        _hasShownDiscovery = true;
+        _discoveryPending = false;
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          _pageDiscovery?.showDiscovery();
+        });
       });
     }
   }

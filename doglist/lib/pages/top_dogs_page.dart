@@ -12,19 +12,25 @@ import '../widgets/spinkitwidgets.dart';
 /// Top 3 Dogs Starting Page
 /// Shows the top 3 most liked dogs with large photos and navigation buttons
 class TopDogsPage extends StatelessWidget {
-  const TopDogsPage({super.key});
+  final VoidCallback? onCloseToList;
+  final VoidCallback? onOpenFilter;
+
+  const TopDogsPage({super.key, this.onCloseToList, this.onOpenFilter});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => TopDogsCubit(),
-      child: const _TopDogsPageContent(),
+      child: _TopDogsPageContent(onCloseToList: onCloseToList, onOpenFilter: onOpenFilter),
     );
   }
 }
 
 class _TopDogsPageContent extends StatelessWidget {
-  const _TopDogsPageContent();
+  final VoidCallback? onCloseToList;
+  final VoidCallback? onOpenFilter;
+
+  const _TopDogsPageContent({this.onCloseToList, this.onOpenFilter});
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +40,16 @@ class _TopDogsPageContent extends StatelessWidget {
           body: state.loading
               ? const Center(child: CustomSpinKitThreeInOut())
               : state.topDogs.isEmpty
-                  ? _buildErrorView(context, state)
-                  : _buildContent(context, state),
+              ? _buildErrorView(context, state)
+              : _buildContent(context, state),
         );
       },
     );
   }
 
   Widget _buildErrorView(BuildContext context, TopDogsState state) {
-    final AppLocalizations appLocalizations =
-        AppLocalizations.of(context) ?? AppLocalizationsEn();
-    
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
     // Translate error codes to localized messages
     String errorMessage;
     switch (state.errorCode) {
@@ -61,16 +66,12 @@ class _TopDogsPageContent extends StatelessWidget {
         errorMessage = appLocalizations.topDogsNoDataAvailable;
         break;
     }
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            errorMessage,
-            style: const TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
+          Text(errorMessage, style: const TextStyle(fontSize: 16), textAlign: TextAlign.center),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => context.read<TopDogsCubit>().retry(),
@@ -78,7 +79,7 @@ class _TopDogsPageContent extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           ElevatedButton(
-            onPressed: () => _navigateToList(context),
+            onPressed: onCloseToList ?? () => _navigateToList(context),
             child: Text(appLocalizations.topDogsGoToList),
           ),
         ],
@@ -87,9 +88,8 @@ class _TopDogsPageContent extends StatelessWidget {
   }
 
   Widget _buildContent(BuildContext context, TopDogsState state) {
-    final AppLocalizations appLocalizations =
-        AppLocalizations.of(context) ?? AppLocalizationsEn();
-    
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
     return Column(
       children: [
         // Upper half: Single large photo (1st place) - 50% of screen
@@ -104,7 +104,7 @@ class _TopDogsPageContent extends StatelessWidget {
               allDogs: state.allDogs,
             ),
           ),
-        
+
         // Lower half: Two photos side by side (2nd and 3rd place) - 50% of screen
         Expanded(
           child: Row(
@@ -121,7 +121,7 @@ class _TopDogsPageContent extends StatelessWidget {
                     allDogs: state.allDogs,
                   ),
                 ),
-              
+
               // 3rd place - 50% width
               if (state.topDogs.length > 2)
                 Expanded(
@@ -137,7 +137,7 @@ class _TopDogsPageContent extends StatelessWidget {
             ],
           ),
         ),
-        
+
         // Two buttons at bottom - no margin/spacing between them and photos above
         SafeArea(
           top: false,
@@ -148,28 +148,18 @@ class _TopDogsPageContent extends StatelessWidget {
                 // "Dog breeds" button
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _navigateToList(context),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      appLocalizations.topDogsBreedsButton,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    onPressed: onCloseToList ?? () => _navigateToList(context),
+                    style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                    child: Text(appLocalizations.topDogsBreedsButton, style: const TextStyle(fontSize: 16)),
                   ),
                 ),
                 const SizedBox(width: 16),
                 // "Filter breeds" button
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _navigateToFilter(context),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      appLocalizations.topDogsFilterButton,
-                      style: const TextStyle(fontSize: 16),
-                    ),
+                    onPressed: onOpenFilter ?? () => _navigateToFilter(context),
+                    style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                    child: Text(appLocalizations.topDogsFilterButton, style: const TextStyle(fontSize: 16)),
                   ),
                 ),
               ],
@@ -195,14 +185,7 @@ class _TopDogsPageContent extends StatelessWidget {
     final dogIndex = allDogs.indexWhere((d) => d.id == dogId);
     if (dogIndex == -1) return;
 
-    Navigator.pushNamed(
-      context,
-      '/details',
-      arguments: {
-        'dogs': allDogs,
-        'index': dogIndex,
-      },
-    );
+    Navigator.pushNamed(context, '/details', arguments: {'dogs': allDogs, 'index': dogIndex});
   }
 
   void _navigateToList(BuildContext context) {
@@ -223,9 +206,8 @@ class _TopDogsPageContent extends StatelessWidget {
     required int rank,
     required List<Dog> allDogs,
   }) {
-    final AppLocalizations appLocalizations =
-        AppLocalizations.of(context) ?? AppLocalizationsEn();
-    
+    final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+
     final dog = _getDogById(dogId, allDogs);
     if (dog == null) {
       return Container(
@@ -243,11 +225,11 @@ class _TopDogsPageContent extends StatelessWidget {
           // Calculate max width for breed name to prevent overlap
           // Leave space for: right margin (8) + likes counter (~70px) + gap (16)
           final maxBreedNameWidth = constraints.maxWidth - 94;
-          
+
           // Get system status bar height for Top 1 badge
           final statusBarHeight = MediaQuery.of(context).padding.top;
           final topMargin = isTopPhoto ? statusBarHeight + 8 : 8.0;
-          
+
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -262,9 +244,7 @@ class _TopDogsPageContent extends StatelessWidget {
                 ),
                 errorWidget: (context, url, error) => Container(
                   color: Colors.grey[300],
-                  child: const Center(
-                    child: Icon(Icons.image, size: 64, color: Colors.grey),
-                  ),
+                  child: const Center(child: Icon(Icons.image, size: 64, color: Colors.grey)),
                 ),
               ),
               // Semi-transparent overlays with text
@@ -273,25 +253,16 @@ class _TopDogsPageContent extends StatelessWidget {
                 bottom: 8,
                 left: 8,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: maxBreedNameWidth,
-                  ),
+                  constraints: BoxConstraints(maxWidth: maxBreedNameWidth),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.black26,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                    decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(4)),
                     child: Text(
                       dog.name,
                       textAlign: TextAlign.left,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -302,26 +273,15 @@ class _TopDogsPageContent extends StatelessWidget {
                 right: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                  decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(4)),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.thumb_up,
-                        color: Colors.amber,
-                        size: 20,
-                      ),
+                      const Icon(Icons.thumb_up, color: Colors.amber, size: 20),
                       const SizedBox(width: 4),
                       Text(
                         '$likes',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -333,17 +293,10 @@ class _TopDogsPageContent extends StatelessWidget {
                 right: 8,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black26,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
+                  decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(4)),
                   child: Text(
                     appLocalizations.topDogsRank(rank),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

@@ -1,5 +1,6 @@
 class FeatureIds {
   // List Page
+  static const String listLikeButton = 'list_like_button';
   static const String listQuickFilters = 'list_quick_filters';
   static const String listFilterButton = 'list_filter_button';
   static const String listFavoriteButton = 'list_favorite_button';
@@ -21,26 +22,22 @@ class FeatureIds {
 
   // Grouped by page
   static List<String> get listPageFeatures => [
-        navMenuIcon,
-        listQuickFilters,
-        listFilterButton,
-        listFavoriteButton,
-        listFavoriteFilterButton,
-      ];
+    listLikeButton,
+    navMenuIcon,
+    listQuickFilters,
+    listFilterButton,
+    listFavoriteButton,
+    listFavoriteFilterButton,
+  ];
 
   static List<String> get detailsPageFeatures => [
-        detailsFavoriteButton,
-        detailsZoomIcon,
-        detailsNavigateArrow,
-        detailsVerticalPaging,
-      ];
+    detailsFavoriteButton,
+    detailsZoomIcon,
+    detailsNavigateArrow,
+    detailsVerticalPaging,
+  ];
 
-  static List<String> get filterPageFeatures => [
-        filterSearchBar,
-        filterAdvancedFilters,
-      ];
+  static List<String> get filterPageFeatures => [filterSearchBar, filterAdvancedFilters];
 
-  static List<String> get navigationPageFeatures => [
-        navBestDog,
-      ];
+  static List<String> get navigationPageFeatures => [navBestDog];
 }

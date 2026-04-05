@@ -14,9 +14,7 @@ class AdBanner extends StatefulWidget {
   State<AdBanner> createState() => _AdBannerState();
 }
 
-class _AdBannerState extends State<AdBanner>
-    with LevelPlayInitListener, LevelPlayBannerAdViewListener {
-
+class _AdBannerState extends State<AdBanner> with LevelPlayInitListener, LevelPlayBannerAdViewListener {
   // AdMob banner ad instance
   BannerAd? _admobBannerAd;
   bool _isAdmobAdLoaded = false;
@@ -30,6 +28,11 @@ class _AdBannerState extends State<AdBanner>
   bool _isLoadingAd = false;
   bool _shouldShowAd = false;
   late Orientation _currentOrientation;
+
+  void _safeSetState(VoidCallback fn) {
+    if (!mounted) return;
+    setState(fn);
+  }
 
   @override
   void initState() {
@@ -69,7 +72,7 @@ class _AdBannerState extends State<AdBanner>
   Future<void> _initializeAds() async {
     if (_isLoadingAd) return;
 
-    setState(() {
+    _safeSetState(() {
       _isLoadingAd = true;
     });
 
@@ -87,7 +90,7 @@ class _AdBannerState extends State<AdBanner>
         debugPrint('AdBanner: Error initializing ads: $e');
       }
     } finally {
-      setState(() {
+      _safeSetState(() {
         _isLoadingAd = false;
       });
     }
@@ -99,9 +102,7 @@ class _AdBannerState extends State<AdBanner>
       // Configure test devices if any are available
       final testDeviceIds = AdsConfig.admobTestDeviceIds;
       if (testDeviceIds.isNotEmpty) {
-        MobileAds.instance.updateRequestConfiguration(
-          RequestConfiguration(testDeviceIds: testDeviceIds),
-        );
+        MobileAds.instance.updateRequestConfiguration(RequestConfiguration(testDeviceIds: testDeviceIds));
       }
 
       if (AdsConfig.isDebugLoggingEnabled) {
@@ -117,13 +118,12 @@ class _AdBannerState extends State<AdBanner>
   /// Initialize Unity LevelPlay SDK
   Future<void> _initializeIronSource() async {
     try {
-      final appKey = PlatformInfo.isAndroid 
+      final appKey = PlatformInfo.isAndroid
           ? AdsConfig.currentIronSourceAppKeyAndroid
           : AdsConfig.currentIronSourceAppKeyIos;
 
       // Initialize LevelPlay with current API
-      final initRequest = LevelPlayInitRequest.builder(appKey)
-          .build();
+      final initRequest = LevelPlayInitRequest.builder(appKey).build();
 
       await LevelPlay.init(initRequest: initRequest, initListener: this);
 
@@ -157,9 +157,7 @@ class _AdBannerState extends State<AdBanner>
 
       // Create and load AdMob banner
       _admobBannerAd = BannerAd(
-        adUnitId: PlatformInfo.isAndroid 
-            ? AdsConfig.currentAdmobAndroidBannerId
-            : AdsConfig.currentAdmobIosBannerId,
+        adUnitId: PlatformInfo.isAndroid ? AdsConfig.currentAdmobAndroidBannerId : AdsConfig.currentAdmobIosBannerId,
         size: size,
         request: const AdRequest(),
         listener: BannerAdListener(
@@ -167,7 +165,7 @@ class _AdBannerState extends State<AdBanner>
             if (AdsConfig.isDebugLoggingEnabled) {
               debugPrint('AdBanner: AdMob banner loaded successfully');
             }
-            setState(() {
+            _safeSetState(() {
               _isAdmobAdLoaded = true;
               _shouldShowAd = true;
             });
@@ -177,7 +175,7 @@ class _AdBannerState extends State<AdBanner>
               debugPrint('AdBanner: AdMob banner failed to load: $error');
             }
             ad.dispose();
-            setState(() {
+            _safeSetState(() {
               _admobBannerAd = null;
               _isAdmobAdLoaded = false;
             });
@@ -216,7 +214,7 @@ class _AdBannerState extends State<AdBanner>
     if (!_isIronSourceInitialized || _isIronSourceAdLoaded) return;
 
     try {
-      final adUnitId = PlatformInfo.isAndroid 
+      final adUnitId = PlatformInfo.isAndroid
           ? AdsConfig.currentIronSourceAndroidBannerId
           : AdsConfig.currentIronSourceIosBannerId;
 
@@ -253,11 +251,7 @@ class _AdBannerState extends State<AdBanner>
 
     // Show Unity LevelPlay banner if loaded
     if (_isIronSourceAdLoaded && _ironSourceBannerAdView != null) {
-      return SizedBox(
-        width: double.infinity,
-        height: 50,
-        child: _ironSourceBannerAdView!,
-      );
+      return SizedBox(width: double.infinity, height: 50, child: _ironSourceBannerAdView!);
     }
 
     // Show loading indicator or empty space
@@ -282,9 +276,7 @@ class _AdBannerState extends State<AdBanner>
 
     return Container(
       alignment: Alignment.bottomCenter,
-      child: SafeArea(
-        child: _buildAdWidget(),
-      ),
+      child: SafeArea(child: _buildAdWidget()),
     );
   }
 
@@ -308,7 +300,7 @@ class _AdBannerState extends State<AdBanner>
     if (AdsConfig.isDebugLoggingEnabled) {
       debugPrint('AdBanner: Unity LevelPlay init success');
     }
-    setState(() {
+    _safeSetState(() {
       _isIronSourceInitialized = true;
     });
   }
@@ -319,7 +311,7 @@ class _AdBannerState extends State<AdBanner>
     if (AdsConfig.isDebugLoggingEnabled) {
       debugPrint('AdBanner: Unity LevelPlay banner loaded');
     }
-    setState(() {
+    _safeSetState(() {
       _isIronSourceAdLoaded = true;
       _shouldShowAd = true;
     });
@@ -330,7 +322,7 @@ class _AdBannerState extends State<AdBanner>
     if (AdsConfig.isDebugLoggingEnabled) {
       debugPrint('AdBanner: Unity LevelPlay banner load failed: ${error.errorMessage}');
     }
-    setState(() {
+    _safeSetState(() {
       _isIronSourceAdLoaded = false;
     });
   }
