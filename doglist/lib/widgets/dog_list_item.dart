@@ -22,6 +22,7 @@ import 'like_cooldown_with_reward_dialog.dart';
 enum DogListItemType {
   list, // Show like icon (for list page)
   filter, // Show best dog icon (for filter page)
+  compare, // Show pin icon (for compare selection page)
 }
 
 class DogListItem extends StatelessWidget {
@@ -38,6 +39,8 @@ class DogListItem extends StatelessWidget {
   final double imageSize;
   final bool enableDiscovery;
   final DogListItemType type;
+  final bool isPinned;
+  final VoidCallback? onPinToggled;
 
   const DogListItem({
     super.key,
@@ -49,6 +52,8 @@ class DogListItem extends StatelessWidget {
     this.imageSize = 56.0,
     this.enableDiscovery = false,
     this.type = DogListItemType.filter,
+    this.isPinned = false,
+    this.onPinToggled,
   });
 
   String _getLocalizedError(String? errorCode, String dogName, AppLocalizations localizations) {
@@ -203,8 +208,19 @@ class DogListItem extends StatelessWidget {
                 ],
               ),
             ),
-            // Like button (list mode) or Best star button (filter mode)
-            if (type == DogListItemType.list)
+            // Compare mode shows only a pin icon; other modes show like/best + favorite
+            if (type == DogListItemType.compare)
+              IconButton(
+                icon: Icon(
+                  isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                  color: isPinned ? Theme.of(context).primaryColor : null,
+                  size: 27.0,
+                ),
+                onPressed: onPinToggled,
+              )
+            else ...[
+              // Like button (list mode) or Best star button (filter mode)
+              if (type == DogListItemType.list)
               BlocBuilder<LikeCubit, LikeState>(
                 builder: (context, state) {
                   return FutureBuilder<bool>(
@@ -394,6 +410,7 @@ class DogListItem extends StatelessWidget {
                 return favoriteButton;
               },
             ),
+            ],
           ],
         ),
       ),

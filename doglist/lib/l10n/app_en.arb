@@ -893,5 +893,29 @@
   "topDogsUnableToLoad": "Unable to load top dogs",
   "@topDogsUnableToLoad": {
     "description": "Generic error message when unable to load top dogs"
+  },
+  "compareTitle": "Compare Breeds",
+  "@compareTitle": {
+    "description": "Title for the breed comparison pages"
+  },
+  "compareButton": "Compare",
+  "@compareButton": {
+    "description": "Label for the button that opens the side-by-side comparison"
+  },
+  "compareInstructions": "Pin 2 breeds to compare them side by side.",
+  "@compareInstructions": {
+    "description": "Instructions shown at the top of the compare selection page"
+  },
+  "compareMaxReached": "You can pin only 2 breeds. Unpin one to pick another.",
+  "@compareMaxReached": {
+    "description": "Snackbar message when the user tries to pin more than two breeds"
+  },
+  "temperament": "Temperament",
+  "@temperament": {
+    "description": "Attribute label for a breed's personality traits"
+  },
+  "compareUnpin": "Unpin",
+  "@compareUnpin": {
+    "description": "Label for the button that unpins a breed in the comparison view"
   }
 }

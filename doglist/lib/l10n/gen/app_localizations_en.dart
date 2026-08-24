@@ -679,4 +679,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get topDogsUnableToLoad => 'Unable to load top dogs';
+
+  @override
+  String get compareTitle => 'Compare Breeds';
+
+  @override
+  String get compareButton => 'Compare';
+
+  @override
+  String get compareInstructions => 'Pin 2 breeds to compare them side by side.';
+
+  @override
+  String get compareMaxReached => 'You can pin only 2 breeds. Unpin one to pick another.';
+
+  @override
+  String get temperament => 'Temperament';
+
+  @override
+  String get compareUnpin => 'Unpin';
 }

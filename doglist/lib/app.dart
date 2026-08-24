@@ -7,7 +7,10 @@ import 'platform/platform_info.dart';
 import 'businesslogic/user_preferences_bloc_cubit.dart';
 import 'businesslogic/settings_bloc_cubit.dart';
 import 'businesslogic/like_bloc_cubit.dart';
+import 'businesslogic/compare_bloc_cubit.dart';
 import 'pages/listpage.dart';
+import 'pages/compare_page.dart';
+import 'pages/compare_details_page.dart';
 import 'pages/detailspage.dart';
 import 'pages/filter_page_wrapper.dart';
 import 'pages/breed_info_page.dart';
@@ -66,6 +69,7 @@ class _DogListAppState extends State<DogListApp> {
         BlocProvider(create: (_) => UserPreferencesCubit()),
         BlocProvider(create: (_) => SettingsCubit()),
         BlocProvider(create: (_) => LikeCubit()),
+        BlocProvider(create: (_) => CompareCubit()),
       ],
       child: FeatureDiscovery(
         child: MaterialApp(
@@ -81,6 +85,8 @@ class _DogListAppState extends State<DogListApp> {
             '/details': (context) => DetailsPage(),
             '/filter': (context) => FilterPageWrapper(),
             '/breed-info': (context) => BreedInfoPage(),
+            '/compare': (context) => const ComparePage(),
+            '/compare-details': (context) => const CompareDetailsPage(),
             '/settings': (context) => const SettingsPage(),
             '/info': (context) => const InfoPage(),
             '/onboarding': (context) => const OnboardingPage(fromFirstLaunch: false),

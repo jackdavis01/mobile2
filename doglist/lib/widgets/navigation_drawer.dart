@@ -66,6 +66,10 @@ class _DogNavDrawerContent extends StatelessWidget {
     Navigator.pushNamed(context, '/top-dogs');
   }
 
+  void _navigateToComparePage(BuildContext context) {
+    Navigator.pushNamed(context, '/compare');
+  }
+
   Future<void> _handleBestDogTap(BuildContext context, NavigationDrawerState drawerState) async {
     final NavigationDrawerCubit cubit = context.read<NavigationDrawerCubit>();
 
@@ -180,6 +184,12 @@ class _DogNavDrawerContent extends StatelessWidget {
                   title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
                   onTap: () => _navigateToTopDogsPage(context),
                 ),
+              ListTile(
+                leading: const Icon(Icons.compare_arrows),
+                minLeadingWidth: 0,
+                title: Text(appLocalizations.compareTitle, style: const TextStyle(fontSize: 18.0)),
+                onTap: () => _navigateToComparePage(context),
+              ),
               ListTile(
                 leading: const Icon(Icons.settings),
                 minLeadingWidth: 0,

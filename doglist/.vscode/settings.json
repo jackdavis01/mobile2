@@ -1,7 +1,12 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/stable",
+  "dart.flutterSdkPath": ".fvm/versions/3.38.10",
   "dart.lineLength": 120,
   "editor.rulers": [
     120
+  ],
+  "http.noProxy": [
+    "anthropic.com",
+    "://anthropic.com",
+    "*"
   ]
 }

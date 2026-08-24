@@ -1314,6 +1314,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load top dogs'**
   String get topDogsUnableToLoad;
+
+  /// Title for the breed comparison pages
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Breeds'**
+  String get compareTitle;
+
+  /// Label for the button that opens the side-by-side comparison
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compareButton;
+
+  /// Instructions shown at the top of the compare selection page
+  ///
+  /// In en, this message translates to:
+  /// **'Pin 2 breeds to compare them side by side.'**
+  String get compareInstructions;
+
+  /// Snackbar message when the user tries to pin more than two breeds
+  ///
+  /// In en, this message translates to:
+  /// **'You can pin only 2 breeds. Unpin one to pick another.'**
+  String get compareMaxReached;
+
+  /// Attribute label for a breed's personality traits
+  ///
+  /// In en, this message translates to:
+  /// **'Temperament'**
+  String get temperament;
+
+  /// Label for the button that unpins a breed in the comparison view
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get compareUnpin;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
