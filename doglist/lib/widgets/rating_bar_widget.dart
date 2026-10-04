@@ -66,6 +66,41 @@ class RatingBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ratingBar = ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: LinearProgressIndicator(
+        value: rating / maxRating,
+        backgroundColor: Colors.grey.shade300,
+        valueColor: AlwaysStoppedAnimation<Color>(_getRatingColor()),
+        minHeight: 8,
+      ),
+    );
+    final ratingText = Text(
+      _getRatingText(context),
+      style: TextStyle(
+        fontSize: 14,
+        color: _getRatingColor(),
+        fontWeight: FontWeight.w500,
+      ),
+      overflow: TextOverflow.visible,
+      softWrap: false,
+    );
+
+    if (label.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ratingBar,
+            const SizedBox(height: 8.0),
+            ratingText,
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
@@ -85,31 +120,12 @@ class RatingBarWidget extends StatelessWidget {
             child: Row(
               children: [
                 // Colored bar
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: LinearProgressIndicator(
-                      value: rating / maxRating,
-                      backgroundColor: Colors.grey.shade300,
-                      valueColor: AlwaysStoppedAnimation<Color>(_getRatingColor()),
-                      minHeight: 8,
-                    ),
-                  ),
-                ),
+                Expanded(child: ratingBar),
                 const SizedBox(width: 8.0),
                 // Rating text
                 SizedBox(
                   width: 74,
-                  child: Text(
-                    _getRatingText(context),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: _getRatingColor(),
-                      fontWeight: FontWeight.w500,
-                    ),
-                    overflow: TextOverflow.visible,
-                    softWrap: false,
-                  ),
+                  child: ratingText,
                 ),
               ],
             ),

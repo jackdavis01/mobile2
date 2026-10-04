@@ -212,13 +212,27 @@ class _CompareDetailsPageState extends State<CompareDetailsPage> {
     );
   }
 
+  void _openBreedDetails(Dog dog) {
+    final dogIndex = _allDogs.indexWhere((candidate) => candidate.id == dog.id);
+    if (dogIndex < 0) return;
+
+    Navigator.of(context).pushNamed(
+      '/details',
+      arguments: {'dogs': _allDogs, 'index': dogIndex},
+    );
+  }
+
   Widget _buildBreedHeader(AppLocalizations appLocalizations, Dog dog) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          _BreedCarousel(
-            imagePaths: [dog.images.largeOutdoors, dog.images.largeIndoors, dog.images.largeStudio],
+          InkWell(
+            key: ValueKey('breed-photo-${dog.id}'),
+            onTap: () => _openBreedDetails(dog),
+            child: _BreedCarousel(
+              imagePaths: [dog.images.largeOutdoors, dog.images.largeIndoors, dog.images.largeStudio],
+            ),
           ),
           const SizedBox(height: 8),
           Text(

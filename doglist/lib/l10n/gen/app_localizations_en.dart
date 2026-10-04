@@ -436,6 +436,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingScreen2Feature3 => 'Quick filter chips';
 
   @override
+  String get onboardingTopDogsTitle => 'Top 3 Most-Liked Breeds';
+
+  @override
+  String get onboardingTopDogsDescription =>
+      'See the three breeds with the most likes. Tap a photo to explore a breed, or continue to the list and filters.';
+
+  @override
+  String get onboardingTopDogsFeature1 => 'Ranked by community likes';
+
+  @override
+  String get onboardingTopDogsFeature2 => 'Tap a photo for breed details';
+
+  @override
+  String get onboardingTopDogsFeature3 => 'Browse or filter all breeds';
+
+  @override
   String get onboardingScreen3Title => 'Advanced Filtering';
 
   @override
@@ -488,16 +504,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingScreen6Description =>
-      'Access all features quickly from the navigation drawer. Set your best dog and jump to any section with ease.';
+      'Access app features quickly from the navigation drawer and keep your selected Best Dog close at hand.';
 
   @override
-  String get onboardingScreen6Feature1 => 'Best dog suggestion';
+  String get onboardingScreen6Feature1 => 'Your selected Best Dog';
 
   @override
   String get onboardingScreen6Feature2 => 'Quick filter access';
 
   @override
   String get onboardingScreen6Feature3 => 'Settings & info';
+
+  @override
+  String get onboardingCompareTitle => 'Compare Breeds';
+
+  @override
+  String get onboardingCompareDescription =>
+      'Pin two breeds to compare them side by side. Your pinned breeds stay at the top as you browse.';
+
+  @override
+  String get onboardingCompareFeature1 => 'Sort by name, likes, or size';
+
+  @override
+  String get onboardingCompareFeature2 => 'Choose either sort direction';
+
+  @override
+  String get onboardingCompareFeature3 => 'Tap a photo to open breed details';
 
   @override
   String get onboardingScreen7Title => 'Customize Your Experience';
@@ -697,4 +729,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get compareUnpin => 'Unpin';
+
+  @override
+  String get compareSortTitle => 'Sort breeds';
+
+  @override
+  String get compareSortUnsorted => 'Unsorted';
+
+  @override
+  String get compareSortAlphabetical => 'Alphabetical';
+
+  @override
+  String get compareSortLikes => 'Number of likes';
+
+  @override
+  String get compareSortNamesAscending => 'A-Z';
+
+  @override
+  String get compareSortNamesDescending => 'Z-A';
+
+  @override
+  String get compareSortLikesAscending => 'Fewest first';
+
+  @override
+  String get compareSortLikesDescending => 'Most first';
+
+  @override
+  String get compareSortSizeAscending => 'Smallest first';
+
+  @override
+  String get compareSortSizeDescending => 'Largest first';
+
+  @override
+  String get compareSortDone => 'Done';
 }

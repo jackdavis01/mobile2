@@ -12,6 +12,8 @@ import '../widgets/onboarding_screen_5_breed_info.dart';
 import '../widgets/onboarding_screen_6_navigation.dart';
 import '../widgets/onboarding_screen_7_settings.dart';
 import '../widgets/onboarding_screen_8_info.dart';
+import '../widgets/onboarding_screen_compare.dart';
+import '../widgets/onboarding_screen_top_dogs.dart';
 
 class OnboardingPage extends StatefulWidget {
   final bool fromFirstLaunch;
@@ -25,8 +27,22 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  final int _totalPages = 8;
   final OnboardingRepository _onboardingRepository = OnboardingRepository();
+
+  List<Widget> get _screens => [
+    const OnboardingScreen1Welcome(),
+    const OnboardingScreen2List(),
+    if (!PlatformInfo.isWeb) const OnboardingScreenTopDogs(),
+    const OnboardingScreen3Filter(),
+    const OnboardingScreen4Details(),
+    const OnboardingScreen5BreedInfo(),
+    const OnboardingScreen6Navigation(),
+    const OnboardingScreenCompare(),
+    const OnboardingScreen7Settings(),
+    const OnboardingScreen8Info(),
+  ];
+
+  int get _totalPages => _screens.length;
 
   @override
   void dispose() {
@@ -71,6 +87,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context) ?? AppLocalizationsEn();
+    final screens = _screens;
 
     return Scaffold(
       body: SafeArea(
@@ -99,16 +116,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 controller: _pageController,
                 onPageChanged: _onPageChanged,
                 physics: const BouncingScrollPhysics(),
-                children: const [
-                  OnboardingScreen1Welcome(),
-                  OnboardingScreen2List(),
-                  OnboardingScreen3Filter(),
-                  OnboardingScreen4Details(),
-                  OnboardingScreen5BreedInfo(),
-                  OnboardingScreen6Navigation(),
-                  OnboardingScreen7Settings(),
-                  OnboardingScreen8Info(),
-                ],
+                children: screens,
               ),
             ),
             // Bottom section with indicator and button

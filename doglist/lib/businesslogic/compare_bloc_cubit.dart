@@ -1,12 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'compare_bloc_state.dart';
+import '../models/compare_sort_order.dart';
 import '../repositories/compare_repository.dart';
 
 class CompareCubit extends Cubit<CompareState> {
   final CompareRepository _repository = CompareRepository();
+  bool _sortChanged = false;
 
   CompareCubit() : super(CompareState.initial()) {
     loadPinned();
+    _loadSort();
   }
 
   Future<void> loadPinned() async {
@@ -19,6 +22,23 @@ class CompareCubit extends Cubit<CompareState> {
   }
 
   bool isPinned(String dogId) => state.pinnedIds.contains(dogId);
+
+  Future<void> _loadSort() async {
+    try {
+      final saved = await _repository.getSort();
+      if (isClosed || _sortChanged) return;
+      emit(state.copyWith(sortOrder: saved.order, sortAscending: saved.ascending));
+    } catch (_) {
+      return;
+    }
+  }
+
+  Future<void> setSortOrder(CompareSortOrder order, {bool? ascending}) async {
+    _sortChanged = true;
+    final direction = ascending ?? (order == state.sortOrder ? state.sortAscending : order.defaultAscending);
+    emit(state.copyWith(sortOrder: order, sortAscending: direction));
+    await _repository.saveSort(order, direction);
+  }
 
   /// Toggles the pinned state for [dogId]. Returns false if the pin was
   /// rejected because two breeds are already pinned.

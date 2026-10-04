@@ -79,7 +79,7 @@ class DogsDataRepository {
     try {
       await getDogs(); // This will cache the data
       // Now try again from cache
-      return getExtendedInfo(dogId);
+      return await getExtendedInfo(dogId);
     } catch (e) {
       return null;
     }
