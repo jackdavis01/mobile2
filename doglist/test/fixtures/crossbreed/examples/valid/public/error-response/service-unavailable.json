@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "error": "SERVICE_UNAVAILABLE",
+  "retryAfterSeconds": 30,
+  "rewardStatus": "client_reported"
+}

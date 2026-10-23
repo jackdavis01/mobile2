@@ -1,0 +1,80 @@
+{
+  "items": [
+    {
+      "pairId": "3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13",
+      "generationId": "9b2e7c41-5a3d-4f86-b1e0-2c7d9a4f6e58",
+      "dogIds": [
+        "bulldog",
+        "siberian-husky"
+      ],
+      "breedNames": [
+        "Bulldog",
+        "Siberian Husky"
+      ],
+      "imageUrl": "https://media.example.test/crossbreeds/3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13/original.png",
+      "thumbnailUrl": "https://media.example.test/crossbreeds/3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13/thumbnail.webp",
+      "imageWidth": 1024,
+      "imageHeight": 1024,
+      "thumbnailWidth": 256,
+      "thumbnailHeight": 256,
+      "imageMimeType": "image/png",
+      "thumbnailMimeType": "image/webp",
+      "aiGenerated": true,
+      "sources": [
+        {
+          "dogId": "bulldog",
+          "breedName": "Bulldog",
+          "sha256": "4cf8bee1d874337ca658e629abbf2c4003d527f7b89f2b46afbc8b6e0efc793b",
+          "catalogVersion": "odr-v2-20261008"
+        },
+        {
+          "dogId": "siberian-husky",
+          "breedName": "Siberian Husky",
+          "sha256": "47acd971fda773b7a8f84716ead8fba44b44c240584d236b4af3befd028f602b",
+          "catalogVersion": "odr-v2-20261008"
+        }
+      ],
+      "createdAt": "2026-10-22T18:00:00Z",
+      "completedAt": "2026-10-22T18:01:12Z"
+    },
+    {
+      "pairId": "6a1d4f8e-2c7b-4e95-8f30-b5d2a9c7e146",
+      "generationId": "e83b5c20-9d4f-4a17-b6e2-3c8a1f7d0b95",
+      "dogIds": [
+        "golden-retriever",
+        "standard-poodle"
+      ],
+      "breedNames": [
+        "Golden Retriever",
+        "Standard Poodle"
+      ],
+      "imageUrl": "https://media.example.test/crossbreeds/6a1d4f8e-2c7b-4e95-8f30-b5d2a9c7e146/original.png",
+      "thumbnailUrl": "https://media.example.test/crossbreeds/6a1d4f8e-2c7b-4e95-8f30-b5d2a9c7e146/thumbnail.webp",
+      "imageWidth": 1024,
+      "imageHeight": 1024,
+      "thumbnailWidth": 256,
+      "thumbnailHeight": 256,
+      "imageMimeType": "image/png",
+      "thumbnailMimeType": "image/webp",
+      "aiGenerated": true,
+      "sources": [
+        {
+          "dogId": "golden-retriever",
+          "breedName": "Golden Retriever",
+          "sha256": "02003205e80150ac9f96384d66be08566435ae67eb9e944c6c6f2ffa3c5be5c9",
+          "catalogVersion": "odr-v2-20261008"
+        },
+        {
+          "dogId": "standard-poodle",
+          "breedName": "Standard Poodle",
+          "sha256": "a6c0f523b5bca7742c32777e9ee294b499c3ca1da94677ce8629913a4c4bbe6e",
+          "catalogVersion": "odr-v2-20261008"
+        }
+      ],
+      "createdAt": "2026-10-22T18:00:00Z",
+      "completedAt": "2026-10-22T17:40:05Z"
+    }
+  ],
+  "nextCursor": "MjAyNi0xMC0yMlQxNzo0MDowNVp8NmExZDRmOGU",
+  "limit": 20
+}

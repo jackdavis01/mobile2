@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GET /api/v1/crossbreeds response",
+  "description": "Shared, published, non-hidden results only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "items",
+    "nextCursor",
+    "limit"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "crossbreed-result.schema.json"
+      },
+      "maxItems": 50
+    },
+    "nextCursor": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[A-Za-z0-9_-]{1,512}$",
+      "description": "Opaque cursor over (completed_at DESC, pair_id DESC)."
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GET /api/v1/crossbreed-sources?dogIds=A,B response",
+  "description": "Never returns a generated result. A saved pair stays eligible even if current source photos are unavailable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "catalogVersion",
+    "requestedDogIds",
+    "dogIds",
+    "sources",
+    "eligibility"
+  ],
+  "properties": {
+    "catalogVersion": {
+      "$ref": "../common/defs.schema.json#/$defs/catalogVersion"
+    },
+    "requestedDogIds": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/defs.schema.json#/$defs/dogId"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "dogIds": {
+      "$ref": "../common/defs.schema.json#/$defs/canonicalDogIds"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dogId",
+          "breedName",
+          "variant",
+          "available",
+          "imageUrl",
+          "sha256",
+          "width",
+          "height"
+        ],
+        "properties": {
+          "dogId": {
+            "$ref": "../common/defs.schema.json#/$defs/dogId"
+          },
+          "breedName": {
+            "$ref": "../common/defs.schema.json#/$defs/breedName"
+          },
+          "variant": {
+            "const": "outdoors"
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "imageUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^https://"
+          },
+          "sha256": {
+            "oneOf": [
+              {
+                "$ref": "../common/defs.schema.json#/$defs/sha256Hex"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "width": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 4096
+          },
+          "height": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 4096
+          }
+        }
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Canonical order; source A is dogIds[0]."
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generateAllowed",
+        "reason"
+      ],
+      "properties": {
+        "generateAllowed": {
+          "type": "boolean"
+        },
+        "reason": {
+          "enum": [
+            null,
+            "SOURCE_UNAVAILABLE",
+            "PAIR_UNAVAILABLE",
+            "FEATURE_DISABLED",
+            "GENERATION_DISABLED",
+            "CAPACITY_UNAVAILABLE",
+            "DAILY_LIMIT_REACHED",
+            "WEB_UNSUPPORTED"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "eligibility": {
+            "properties": {
+              "generateAllowed": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "eligibility": {
+            "properties": {
+              "reason": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "eligibility": {
+            "properties": {
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

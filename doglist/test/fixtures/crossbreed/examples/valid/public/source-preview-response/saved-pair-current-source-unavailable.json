@@ -1,0 +1,37 @@
+{
+  "catalogVersion": "odr-v2-20261008",
+  "requestedDogIds": [
+    "siberian-husky",
+    "bulldog"
+  ],
+  "dogIds": [
+    "bulldog",
+    "siberian-husky"
+  ],
+  "sources": [
+    {
+      "dogId": "bulldog",
+      "breedName": "Bulldog",
+      "variant": "outdoors",
+      "available": true,
+      "imageUrl": "https://jackdavis01.github.io/open-dog-registry-fork/images/bulldog/large/outdoors.png",
+      "sha256": "4cf8bee1d874337ca658e629abbf2c4003d527f7b89f2b46afbc8b6e0efc793b",
+      "width": 1024,
+      "height": 1024
+    },
+    {
+      "dogId": "siberian-husky",
+      "breedName": "Siberian Husky",
+      "variant": "outdoors",
+      "available": false,
+      "imageUrl": null,
+      "sha256": null,
+      "width": null,
+      "height": null
+    }
+  ],
+  "eligibility": {
+    "generateAllowed": true,
+    "reason": null
+  }
+}

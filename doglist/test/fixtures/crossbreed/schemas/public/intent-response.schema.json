@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Intent create (201/200) and GET /api/v1/crossbreed-intents/{intentId} response",
+  "description": "Owner-only. fulfillment/pairId/generationId are null until fulfilled; a fulfilled mapping is immutable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intentId",
+    "clientIntentId",
+    "dogIds",
+    "canonicalDogIds",
+    "state",
+    "rewardStatus",
+    "createdAt",
+    "expiresAt",
+    "fulfillment",
+    "pairId",
+    "generationId",
+    "status",
+    "result"
+  ],
+  "properties": {
+    "intentId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "clientIntentId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "dogIds": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/defs.schema.json#/$defs/dogId"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Display order as submitted."
+    },
+    "canonicalDogIds": {
+      "$ref": "../common/defs.schema.json#/$defs/canonicalDogIds"
+    },
+    "state": {
+      "enum": [
+        "created",
+        "reward_reported",
+        "fulfilled",
+        "expired"
+      ]
+    },
+    "rewardStatus": {
+      "enum": [
+        "none",
+        "client_reported",
+        "consumed"
+      ]
+    },
+    "createdAt": {
+      "$ref": "../common/defs.schema.json#/$defs/utcTimestamp"
+    },
+    "expiresAt": {
+      "$ref": "../common/defs.schema.json#/$defs/utcTimestamp"
+    },
+    "fulfillment": {
+      "oneOf": [
+        {
+          "$ref": "../common/defs.schema.json#/$defs/fulfillmentKind"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "pairId": {
+      "oneOf": [
+        {
+          "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "generationId": {
+      "oneOf": [
+        {
+          "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "oneOf": [
+        {
+          "$ref": "../common/defs.schema.json#/$defs/publicJobStatus"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "crossbreed-result.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "pollAfterSeconds": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 15
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "fulfilled"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "rewardStatus": {
+            "const": "consumed"
+          },
+          "fulfillment": {
+            "$ref": "../common/defs.schema.json#/$defs/fulfillmentKind"
+          },
+          "pairId": {
+            "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+          },
+          "generationId": {
+            "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+          },
+          "status": {
+            "$ref": "../common/defs.schema.json#/$defs/publicJobStatus"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "fulfillment": {
+            "type": "null"
+          },
+          "pairId": {
+            "type": "null"
+          },
+          "generationId": {
+            "type": "null"
+          },
+          "status": {
+            "type": "null"
+          },
+          "result": {
+            "type": "null"
+          },
+          "rewardStatus": {
+            "enum": [
+              "none",
+              "client_reported"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "succeeded"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "$ref": "crossbreed-result.schema.json"
+          }
+        }
+      }
+    }
+  ]
+}

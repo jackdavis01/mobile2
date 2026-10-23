@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Public crossbreed error response",
+  "description": "Follows the existing backend {success:false,error:CODE} convention. Never contains provider IDs, private URLs, prompts, tokens or storage paths.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "success",
+    "error"
+  ],
+  "properties": {
+    "success": {
+      "const": false
+    },
+    "error": {
+      "enum": [
+        "INVALID_REQUEST",
+        "INVALID_PAIR",
+        "INVALID_HEADER_API_KEY",
+        "INSTALLATION_UNAUTHORIZED",
+        "NOT_FOUND",
+        "REWARDED_AD_REQUIRED",
+        "AD_ATTEMPT_ALREADY_USED",
+        "AD_COMPLETION_CONFLICT",
+        "IDEMPOTENCY_CONFLICT",
+        "SOURCE_VERSION_CHANGED",
+        "SOURCE_UNAVAILABLE",
+        "PAIR_UNAVAILABLE",
+        "INTENT_EXPIRED",
+        "RATE_LIMITED",
+        "DAILY_LIMIT_REACHED",
+        "FEATURE_DISABLED",
+        "GENERATION_DISABLED",
+        "SERVICE_UNAVAILABLE",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "retryAfterSeconds": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400
+    },
+    "rewardStatus": {
+      "enum": [
+        "none",
+        "client_reported"
+      ],
+      "description": "On unfulfilled-intent errors: client_reported means the same intent can be retried without another ad."
+    },
+    "currentCatalogVersion": {
+      "$ref": "../common/defs.schema.json#/$defs/catalogVersion"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "error": {
+            "const": "SOURCE_VERSION_CHANGED"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "currentCatalogVersion",
+          "rewardStatus"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "POST /api/v1/crossbreed-intents/{intentId}/redeem request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "clientAdAttemptId",
+    "rewardedAdCompleted",
+    "confirmedCatalogVersion"
+  ],
+  "properties": {
+    "clientAdAttemptId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "rewardedAdCompleted": {
+      "type": "boolean",
+      "description": "Flutter earned-reward plus dismissal claim; trusted at this stage. false with no recorded claim -> 403 REWARDED_AD_REQUIRED."
+    },
+    "confirmedCatalogVersion": {
+      "$ref": "../common/defs.schema.json#/$defs/catalogVersion"
+    }
+  }
+}

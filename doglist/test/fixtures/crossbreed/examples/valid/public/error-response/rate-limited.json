@@ -1,0 +1,5 @@
+{
+  "success": false,
+  "error": "DAILY_LIMIT_REACHED",
+  "retryAfterSeconds": 3600
+}

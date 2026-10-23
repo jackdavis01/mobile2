@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "POST /api/v1/crossbreed-installations request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "platform"
+  ],
+  "properties": {
+    "platform": {
+      "enum": [
+        "android",
+        "ios"
+      ]
+    },
+    "appVersion": {
+      "type": "string",
+      "maxLength": 32
+    }
+  }
+}

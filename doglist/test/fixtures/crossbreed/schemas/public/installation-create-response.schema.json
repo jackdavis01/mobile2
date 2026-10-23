@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "POST /api/v1/crossbreed-installations 201 response",
+  "description": "Installation ownership credential, not an account login. Store in Keychain/Keystore-backed storage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "installationId",
+    "installationToken",
+    "tokenType"
+  ],
+  "properties": {
+    "installationId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "installationToken": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$",
+      "description": "Random 256-bit token, base64url without padding. Returned once; server stores only its SHA-256."
+    },
+    "tokenType": {
+      "const": "Bearer"
+    }
+  }
+}

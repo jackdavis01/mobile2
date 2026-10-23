@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GET /api/v1/crossbreed-jobs/{generationId} response",
+  "description": "Only owners with a redeemed intent bound to this job may poll. Uncertainty/import/publication stays processing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "generationId",
+    "pairId",
+    "status",
+    "result",
+    "failure"
+  ],
+  "properties": {
+    "generationId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "pairId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "status": {
+      "$ref": "../common/defs.schema.json#/$defs/publicJobStatus"
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "crossbreed-result.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "failure": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "GENERATION_FAILED",
+                "SOURCE_REJECTED",
+                "CANCELLED"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "pollAfterSeconds": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 15
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "succeeded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "$ref": "crossbreed-result.schema.json"
+          },
+          "failure": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "type": "null"
+          },
+          "failure": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "enum": [
+              "queued",
+              "processing"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "type": "null"
+          },
+          "failure": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "pollAfterSeconds"
+        ]
+      }
+    }
+  ]
+}

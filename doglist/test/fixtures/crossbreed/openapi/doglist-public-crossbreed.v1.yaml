@@ -1,0 +1,289 @@
+openapi: 3.1.0
+info:
+  title: DogList crossbreed public API (Quarkus native backend)
+  version: crossbreed-contracts-v1
+  description: |
+    Public JSON control API served by the DogList Railway backend. Image bytes are
+    never served here: result DTOs carry permanent Hetzner media URLs
+    (`https://<media-host>/crossbreeds/{pairId}/original.png|thumbnail.webp`).
+
+    Every route requires the existing app `X-API-Key` header (ApiKeyFilter).
+    Intent and job routes additionally require `Authorization: Bearer <installationToken>`.
+    These credentials do not verify ads: the backend trusts the Flutter earned+dismissed
+    completion claim for this stage. Crossbreed JSON responses use `Cache-Control: no-store`.
+    There is no ungated generation endpoint, no AdMob callback route and no media proxy.
+servers:
+  - url: https://{backendHost}
+    variables:
+      backendHost:
+        default: doglist-backend.example.test
+security:
+  - appApiKey: []
+tags:
+  - name: installations
+  - name: sources
+  - name: intents
+  - name: jobs
+  - name: gallery
+paths:
+  /api/v1/crossbreed-installations:
+    post:
+      tags: [installations]
+      operationId: createInstallation
+      summary: Bootstrap installation ownership (rate limited)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '../schemas/public/installation-create-request.schema.json' }
+      responses:
+        '201':
+          description: Created. The raw token is returned only once; the server stores its SHA-256.
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/installation-create-response.schema.json' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreed-sources:
+    get:
+      tags: [sources]
+      operationId: previewSources
+      summary: Source preview and eligibility; never returns a generated result
+      parameters:
+        - name: dogIds
+          in: query
+          required: true
+          description: Two distinct catalog IDs separated by a comma, in display order (`A,B`).
+          schema: { type: string, pattern: '^[^,\s]+,[^,\s]+$' }
+      responses:
+        '200':
+          description: Preview
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/source-preview-response.schema.json' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreed-intents:
+    post:
+      tags: [intents]
+      operationId: createIntent
+      summary: Persist a new Generate action bound to owner and unordered pair (no generation)
+      security:
+        - appApiKey: []
+          installationBearer: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '../schemas/public/intent-create-request.schema.json' }
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location: { schema: { type: string }, description: '/api/v1/crossbreed-intents/{intentId}' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/intent-response.schema.json' }
+        '200':
+          description: Identical replay of the same Idempotency-Key and payload
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/intent-response.schema.json' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '409': { $ref: '#/components/responses/Error' }
+        '422': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreed-intents/{intentId}:
+    get:
+      tags: [intents]
+      operationId: getIntent
+      summary: Owner-only intent state, fulfillment mapping and any job/result (recovery)
+      security:
+        - appApiKey: []
+          installationBearer: []
+      parameters:
+        - $ref: '#/components/parameters/IntentId'
+      responses:
+        '200':
+          description: Intent
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/intent-response.schema.json' }
+        '401': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreed-intents/{intentId}/redeem:
+    post:
+      tags: [intents]
+      operationId: redeemIntent
+      summary: Record the client completion claim and fulfill (reused | joined | generated)
+      description: |
+        A fulfilled replay returns its immutable original mapping before any expiry,
+        catalog or budget check. Lock order inside fulfillment: intent -> pair -> budget.
+      security:
+        - appApiKey: []
+          installationBearer: []
+      parameters:
+        - $ref: '#/components/parameters/IntentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '../schemas/public/redeem-request.schema.json' }
+      responses:
+        '200':
+          description: Reused ready pair (or fulfilled replay of a succeeded job)
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/redeem-response.schema.json' }
+        '202':
+          description: Generated (new job admitted) or joined (existing active job)
+          headers:
+            Location: { schema: { type: string }, description: '/api/v1/crossbreed-jobs/{generationId}' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/redeem-response.schema.json' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+        '403':
+          description: REWARDED_AD_REQUIRED (no recorded claim and rewardedAdCompleted false)
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/error-response.schema.json' }
+        '404': { $ref: '#/components/responses/Error' }
+        '409':
+          description: AD_ATTEMPT_ALREADY_USED, AD_COMPLETION_CONFLICT, SOURCE_VERSION_CHANGED or PAIR_UNAVAILABLE
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/error-response.schema.json' }
+        '410':
+          description: INTENT_EXPIRED (unfulfilled only; fulfilled replays still return their mapping)
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/error-response.schema.json' }
+        '422': { $ref: '#/components/responses/Error' }
+        '429': { $ref: '#/components/responses/Error' }
+        '503': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreed-jobs/{generationId}:
+    get:
+      tags: [jobs]
+      operationId: getJob
+      summary: Poll a generation (owner with a redeemed intent bound to it)
+      security:
+        - appApiKey: []
+          installationBearer: []
+      parameters:
+        - name: generationId
+          in: path
+          required: true
+          schema: { $ref: '../schemas/common/defs.schema.json#/$defs/uuidV4' }
+      responses:
+        '200':
+          description: Status; poll from 3 s backing off to 15 s while foregrounded
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/job-status-response.schema.json' }
+        '401': { $ref: '#/components/responses/Error' }
+        '404': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreeds:
+    get:
+      tags: [gallery]
+      operationId: listCrossbreeds
+      summary: Shared published, non-hidden results (no rewarded ad required)
+      parameters:
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+        - name: cursor
+          in: query
+          schema: { type: string, pattern: '^[A-Za-z0-9_-]{1,512}$' }
+        - name: dogIds
+          in: query
+          description: Optional pair filter `A,B` (order irrelevant)
+          schema: { type: string, pattern: '^[^,\s]+,[^,\s]+$' }
+      responses:
+        '200':
+          description: Page ordered by (completed_at DESC, pair_id DESC)
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/gallery-list-response.schema.json' }
+        '400': { $ref: '#/components/responses/Error' }
+        '401': { $ref: '#/components/responses/Error' }
+  /api/v1/crossbreeds/{pairId}:
+    get:
+      tags: [gallery]
+      operationId: getCrossbreed
+      summary: Shared published result for one pair
+      parameters:
+        - name: pairId
+          in: path
+          required: true
+          schema: { $ref: '../schemas/common/defs.schema.json#/$defs/uuidV4' }
+      responses:
+        '200':
+          description: Result
+          headers:
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/crossbreed-result.schema.json' }
+        '401': { $ref: '#/components/responses/Error' }
+        '404':
+          description: Unknown, unpublished or hidden pair (clients evict both cached roles)
+          content:
+            application/json:
+              schema: { $ref: '../schemas/public/error-response.schema.json' }
+components:
+  securitySchemes:
+    appApiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    installationBearer:
+      type: http
+      scheme: bearer
+      description: Opaque 256-bit installation token from /api/v1/crossbreed-installations
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Locally persisted client intent UUIDv4 (clientIntentId)
+      schema: { $ref: '../schemas/common/defs.schema.json#/$defs/uuidV4' }
+    IntentId:
+      name: intentId
+      in: path
+      required: true
+      schema: { $ref: '../schemas/common/defs.schema.json#/$defs/uuidV4' }
+  headers:
+    NoStore:
+      schema: { type: string, const: no-store }
+  responses:
+    Error:
+      description: Safe typed error
+      headers:
+        Cache-Control: { $ref: '#/components/headers/NoStore' }
+      content:
+        application/json:
+          schema: { $ref: '../schemas/public/error-response.schema.json' }
