@@ -889,6 +889,36 @@ abstract class AppLocalizations {
   /// **'Quick filter chips'**
   String get onboardingScreen2Feature3;
 
+  /// Title for the Top 3 dogs onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Top 3 Most-Liked Breeds'**
+  String get onboardingTopDogsTitle;
+
+  /// Description for the Top 3 dogs onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'See the three breeds with the most likes. Tap a photo to explore a breed, or continue to the list and filters.'**
+  String get onboardingTopDogsDescription;
+
+  /// First feature on the Top 3 dogs onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Ranked by community likes'**
+  String get onboardingTopDogsFeature1;
+
+  /// Second feature on the Top 3 dogs onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a photo for breed details'**
+  String get onboardingTopDogsFeature2;
+
+  /// Third feature on the Top 3 dogs onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Browse or filter all breeds'**
+  String get onboardingTopDogsFeature3;
+
   /// Title for onboarding screen 3
   ///
   /// In en, this message translates to:
@@ -988,13 +1018,13 @@ abstract class AppLocalizations {
   /// Description for onboarding screen 6
   ///
   /// In en, this message translates to:
-  /// **'Access all features quickly from the navigation drawer. Set your best dog and jump to any section with ease.'**
+  /// **'Access app features quickly from the navigation drawer and keep your selected Best Dog close at hand.'**
   String get onboardingScreen6Description;
 
   /// Feature 1 for onboarding screen 6
   ///
   /// In en, this message translates to:
-  /// **'Best dog suggestion'**
+  /// **'Your selected Best Dog'**
   String get onboardingScreen6Feature1;
 
   /// Feature 2 for onboarding screen 6
@@ -1008,6 +1038,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings & info'**
   String get onboardingScreen6Feature3;
+
+  /// Title for the Compare Breeds onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Breeds'**
+  String get onboardingCompareTitle;
+
+  /// Description for the Compare Breeds onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Pin two breeds to compare them side by side. Your pinned breeds stay at the top as you browse.'**
+  String get onboardingCompareDescription;
+
+  /// First feature on the Compare Breeds onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by name, likes, or size'**
+  String get onboardingCompareFeature1;
+
+  /// Second feature on the Compare Breeds onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Choose either sort direction'**
+  String get onboardingCompareFeature2;
+
+  /// Third feature on the Compare Breeds onboarding screen
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a photo to open breed details'**
+  String get onboardingCompareFeature3;
 
   /// Title for onboarding screen 7
   ///
@@ -1314,6 +1374,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load top dogs'**
   String get topDogsUnableToLoad;
+
+  /// Title for the breed comparison pages
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Breeds'**
+  String get compareTitle;
+
+  /// Label for the button that opens the side-by-side comparison
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get compareButton;
+
+  /// Instructions shown at the top of the compare selection page
+  ///
+  /// In en, this message translates to:
+  /// **'Pin 2 breeds to compare them side by side.'**
+  String get compareInstructions;
+
+  /// Snackbar message when the user tries to pin more than two breeds
+  ///
+  /// In en, this message translates to:
+  /// **'You can pin only 2 breeds. Unpin one to pick another.'**
+  String get compareMaxReached;
+
+  /// Attribute label for a breed's personality traits
+  ///
+  /// In en, this message translates to:
+  /// **'Temperament'**
+  String get temperament;
+
+  /// Label for the button that unpins a breed in the comparison view
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get compareUnpin;
+
+  /// Title and toolbar tooltip for comparison sorting
+  ///
+  /// In en, this message translates to:
+  /// **'Sort breeds'**
+  String get compareSortTitle;
+
+  /// Comparison sort option that preserves the original breed order
+  ///
+  /// In en, this message translates to:
+  /// **'Unsorted'**
+  String get compareSortUnsorted;
+
+  /// Comparison sort option for breed names
+  ///
+  /// In en, this message translates to:
+  /// **'Alphabetical'**
+  String get compareSortAlphabetical;
+
+  /// Comparison sort option for like counts
+  ///
+  /// In en, this message translates to:
+  /// **'Number of likes'**
+  String get compareSortLikes;
+
+  /// Ascending alphabetical sort direction
+  ///
+  /// In en, this message translates to:
+  /// **'A-Z'**
+  String get compareSortNamesAscending;
+
+  /// Descending alphabetical sort direction
+  ///
+  /// In en, this message translates to:
+  /// **'Z-A'**
+  String get compareSortNamesDescending;
+
+  /// Sort breeds with the fewest likes first
+  ///
+  /// In en, this message translates to:
+  /// **'Fewest first'**
+  String get compareSortLikesAscending;
+
+  /// Sort breeds with the most likes first
+  ///
+  /// In en, this message translates to:
+  /// **'Most first'**
+  String get compareSortLikesDescending;
+
+  /// Sort breeds by size from smallest to largest
+  ///
+  /// In en, this message translates to:
+  /// **'Smallest first'**
+  String get compareSortSizeAscending;
+
+  /// Sort breeds by size from largest to smallest
+  ///
+  /// In en, this message translates to:
+  /// **'Largest first'**
+  String get compareSortSizeDescending;
+
+  /// Close the comparison sort sheet after choosing an order
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get compareSortDone;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

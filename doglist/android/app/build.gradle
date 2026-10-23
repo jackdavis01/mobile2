@@ -17,12 +17,14 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '11'
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
     }
 
     defaultConfig {
@@ -46,6 +48,12 @@ android {
     }
 
     buildTypes {
+        configureEach {
+            if (name != 'release') {
+                proguardFiles.addAll(android.buildTypes.getByName('release').proguardFiles)
+            }
+            proguardFiles 'room-proguard-rules.pro'
+        }
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
@@ -65,7 +73,7 @@ flutter {
 
 configurations.configureEach {
     resolutionStrategy {
-        // Keep AndroidX versions compatible with AGP 8.6.0.
+        // Keep AndroidX versions compatible with AGP 9.
         force 'androidx.browser:browser:1.8.0'
         force 'androidx.core:core:1.15.0'
         force 'androidx.core:core-ktx:1.15.0'

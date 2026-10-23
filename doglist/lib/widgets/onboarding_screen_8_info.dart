@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
+import 'onboarding_feature_item.dart';
 import 'scrollable_with_bar.dart';
 
 class OnboardingScreen8Info extends StatelessWidget {
@@ -32,9 +33,9 @@ class OnboardingScreen8Info extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30),
-                _buildFeatureItem(Icons.account_circle, appLocalizations.onboardingScreen8Feature1),
-                _buildFeatureItem(Icons.code, appLocalizations.onboardingScreen8Feature2),
-                _buildFeatureItem(Icons.replay, appLocalizations.onboardingScreen8Feature3),
+                OnboardingFeatureItem(icon: Icons.account_circle, text: appLocalizations.onboardingScreen8Feature1),
+                OnboardingFeatureItem(icon: Icons.code, text: appLocalizations.onboardingScreen8Feature2),
+                OnboardingFeatureItem(icon: Icons.replay, text: appLocalizations.onboardingScreen8Feature3),
                 const SizedBox(height: 40),
               ],
             ),
@@ -43,17 +44,4 @@ class OnboardingScreen8Info extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureItem(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 26),
-          const SizedBox(width: 12),
-          Text(text, style: const TextStyle(fontSize: 18)),
-        ],
-      ),
-    );
-  }
 }

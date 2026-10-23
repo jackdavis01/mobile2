@@ -1,4 +1,4 @@
-# Flutter cache fájlok ignorálása
+# Ignore Flutter cache files
 /doglist/.dart_tool/
 /doglist/.packages
 /doglist/.pub/
@@ -9,3 +9,4 @@
 /doglist/android/.gradle
 /doglist/ios/Pods
 /doglist/windows/flutter/ephemeral
+.DS_Store

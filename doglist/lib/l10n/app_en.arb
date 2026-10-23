@@ -556,6 +556,26 @@
   "@onboardingScreen2Feature3": {
     "description": "Feature 3 for onboarding screen 2"
   },
+  "onboardingTopDogsTitle": "Top 3 Most-Liked Breeds",
+  "@onboardingTopDogsTitle": {
+    "description": "Title for the Top 3 dogs onboarding screen"
+  },
+  "onboardingTopDogsDescription": "See the three breeds with the most likes. Tap a photo to explore a breed, or continue to the list and filters.",
+  "@onboardingTopDogsDescription": {
+    "description": "Description for the Top 3 dogs onboarding screen"
+  },
+  "onboardingTopDogsFeature1": "Ranked by community likes",
+  "@onboardingTopDogsFeature1": {
+    "description": "First feature on the Top 3 dogs onboarding screen"
+  },
+  "onboardingTopDogsFeature2": "Tap a photo for breed details",
+  "@onboardingTopDogsFeature2": {
+    "description": "Second feature on the Top 3 dogs onboarding screen"
+  },
+  "onboardingTopDogsFeature3": "Browse or filter all breeds",
+  "@onboardingTopDogsFeature3": {
+    "description": "Third feature on the Top 3 dogs onboarding screen"
+  },
   "onboardingScreen3Title": "Advanced Filtering",
   "@onboardingScreen3Title": {
     "description": "Title for onboarding screen 3"
@@ -620,11 +640,11 @@
   "@onboardingScreen6Title": {
     "description": "Title for onboarding screen 6"
   },
-  "onboardingScreen6Description": "Access all features quickly from the navigation drawer. Set your best dog and jump to any section with ease.",
+  "onboardingScreen6Description": "Access app features quickly from the navigation drawer and keep your selected Best Dog close at hand.",
   "@onboardingScreen6Description": {
     "description": "Description for onboarding screen 6"
   },
-  "onboardingScreen6Feature1": "Best dog suggestion",
+  "onboardingScreen6Feature1": "Your selected Best Dog",
   "@onboardingScreen6Feature1": {
     "description": "Feature 1 for onboarding screen 6"
   },
@@ -635,6 +655,26 @@
   "onboardingScreen6Feature3": "Settings & info",
   "@onboardingScreen6Feature3": {
     "description": "Feature 3 for onboarding screen 6"
+  },
+  "onboardingCompareTitle": "Compare Breeds",
+  "@onboardingCompareTitle": {
+    "description": "Title for the Compare Breeds onboarding screen"
+  },
+  "onboardingCompareDescription": "Pin two breeds to compare them side by side. Your pinned breeds stay at the top as you browse.",
+  "@onboardingCompareDescription": {
+    "description": "Description for the Compare Breeds onboarding screen"
+  },
+  "onboardingCompareFeature1": "Sort by name, likes, or size",
+  "@onboardingCompareFeature1": {
+    "description": "First feature on the Compare Breeds onboarding screen"
+  },
+  "onboardingCompareFeature2": "Choose either sort direction",
+  "@onboardingCompareFeature2": {
+    "description": "Second feature on the Compare Breeds onboarding screen"
+  },
+  "onboardingCompareFeature3": "Tap a photo to open breed details",
+  "@onboardingCompareFeature3": {
+    "description": "Third feature on the Compare Breeds onboarding screen"
   },
   "onboardingScreen7Title": "Customize Your Experience",
   "@onboardingScreen7Title": {
@@ -893,5 +933,73 @@
   "topDogsUnableToLoad": "Unable to load top dogs",
   "@topDogsUnableToLoad": {
     "description": "Generic error message when unable to load top dogs"
+  },
+  "compareTitle": "Compare Breeds",
+  "@compareTitle": {
+    "description": "Title for the breed comparison pages"
+  },
+  "compareButton": "Compare",
+  "@compareButton": {
+    "description": "Label for the button that opens the side-by-side comparison"
+  },
+  "compareInstructions": "Pin 2 breeds to compare them side by side.",
+  "@compareInstructions": {
+    "description": "Instructions shown at the top of the compare selection page"
+  },
+  "compareMaxReached": "You can pin only 2 breeds. Unpin one to pick another.",
+  "@compareMaxReached": {
+    "description": "Snackbar message when the user tries to pin more than two breeds"
+  },
+  "temperament": "Temperament",
+  "@temperament": {
+    "description": "Attribute label for a breed's personality traits"
+  },
+  "compareUnpin": "Unpin",
+  "@compareUnpin": {
+    "description": "Label for the button that unpins a breed in the comparison view"
+  },
+  "compareSortTitle": "Sort breeds",
+  "@compareSortTitle": {
+    "description": "Title and toolbar tooltip for comparison sorting"
+  },
+  "compareSortUnsorted": "Unsorted",
+  "@compareSortUnsorted": {
+    "description": "Comparison sort option that preserves the original breed order"
+  },
+  "compareSortAlphabetical": "Alphabetical",
+  "@compareSortAlphabetical": {
+    "description": "Comparison sort option for breed names"
+  },
+  "compareSortLikes": "Number of likes",
+  "@compareSortLikes": {
+    "description": "Comparison sort option for like counts"
+  },
+  "compareSortNamesAscending": "A-Z",
+  "@compareSortNamesAscending": {
+    "description": "Ascending alphabetical sort direction"
+  },
+  "compareSortNamesDescending": "Z-A",
+  "@compareSortNamesDescending": {
+    "description": "Descending alphabetical sort direction"
+  },
+  "compareSortLikesAscending": "Fewest first",
+  "@compareSortLikesAscending": {
+    "description": "Sort breeds with the fewest likes first"
+  },
+  "compareSortLikesDescending": "Most first",
+  "@compareSortLikesDescending": {
+    "description": "Sort breeds with the most likes first"
+  },
+  "compareSortSizeAscending": "Smallest first",
+  "@compareSortSizeAscending": {
+    "description": "Sort breeds by size from smallest to largest"
+  },
+  "compareSortSizeDescending": "Largest first",
+  "@compareSortSizeDescending": {
+    "description": "Sort breeds by size from largest to smallest"
+  },
+  "compareSortDone": "Done",
+  "@compareSortDone": {
+    "description": "Close the comparison sort sheet after choosing an order"
   }
 }
