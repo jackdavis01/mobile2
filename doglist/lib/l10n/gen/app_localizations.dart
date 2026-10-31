@@ -1687,6 +1687,12 @@ abstract class AppLocalizations {
   /// **'This image was created earlier for this pair and is shown again.'**
   String get crossbreedReusedNote;
 
+  /// Hint below the full-size crossbreed image about pinch zoom and panning
+  ///
+  /// In en, this message translates to:
+  /// **'Pinch to zoom in up to 4×, then drag to move around the image.'**
+  String get crossbreedZoomHint;
+
   /// The pair was hidden or removed
   ///
   /// In en, this message translates to:

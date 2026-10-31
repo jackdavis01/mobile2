@@ -872,6 +872,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get crossbreedReusedNote => 'This image was created earlier for this pair and is shown again.';
 
   @override
+  String get crossbreedZoomHint => 'Pinch to zoom in up to 4×, then drag to move around the image.';
+
+  @override
   String get crossbreedNoLongerAvailable => 'This crossbreed image is no longer available.';
 
   @override

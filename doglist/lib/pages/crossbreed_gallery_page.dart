@@ -95,7 +95,7 @@ class _GalleryViewState extends State<_GalleryView> {
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
                   sliver: SliverToBoxAdapter(
                     child: Text(l.crossbreedGalleryDisclosure,
-                        textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+                        textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ),
                 if (state.dogIds != null)

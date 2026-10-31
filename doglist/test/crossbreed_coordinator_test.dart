@@ -42,6 +42,22 @@ class _CountingRepository extends MockCrossbreedRepository {
   }
 }
 
+/// The server processes the first redeem, but its response never reaches the app.
+class _LostResponseRepository extends _CountingRepository {
+  _LostResponseRepository() : super(MockCrossbreedScenario.reused);
+  final calls = <(String, String)>[];
+
+  @override
+  Future<CrossbreedRedeemResult> redeem(
+      {required String intentId, required String clientAdAttemptId, required String confirmedCatalogVersion}) async {
+    calls.add((intentId, clientAdAttemptId));
+    final result = await super.redeem(
+        intentId: intentId, clientAdAttemptId: clientAdAttemptId, confirmedCatalogVersion: confirmedCatalogVersion);
+    if (calls.length == 1) throw const CrossbreedApiException(code: CrossbreedApiException.network);
+    return result;
+  }
+}
+
 class _FakeAds implements CrossbreedAdPresenter {
   @override
   bool isSupported = true;
@@ -277,6 +293,39 @@ void main() {
       expect(repo.redeems, 2);
       expect(repo.intents, 1);
       expect(attempt, isNotNull);
+    });
+
+    test('lost redeem response recovers from the fulfilled intent without another redeem or ad', () async {
+      final repo = _LostResponseRepository();
+      final c = coordinator(repo);
+      await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
+      await watchAd(c);
+      expect(c.state.phase, CrossbreedPhase.failed);
+      expect(c.state.retryable, isTrue);
+      expect(c.state.needsNewAd, isFalse);
+      await c.recover();
+      expect(c.state.phase, CrossbreedPhase.succeeded);
+      expect(c.state.fulfillment, FulfillmentKind.reused);
+      expect(repo.calls, hasLength(1), reason: 'GET intent returns the stored mapping');
+      expect(repo.intents, 1);
+      expect(ads.shows, 1);
+    });
+
+    test('a pair already shown in this session still needs a new ad for the next Generate', () async {
+      final repo = _CountingRepository(MockCrossbreedScenario.reused);
+      final c = coordinator(repo);
+      await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
+      await watchAd(c);
+      expect(c.state.phase, CrossbreedPhase.succeeded);
+
+      expect(await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1'), isTrue);
+      expect(c.state.phase, CrossbreedPhase.awaitingAd);
+      expect(repo.redeems, 1, reason: 'no redeem before the new ad');
+      await watchAd(c);
+      expect(c.state.phase, CrossbreedPhase.succeeded);
+      expect(ads.shows, 2);
+      expect(repo.intents, 2);
+      expect(repo.redeems, 2);
     });
 
     test('REWARDED_AD_REQUIRED keeps the intent but requires a new ad', () async {

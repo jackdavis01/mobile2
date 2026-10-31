@@ -1,3 +1,3 @@
 crossbreed-contracts-v1
 source: doglist-ai/contracts (edit there, then run scripts/sync-contracts.sh)
-tree-sha256: 7f3c9fd35d752bf550c078518ea372a1d2fe1ec732a629d6a8bbfef0ce7b39eb
+tree-sha256: 863f114fed01fc52617250012201520a79623df5bcb991e315e8d1ae07dc4a4f

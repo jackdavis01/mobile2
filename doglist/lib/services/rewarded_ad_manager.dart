@@ -6,6 +6,12 @@ import '../parameters/ads_config.dart';
 
 typedef RewardedAdCallback = void Function(bool success);
 
+/// Starts one SDK load; the SDK reports the outcome through [callback].
+typedef RewardedAdLoader = Future<void> Function(String adUnitId, RewardedAdLoadCallback callback);
+
+Future<void> _sdkLoad(String adUnitId, RewardedAdLoadCallback callback) =>
+    RewardedAd.load(adUnitId: adUnitId, request: const AdRequest(), rewardedAdLoadCallback: callback);
+
 /// Who owns a rewarded ad. Each purpose has its own loaded ad, so a like can never consume a
 /// crossbreed ad (or the reverse), and completion is reported only to the presenter that showed it.
 enum RewardedAdPurpose { like, crossbreed }
@@ -33,7 +39,26 @@ class RewardedAdManager {
   final Map<RewardedAdPurpose, _Slot> _slots = {for (final p in RewardedAdPurpose.values) p: _Slot()};
   RewardedAdPurpose? _presenting;
 
-  bool get isSupported => !kIsWeb && AdsConfig.areAdsEnabled && (Platform.isAndroid || Platform.isIOS);
+  @visibleForTesting
+  RewardedAdLoader loader = _sdkLoad;
+
+  @visibleForTesting
+  bool? supportedOverride;
+
+  /// Drops loaded ads and the presentation lease, and restores the SDK loader.
+  @visibleForTesting
+  void resetForTesting() {
+    dispose();
+    for (final slot in _slots.values) {
+      slot.loading = null;
+    }
+    _presenting = null;
+    loader = _sdkLoad;
+    supportedOverride = null;
+  }
+
+  bool get isSupported =>
+      supportedOverride ?? (!kIsWeb && AdsConfig.areAdsEnabled && (Platform.isAndroid || Platform.isIOS));
 
   /// Purpose currently on screen, if any.
   RewardedAdPurpose? get presenting => _presenting;
@@ -45,13 +70,16 @@ class RewardedAdManager {
     if (Platform.isAndroid) {
       shared = isTestMode ? AdsConfig.testAdmobAndroidRewardedId : AdsConfig.productionAdmobAndroidRewardedId;
       if (purpose == RewardedAdPurpose.crossbreed) {
-        dedicated =
-            isTestMode ? AdsConfig.testAdmobAndroidCrossbreedRewardedId : AdsConfig.productionAdmobAndroidCrossbreedRewardedId;
+        dedicated = isTestMode
+            ? AdsConfig.testAdmobAndroidCrossbreedRewardedId
+            : AdsConfig.productionAdmobAndroidCrossbreedRewardedId;
       }
     } else if (Platform.isIOS) {
       shared = isTestMode ? AdsConfig.testAdmobIosRewardedId : AdsConfig.productionAdmobIosRewardedId;
       if (purpose == RewardedAdPurpose.crossbreed) {
-        dedicated = isTestMode ? AdsConfig.testAdmobIosCrossbreedRewardedId : AdsConfig.productionAdmobIosCrossbreedRewardedId;
+        dedicated = isTestMode
+            ? AdsConfig.testAdmobIosCrossbreedRewardedId
+            : AdsConfig.productionAdmobIosCrossbreedRewardedId;
       }
     } else {
       return '';
@@ -75,10 +103,9 @@ class RewardedAdManager {
     }
 
     debugPrint('[RewardedAdManager] Loading ${purpose.name} rewarded ad...');
-    RewardedAd.load(
-      adUnitId: _adUnitId(purpose),
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
+    loader(
+      _adUnitId(purpose),
+      RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           debugPrint('[RewardedAdManager] ${purpose.name} ad loaded');
           finish(ad);
@@ -130,14 +157,18 @@ class RewardedAdManager {
       },
     );
     debugPrint('[RewardedAdManager] Showing ${purpose.name} rewarded ad...');
-    ad.show(onUserEarnedReward: (_, reward) {
-      debugPrint('[RewardedAdManager] ${purpose.name} reward earned');
-      onEarned();
-    }).catchError((Object e) {
-      debugPrint('[RewardedAdManager] Exception while showing ${purpose.name} ad: $e');
-      release(ad);
-      onFailedToShow();
-    });
+    ad
+        .show(
+          onUserEarnedReward: (_, reward) {
+            debugPrint('[RewardedAdManager] ${purpose.name} reward earned');
+            onEarned();
+          },
+        )
+        .catchError((Object e) {
+          debugPrint('[RewardedAdManager] Exception while showing ${purpose.name} ad: $e');
+          release(ad);
+          onFailedToShow();
+        });
     return RewardedShowOutcome.started;
   }
 

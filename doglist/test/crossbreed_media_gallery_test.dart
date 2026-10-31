@@ -17,7 +17,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 final Map<String, dynamic> _base = jsonDecode(
-    File('test/fixtures/crossbreed/examples/valid/public/crossbreed-result/bulldog-husky.json').readAsStringSync());
+  File('test/fixtures/crossbreed/examples/valid/public/crossbreed-result/bulldog-husky.json').readAsStringSync(),
+);
 
 /// Result [i]: newer results have higher [i] (gallery order is completedAt desc).
 CrossbreedResult _result(int i) {
@@ -72,7 +73,12 @@ class _FakeCacheManager implements BaseCacheManager {
   Future<void> removeFile(String key) async => removed.add(key);
 
   @override
-  Stream<FileResponse> getFileStream(String url, {String? key, Map<String, String>? headers, bool withProgress = false}) {
+  Stream<FileResponse> getFileStream(
+    String url, {
+    String? key,
+    Map<String, String>? headers,
+    bool withProgress = false,
+  }) {
     requested.add(key ?? url);
     return Stream.error(const HttpExceptionWithStatus(503, 'unavailable'));
   }
@@ -85,10 +91,10 @@ CrossbreedGalleryPage _page(List<int> ids, {String? next}) =>
     CrossbreedGalleryPage(items: [for (final i in ids) _result(i)], nextCursor: next, limit: 3);
 
 Widget _app(Widget child) => MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: child,
-    );
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  home: child,
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -109,10 +115,16 @@ void main() {
   testWidgets('thumbnail role loads the full thumbnail URL and retries the same URL', (tester) async {
     final manager = _FakeCacheManager();
     final r = _result(1);
-    await tester.pumpWidget(_app(Center(
-      child: SizedBox.square(
-          dimension: 100, child: CrossbreedImage(result: r, role: CrossbreedImageRole.thumbnail, cacheManager: manager)),
-    )));
+    await tester.pumpWidget(
+      _app(
+        Center(
+          child: SizedBox.square(
+            dimension: 100,
+            child: CrossbreedImage(result: r, role: CrossbreedImageRole.thumbnail, cacheManager: manager),
+          ),
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(manager.requested, [r.thumbnailUrl]);
     await tester.tap(find.byIcon(Icons.refresh));
@@ -124,19 +136,83 @@ void main() {
     final repo = _GalleryRepo()..hidden.add(_result(1).pairId);
     final media = _RecordingMedia();
     String? reported;
-    await tester.pumpWidget(_app(CrossbreedResultPage(
-      result: _result(1),
-      repository: repo,
-      mediaCache: media,
-      imageCacheManager: _FakeCacheManager(),
-      onUnavailable: (id) => reported = id,
-    )));
+    await tester.pumpWidget(
+      _app(
+        CrossbreedResultPage(
+          result: _result(1),
+          repository: repo,
+          mediaCache: media,
+          imageCacheManager: _FakeCacheManager(),
+          onUnavailable: (id) => reported = id,
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(media.evicted, [_result(1).pairId]);
     expect(reported, _result(1).pairId);
     expect(find.text('This crossbreed image is no longer available.'), findsOneWidget);
     expect(find.byType(CrossbreedImage), findsNothing);
   });
+
+  for (final size in const [Size(400, 900), Size(900, 400), Size(280, 700)]) {
+    testWidgets('result page has no page scroll and keeps texts right below the image at $size', (tester) async {
+      tester.view.physicalSize = size;
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        _app(
+          CrossbreedResultPage(
+            result: _result(1),
+            repository: _GalleryRepo(),
+            mediaCache: _RecordingMedia(),
+            imageCacheManager: _FakeCacheManager(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(Scrollable), findsNothing);
+      expect(find.byType(InteractiveViewer), findsOneWidget);
+      final image = tester.getRect(find.byType(InteractiveViewer));
+      expect(image.width, closeTo(image.height, 0.01));
+      final label = find.text('AI-generated image');
+      final hint = find.text('Pinch to zoom in up to 4×, then drag to move around the image.');
+      expect(hint, findsOneWidget);
+      expect(tester.getTopLeft(label).dy - image.bottom, lessThan(20));
+      expect(tester.getTopLeft(hint).dy, greaterThan(tester.getBottomLeft(label).dy));
+      expect(tester.widget<Text>(hint).style?.fontSize, tester.widget<Text>(label).style?.fontSize);
+      final zoomIcon = find.byIcon(Icons.zoom_in);
+      expect(tester.getTopLeft(hint).dx - tester.getTopRight(zoomIcon).dx, closeTo(4, 0.01));
+      // The widest wrapped line starts at the text box edge, so the 4 px gap is to the visible text.
+      final hintText = tester.widget<Text>(hint).data!;
+      final lines = tester
+          .renderObject<RenderParagraph>(hint)
+          .getBoxesForSelection(TextSelection(baseOffset: 0, extentOffset: hintText.length));
+      expect(lines.map((b) => b.left).reduce((a, b) => a < b ? a : b), closeTo(0, 0.5));
+      expect(tester.getTopLeft(label).dx - tester.getTopRight(find.byIcon(Icons.auto_awesome)).dx, closeTo(6, 0.01));
+      expect(tester.takeException(), isNull);
+
+      // Banner sits at the screen bottom like on the other pages, and a loaded banner never covers the texts.
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(
+        find.descendant(of: find.byWidget(scaffold.bottomNavigationBar!), matching: find.byType(AdBanner)),
+        findsOneWidget,
+      );
+      tester
+          .renderObject<RenderConstrainedBox>(
+            find.descendant(of: find.byType(AdBanner), matching: find.byType(SizedBox)),
+          )
+          .additionalConstraints = const BoxConstraints.tightFor(
+        height: 90,
+      );
+      await tester.pump();
+      final banner = tester.getRect(find.byType(AdBanner));
+      expect(banner.bottom, size.height);
+      final basedOn = find.textContaining('Based on');
+      expect(tester.getBottomLeft(basedOn).dy, lessThanOrEqualTo(banner.top));
+      expect(tester.getRect(find.byType(InteractiveViewer)).bottom, lessThan(banner.top));
+      expect(tester.takeException(), isNull);
+    });
+  }
 
   group('gallery cubit', () {
     late _GalleryRepo repo;
@@ -207,13 +283,17 @@ void main() {
     late _RecordingMedia media;
 
     Future<void> pumpGallery(WidgetTester tester, {List<String>? dogIds, List<String>? names}) async {
-      await tester.pumpWidget(_app(CrossbreedGalleryScreen(
-        dogIds: dogIds,
-        names: names,
-        repository: repo,
-        mediaCache: media,
-        imageCacheManager: _FakeCacheManager(),
-      )));
+      await tester.pumpWidget(
+        _app(
+          CrossbreedGalleryScreen(
+            dogIds: dogIds,
+            names: names,
+            repository: repo,
+            mediaCache: media,
+            imageCacheManager: _FakeCacheManager(),
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
     }
 
@@ -230,8 +310,10 @@ void main() {
       expect(find.byType(CrossbreedImage), findsNWidgets(3));
       expect(find.byIcon(Icons.auto_awesome), findsNWidgets(3));
       final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(find.descendant(of: find.byWidget(scaffold.bottomNavigationBar!), matching: find.byType(AdBanner)),
-          findsOneWidget);
+      expect(
+        find.descendant(of: find.byWidget(scaffold.bottomNavigationBar!), matching: find.byType(AdBanner)),
+        findsOneWidget,
+      );
       expect(find.byType(AdBanner), findsOneWidget);
       await tester.pumpWidget(const SizedBox.shrink());
     });
@@ -317,11 +399,14 @@ void main() {
       expect(find.byType(CrossbreedImage), findsWidgets);
       expect(tester.state(find.byType(AdBanner)), same(bannerState));
 
-      ScaffoldMessenger.of(tester.element(find.byType(CustomScrollView)))
-          .showSnackBar(const SnackBar(content: Text('note')));
+      ScaffoldMessenger.of(
+        tester.element(find.byType(CustomScrollView)),
+      ).showSnackBar(const SnackBar(content: Text('note')));
       await tester.pumpAndSettle();
-      expect(tester.getRect(find.byType(SnackBar)).bottom,
-          lessThanOrEqualTo(tester.getRect(find.byType(AdBanner)).top));
+      expect(
+        tester.getRect(find.byType(SnackBar)).bottom,
+        lessThanOrEqualTo(tester.getRect(find.byType(AdBanner)).top),
+      );
       await tester.pumpWidget(const SizedBox.shrink());
     });
   });

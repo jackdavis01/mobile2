@@ -11,15 +11,30 @@ import '../pages/crossbreed_result_page.dart';
 import '../parameters/netservices.dart';
 import 'crossbreed_image.dart';
 
+const double _sheetBottomPadding = 36;
+
+/// Modal sheets get no bottom safe area. On iPhone the home-indicator inset (34) fits inside the fixed
+/// padding; taller insets, such as Android edge-to-edge navigation bars, keep the button 12 px above them.
+@visibleForTesting
+double crossbreedSheetBottomPadding(double systemBottomInset) =>
+    systemBottomInset > _sheetBottomPadding ? systemBottomInset + 12 : _sheetBottomPadding;
+
 /// Opens the AI crossbreed sheet for two distinct breeds in the user's display order.
-Future<void> showCrossbreedSheet(BuildContext context, {required List<String> dogIds, required List<String> names}) async {
+Future<void> showCrossbreedSheet(
+  BuildContext context, {
+  required List<String> dogIds,
+  required List<String> names,
+}) async {
   final cubit = CrossbreedCubit();
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
     showDragHandle: true,
-    builder: (_) => BlocProvider.value(value: cubit, child: CrossbreedSheet(dogIds: dogIds, names: names)),
+    builder: (_) => BlocProvider.value(
+      value: cubit,
+      child: CrossbreedSheet(dogIds: dogIds, names: names),
+    ),
   );
   // A finished success/failure is cleared; a pending command stays with the coordinator.
   await cubit.acknowledge();
@@ -55,7 +70,10 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
   Future<void> _generate(CrossbreedSourcePreview preview) async {
     setState(() => _starting = true);
     try {
-      await context.read<CrossbreedCubit>().generate(displayDogIds: widget.dogIds, catalogVersion: preview.catalogVersion);
+      await context.read<CrossbreedCubit>().generate(
+        displayDogIds: widget.dogIds,
+        catalogVersion: preview.catalogVersion,
+      );
     } finally {
       if (mounted) setState(() => _starting = false);
     }
@@ -70,7 +88,12 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
         final ownFlow = _isThisPair(state.displayDogIds) && state.phase != CrossbreedPhase.idle;
         final otherPending = !ownFlow && cubit.hasPendingCommand;
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          padding: EdgeInsets.fromLTRB(
+            20,
+            0,
+            20,
+            crossbreedSheetBottomPadding(MediaQuery.viewPaddingOf(context).bottom),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -96,9 +119,9 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
   }
 
   List<Widget> _failure(AppLocalizations l, CrossbreedFlowState state, CrossbreedCubit cubit) => [
-        _Message(crossbreedErrorText(l, state.errorCode), error: true),
-        if (state.retryable) FilledButton(onPressed: cubit.retry, child: Text(l.crossbreedRetry)),
-      ];
+    _Message(crossbreedErrorText(l, state.errorCode), error: true),
+    if (state.retryable) FilledButton(onPressed: cubit.retry, child: Text(l.crossbreedRetry)),
+  ];
 
   Widget _buildPreview(AppLocalizations l, CrossbreedCubit cubit, {required bool blocked}) {
     return FutureBuilder<CrossbreedSourcePreview>(
@@ -107,14 +130,22 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
         if (snap.connectionState != ConnectionState.done) {
           return Padding(
             padding: const EdgeInsets.all(24),
-            child: Column(children: [const CircularProgressIndicator(), const SizedBox(height: 12), Text(l.crossbreedLoadingPreview)]),
+            child: Column(
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 12),
+                Text(l.crossbreedLoadingPreview),
+              ],
+            ),
           );
         }
         if (snap.hasError || snap.data == null) {
-          return Column(children: [
-            _Message(l.crossbreedPreviewError, error: true),
-            TextButton(onPressed: () => setState(_loadPreview), child: Text(l.crossbreedRetry)),
-          ]);
+          return Column(
+            children: [
+              _Message(l.crossbreedPreviewError, error: true),
+              TextButton(onPressed: () => setState(_loadPreview), child: Text(l.crossbreedRetry)),
+            ],
+          );
         }
         final preview = snap.data!;
         final byId = {for (final s in preview.sources) s.dogId: s};
@@ -126,18 +157,23 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
               children: [
                 for (var i = 0; i < 2; i++) ...[
                   if (i == 1) const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Icon(Icons.close)),
-                  Expanded(child: _SourceTile(source: byId[widget.dogIds[i]], fallbackName: widget.names[i])),
+                  Expanded(
+                    child: _SourceTile(source: byId[widget.dogIds[i]], fallbackName: widget.names[i]),
+                  ),
                 ],
               ],
             ),
             const SizedBox(height: 16),
             Text(l.crossbreedExplanation, textAlign: TextAlign.center),
             const SizedBox(height: 8),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(Icons.auto_awesome, size: 18),
-              const SizedBox(width: 6),
-              Text(l.crossbreedAiLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
-            ]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.auto_awesome, size: 18),
+                const SizedBox(width: 6),
+                Text(l.crossbreedAiLabel, style: const TextStyle(fontWeight: FontWeight.w600)),
+              ],
+            ),
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: canGenerate ? () => _generate(preview) : null,
@@ -167,11 +203,18 @@ class _FlowView extends StatelessWidget {
     final l = AppLocalizations.of(context) ?? AppLocalizationsEn();
     switch (state.phase) {
       case CrossbreedPhase.awaitingAd:
-        return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          if (state.errorCode != null) _Message(crossbreedErrorText(l, state.errorCode), error: true),
-          FilledButton.icon(onPressed: onWatchAd, icon: const Icon(Icons.ondemand_video), label: Text(l.crossbreedWatchAdAgain)),
-          TextButton(onPressed: onCancel, child: Text(l.crossbreedCancel)),
-        ]);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (state.errorCode != null) _Message(crossbreedErrorText(l, state.errorCode), error: true),
+            FilledButton.icon(
+              onPressed: onWatchAd,
+              icon: const Icon(Icons.ondemand_video),
+              label: Text(l.crossbreedWatchAdAgain),
+            ),
+            TextButton(onPressed: onCancel, child: Text(l.crossbreedCancel)),
+          ],
+        );
       case CrossbreedPhase.succeeded:
         // Rendered only from the succeeded state, i.e. after the ad and a successful redemption.
         final result = state.result!;
@@ -180,49 +223,54 @@ class _FlowView extends StatelessWidget {
           nav.pop();
           nav.push(CrossbreedResultPage.route(result, fulfillment: state.fulfillment));
         }
-        return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          _Message(l.crossbreedReady),
-          Center(
-            child: SizedBox.square(
-              dimension: 200,
-              child: GestureDetector(
-                onTap: open,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: CrossbreedImage(result: result, role: CrossbreedImageRole.thumbnail),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _Message(l.crossbreedReady),
+            Center(
+              child: SizedBox.square(
+                dimension: 200,
+                child: GestureDetector(
+                  onTap: open,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: CrossbreedImage(result: result, role: CrossbreedImageRole.thumbnail),
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text('${result.breedNames.join(' × ')} · ${l.crossbreedAiLabel}', textAlign: TextAlign.center),
-          if (state.fulfillment == FulfillmentKind.reused) _Message(l.crossbreedReusedNote),
-          const SizedBox(height: 8),
-          FilledButton(onPressed: open, child: Text(l.crossbreedOpenResult)),
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.crossbreedClose)),
-        ]);
+            const SizedBox(height: 8),
+            Text('${result.breedNames.join(' × ')} · ${l.crossbreedAiLabel}', textAlign: TextAlign.center),
+            if (state.fulfillment == FulfillmentKind.reused) _Message(l.crossbreedReusedNote),
+            const SizedBox(height: 8),
+            FilledButton(onPressed: open, child: Text(l.crossbreedOpenResult)),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.crossbreedClose)),
+          ],
+        );
       default:
         final text = switch (state.phase) {
           CrossbreedPhase.showingAd => l.crossbreedLoadingAd,
           CrossbreedPhase.redeeming => l.crossbreedRedeeming,
           CrossbreedPhase.generating => switch (state.jobStatus) {
-              CrossbreedJobStatus.queued => l.crossbreedQueued,
-              CrossbreedJobStatus.processing => l.crossbreedProcessing,
-              _ => l.crossbreedGenerating,
-            },
+            CrossbreedJobStatus.queued => l.crossbreedQueued,
+            CrossbreedJobStatus.processing => l.crossbreedProcessing,
+            _ => l.crossbreedGenerating,
+          },
           _ => l.crossbreedPreparing,
         };
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Column(children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
-            Text(text, textAlign: TextAlign.center),
-            if (state.phase == CrossbreedPhase.generating) ...[
-              if (state.fulfillment == FulfillmentKind.joined) _Message(l.crossbreedJoinedNote),
-              if (state.jobStatus != null) _Message(l.crossbreedGenerating),
+          child: Column(
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+              Text(text, textAlign: TextAlign.center),
+              if (state.phase == CrossbreedPhase.generating) ...[
+                if (state.fulfillment == FulfillmentKind.joined) _Message(l.crossbreedJoinedNote),
+                if (state.jobStatus != null) _Message(l.crossbreedGenerating),
+              ],
             ],
-          ]),
+          ),
         );
     }
   }
@@ -238,23 +286,30 @@ class _SourceTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context) ?? AppLocalizationsEn();
     final s = source;
-    return Column(children: [
-      AspectRatio(
-        aspectRatio: 1,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: s != null && s.available && s.imageUrl != null
-              ? CachedNetworkImage(imageUrl: s.imageUrl!, cacheManager: LongTermCacheManager(), fit: BoxFit.cover)
-              : ColoredBox(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: Center(child: Text(l.crossbreedPhotoUnavailable, textAlign: TextAlign.center)),
-                ),
+    return Column(
+      children: [
+        AspectRatio(
+          aspectRatio: 1,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: s != null && s.available && s.imageUrl != null
+                ? CachedNetworkImage(imageUrl: s.imageUrl!, cacheManager: LongTermCacheManager(), fit: BoxFit.cover)
+                : ColoredBox(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: Center(child: Text(l.crossbreedPhotoUnavailable, textAlign: TextAlign.center)),
+                  ),
+          ),
         ),
-      ),
-      const SizedBox(height: 6),
-      Text(s?.breedName ?? fallbackName,
-          textAlign: TextAlign.center, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold)),
-    ]);
+        const SizedBox(height: 6),
+        Text(
+          s?.breedName ?? fallbackName,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
   }
 }
 
@@ -266,23 +321,30 @@ class _Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Text(text,
-            textAlign: TextAlign.center, style: TextStyle(color: error ? Theme.of(context).colorScheme.error : null)),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 10),
+    child: Text(
+      text,
+      textAlign: TextAlign.center,
+      style: TextStyle(color: error ? Theme.of(context).colorScheme.error : null),
+    ),
+  );
 }
 
 /// Localized text for a safe crossbreed error/eligibility code.
 String crossbreedErrorText(AppLocalizations l, String? code) => switch (code) {
-      'AD_NOT_COMPLETED' || 'REWARDED_AD_REQUIRED' => l.crossbreedAdNotCompleted,
-      'AD_UNAVAILABLE' => l.crossbreedAdUnavailable,
-      'ADS_UNSUPPORTED' || 'WEB_UNSUPPORTED' => l.crossbreedAdsUnsupported,
-      'GENERATION_DISABLED' || 'FEATURE_DISABLED' => l.crossbreedGenerationPaused,
-      'DAILY_LIMIT_REACHED' || 'CAPACITY_UNAVAILABLE' || 'RATE_LIMITED' => l.crossbreedLimitReached,
-      'GENERATION_FAILED' => l.crossbreedFailed,
-      'PAIR_UNAVAILABLE' => l.crossbreedPairUnavailable,
-      'SOURCE_VERSION_CHANGED' => l.crossbreedSourceChanged,
-      'INTENT_EXPIRED' => l.crossbreedExpired,
-      'SERVICE_UNAVAILABLE' || 'NETWORK_ERROR' || 'TIMEOUT' || 'INTERNAL_ERROR' || 'INVALID_RESPONSE' => l.crossbreedTemporaryError,
-      _ => l.crossbreedNotAvailable,
-    };
+  'AD_NOT_COMPLETED' || 'REWARDED_AD_REQUIRED' => l.crossbreedAdNotCompleted,
+  'AD_UNAVAILABLE' => l.crossbreedAdUnavailable,
+  'ADS_UNSUPPORTED' || 'WEB_UNSUPPORTED' => l.crossbreedAdsUnsupported,
+  'GENERATION_DISABLED' || 'FEATURE_DISABLED' => l.crossbreedGenerationPaused,
+  'DAILY_LIMIT_REACHED' || 'CAPACITY_UNAVAILABLE' || 'RATE_LIMITED' => l.crossbreedLimitReached,
+  'GENERATION_FAILED' => l.crossbreedFailed,
+  'PAIR_UNAVAILABLE' => l.crossbreedPairUnavailable,
+  'SOURCE_VERSION_CHANGED' => l.crossbreedSourceChanged,
+  'INTENT_EXPIRED' => l.crossbreedExpired,
+  'SERVICE_UNAVAILABLE' ||
+  'NETWORK_ERROR' ||
+  'TIMEOUT' ||
+  'INTERNAL_ERROR' ||
+  'INVALID_RESPONSE' => l.crossbreedTemporaryError,
+  _ => l.crossbreedNotAvailable,
+};

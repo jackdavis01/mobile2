@@ -1142,6 +1142,10 @@
   "@crossbreedReusedNote": {
     "description": "Fulfillment reused an existing published image"
   },
+  "crossbreedZoomHint": "Pinch to zoom in up to 4×, then drag to move around the image.",
+  "@crossbreedZoomHint": {
+    "description": "Hint below the full-size crossbreed image about pinch zoom and panning"
+  },
   "crossbreedNoLongerAvailable": "This crossbreed image is no longer available.",
   "@crossbreedNoLongerAvailable": {
     "description": "The pair was hidden or removed"
