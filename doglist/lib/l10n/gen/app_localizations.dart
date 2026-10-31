@@ -1650,6 +1650,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photo unavailable'**
   String get crossbreedPhotoUnavailable;
+
+  /// Retries downloading the same crossbreed image (no new generation)
+  ///
+  /// In en, this message translates to:
+  /// **'Retry image'**
+  String get crossbreedImageRetry;
+
+  /// Opens the full-size crossbreed result
+  ///
+  /// In en, this message translates to:
+  /// **'View image'**
+  String get crossbreedOpenResult;
+
+  /// Generation job is queued
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting in line to create the image…'**
+  String get crossbreedQueued;
+
+  /// Generation job is processing
+  ///
+  /// In en, this message translates to:
+  /// **'Creating the image…'**
+  String get crossbreedProcessing;
+
+  /// Fulfillment joined an in-progress generation
+  ///
+  /// In en, this message translates to:
+  /// **'This pair was already being created, so your request joined it.'**
+  String get crossbreedJoinedNote;
+
+  /// Fulfillment reused an existing published image
+  ///
+  /// In en, this message translates to:
+  /// **'This image was created earlier for this pair and is shown again.'**
+  String get crossbreedReusedNote;
+
+  /// The pair was hidden or removed
+  ///
+  /// In en, this message translates to:
+  /// **'This crossbreed image is no longer available.'**
+  String get crossbreedNoLongerAvailable;
+
+  /// Source attribution under a crossbreed image
+  ///
+  /// In en, this message translates to:
+  /// **'Based on photos of {first} and {second}'**
+  String crossbreedBasedOn(String first, String second);
+
+  /// Cancels a different pair's request that is still waiting for its ad
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel the other request'**
+  String get crossbreedCancelOther;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

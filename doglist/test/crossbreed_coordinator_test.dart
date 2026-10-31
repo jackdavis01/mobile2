@@ -77,6 +77,7 @@ class _FakeAds implements CrossbreedAdPresenter {
 const _dogs = ['siberian-husky', 'bulldog'];
 const _queued = 'public/job-status-response/queued.json';
 const _succeeded = 'public/job-status-response/succeeded.json';
+const _processing = 'public/job-status-response/processing-reconciling-internally.json';
 
 void main() {
   late List<Duration> delays;
@@ -151,9 +152,11 @@ void main() {
     test('generated: waits for earned+dismissed, then polls 3 s with backoff to 15 s', () async {
       final repo = _CountingRepository(const MockCrossbreedScenario(
         redeem: 'public/redeem-response/generated-202.json',
-        jobs: [_queued, _queued, _queued, _queued, _queued, _succeeded],
+        jobs: [_queued, _queued, _processing, _processing, _processing, _succeeded],
       ));
       final c = coordinator(repo);
+      final statuses = <CrossbreedJobStatus?>[];
+      c.stream.where((s) => s.phase == CrossbreedPhase.generating).listen((s) => statuses.add(s.jobStatus));
       expect(await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1'), isTrue);
       expect(c.state.phase, CrossbreedPhase.awaitingAd);
       await c.watchAd();
@@ -168,6 +171,7 @@ void main() {
       expect(state.result, isNotNull);
       expect(state.fulfillment, FulfillmentKind.generated);
       expect(delays.map((d) => d.inSeconds), [3, 6, 12, 15, 15, 15]);
+      expect(statuses, [CrossbreedJobStatus.queued, CrossbreedJobStatus.processing]);
       expect(await store.load(), isNull);
       expect(await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1'), isTrue);
     });

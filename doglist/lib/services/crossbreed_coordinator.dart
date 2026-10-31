@@ -29,7 +29,7 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
 
   static CrossbreedCoordinator? _instance;
   static CrossbreedCoordinator get instance => _instance ??= CrossbreedCoordinator(
-      repository: ApiCrossbreedRepository(), store: PrefsCrossbreedStateStore(), ads: SdkCrossbreedAdPresenter());
+      repository: ApiCrossbreedRepository.shared, store: PrefsCrossbreedStateStore(), ads: SdkCrossbreedAdPresenter());
 
   static const int minPollSeconds = 3;
   static const int maxPollSeconds = 15;
@@ -106,13 +106,14 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
   }
 
   CrossbreedFlowState _from(CrossbreedPhase phase,
-          {String? errorCode, bool retryable = false, bool needsNewAd = false, int? retryAfterSeconds, CrossbreedResult? result}) =>
+          {String? errorCode, bool retryable = false, bool needsNewAd = false, int? retryAfterSeconds, CrossbreedResult? result, CrossbreedJobStatus? jobStatus}) =>
       CrossbreedFlowState(
         phase: phase,
         displayDogIds: _command?.displayDogIds ?? _state.displayDogIds,
         fulfillment: _command?.fulfillment ?? _state.fulfillment,
         pairId: _command?.pairId ?? _state.pairId,
         result: result,
+        jobStatus: jobStatus,
         errorCode: errorCode,
         retryable: retryable,
         needsNewAd: needsNewAd,
@@ -351,7 +352,7 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
     if (status == CrossbreedJobStatus.failed) {
       return _finish(_from(CrossbreedPhase.failed, errorCode: 'GENERATION_FAILED', needsNewAd: true));
     }
-    _emit(_from(CrossbreedPhase.generating));
+    _emit(_from(CrossbreedPhase.generating, jobStatus: status));
     _startPolling(hintSeconds: pollAfterSeconds);
   }
 
@@ -413,6 +414,9 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
       if (job.status == CrossbreedJobStatus.failed) {
         debugPrint('[Crossbreed] generation failed: ${job.failureCode}');
         return _serial(() => _finish(_from(CrossbreedPhase.failed, errorCode: 'GENERATION_FAILED', needsNewAd: true)));
+      }
+      if (job.status != _state.jobStatus && _state.phase == CrossbreedPhase.generating) {
+        _emit(_from(CrossbreedPhase.generating, jobStatus: job.status));
       }
       backoff = min(backoff * 2, maxPollSeconds);
       hint = job.pollAfterSeconds == null ? null : min(job.pollAfterSeconds!, maxPollSeconds);

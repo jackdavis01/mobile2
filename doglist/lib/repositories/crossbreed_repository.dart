@@ -42,6 +42,9 @@ class ApiCrossbreedRepository implements CrossbreedRepository {
         _appVersion = appVersion ?? _packageVersion,
         _platform = platform ?? _currentPlatform;
 
+  /// App-wide instance so the coordinator, result page and gallery share one installation bootstrap.
+  static final ApiCrossbreedRepository shared = ApiCrossbreedRepository();
+
   final CrossbreedApiClient _client;
   final CrossbreedTokenStore _tokens;
   final Future<String?> Function() _appVersion;

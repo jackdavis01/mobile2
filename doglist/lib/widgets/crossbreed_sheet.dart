@@ -7,7 +7,9 @@ import '/l10n/gen/app_localizations_en.dart';
 import '../businesslogic/crossbreed_bloc_cubit.dart';
 import '../businesslogic/crossbreed_bloc_state.dart';
 import '../models/crossbreed_models.dart';
+import '../pages/crossbreed_result_page.dart';
 import '../parameters/netservices.dart';
+import 'crossbreed_image.dart';
 
 /// Opens the AI crossbreed sheet for two distinct breeds in the user's display order.
 Future<void> showCrossbreedSheet(BuildContext context, {required List<String> dogIds, required List<String> names}) async {
@@ -66,7 +68,7 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
       builder: (context, state) {
         final cubit = context.read<CrossbreedCubit>();
         final ownFlow = _isThisPair(state.displayDogIds) && state.phase != CrossbreedPhase.idle;
-        final otherPending = !ownFlow && state.displayDogIds != null && state.isBusy;
+        final otherPending = !ownFlow && cubit.hasPendingCommand;
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           child: Column(
@@ -78,8 +80,12 @@ class _CrossbreedSheetState extends State<CrossbreedSheet> {
               if (ownFlow && state.phase != CrossbreedPhase.failed)
                 _FlowView(state: state, onWatchAd: cubit.watchAd, onCancel: cubit.cancel)
               else ...[
-                _buildPreview(l, cubit, blocked: otherPending || _starting),
-                if (otherPending) _Message(l.crossbreedOtherPending),
+                _buildPreview(l, cubit, blocked: otherPending || _starting || (ownFlow && state.retryable)),
+                if (otherPending) ...[
+                  _Message(l.crossbreedOtherPending),
+                  if (state.phase == CrossbreedPhase.awaitingAd)
+                    TextButton(onPressed: cubit.cancel, child: Text(l.crossbreedCancelOther)),
+                ],
                 if (ownFlow) ..._failure(l, state, cubit),
               ],
             ],
@@ -167,30 +173,56 @@ class _FlowView extends StatelessWidget {
           TextButton(onPressed: onCancel, child: Text(l.crossbreedCancel)),
         ]);
       case CrossbreedPhase.succeeded:
+        // Rendered only from the succeeded state, i.e. after the ad and a successful redemption.
         final result = state.result!;
+        void open() {
+          final nav = Navigator.of(context);
+          nav.pop();
+          nav.push(CrossbreedResultPage.route(result, fulfillment: state.fulfillment));
+        }
         return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           _Message(l.crossbreedReady),
-          AspectRatio(
-            aspectRatio: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(result.thumbnailUrl, fit: BoxFit.cover),
+          Center(
+            child: SizedBox.square(
+              dimension: 200,
+              child: GestureDetector(
+                onTap: open,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CrossbreedImage(result: result, role: CrossbreedImageRole.thumbnail),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 8),
           Text('${result.breedNames.join(' × ')} · ${l.crossbreedAiLabel}', textAlign: TextAlign.center),
+          if (state.fulfillment == FulfillmentKind.reused) _Message(l.crossbreedReusedNote),
+          const SizedBox(height: 8),
+          FilledButton(onPressed: open, child: Text(l.crossbreedOpenResult)),
           TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l.crossbreedClose)),
         ]);
       default:
         final text = switch (state.phase) {
           CrossbreedPhase.showingAd => l.crossbreedLoadingAd,
           CrossbreedPhase.redeeming => l.crossbreedRedeeming,
-          CrossbreedPhase.generating => l.crossbreedGenerating,
+          CrossbreedPhase.generating => switch (state.jobStatus) {
+              CrossbreedJobStatus.queued => l.crossbreedQueued,
+              CrossbreedJobStatus.processing => l.crossbreedProcessing,
+              _ => l.crossbreedGenerating,
+            },
           _ => l.crossbreedPreparing,
         };
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Column(children: [const CircularProgressIndicator(), const SizedBox(height: 16), Text(text, textAlign: TextAlign.center)]),
+          child: Column(children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(text, textAlign: TextAlign.center),
+            if (state.phase == CrossbreedPhase.generating) ...[
+              if (state.fulfillment == FulfillmentKind.joined) _Message(l.crossbreedJoinedNote),
+              if (state.jobStatus != null) _Message(l.crossbreedGenerating),
+            ],
+          ]),
         );
     }
   }

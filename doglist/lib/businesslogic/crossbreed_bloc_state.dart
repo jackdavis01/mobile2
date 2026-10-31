@@ -20,6 +20,7 @@ class CrossbreedFlowState {
     this.fulfillment,
     this.pairId,
     this.result,
+    this.jobStatus,
     this.errorCode,
     this.retryable = false,
     this.needsNewAd = false,
@@ -35,6 +36,9 @@ class CrossbreedFlowState {
   final FulfillmentKind? fulfillment;
   final String? pairId;
   final CrossbreedResult? result;
+
+  /// Last known job status while generating (null until the first status or after relaunch).
+  final CrossbreedJobStatus? jobStatus;
 
   /// Safe error code: a contract code, NETWORK_ERROR/TIMEOUT/INVALID_RESPONSE, or a local ad code
   /// (AD_NOT_COMPLETED, AD_UNAVAILABLE, ADS_UNSUPPORTED).

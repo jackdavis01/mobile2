@@ -20,6 +20,9 @@ class CrossbreedCubit extends Cubit<CrossbreedFlowState> {
 
   bool get adsSupported => _coordinator.adsSupported;
 
+  /// True while any Generate command (for any pair) is persisted and unfinished.
+  bool get hasPendingCommand => _coordinator.pendingCommand != null;
+
   Future<CrossbreedSourcePreview> previewSources(String firstDogId, String secondDogId) =>
       _coordinator.previewSources(firstDogId, secondDogId);
 

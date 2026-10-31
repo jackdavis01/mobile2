@@ -852,4 +852,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crossbreedPhotoUnavailable => 'Photo unavailable';
+
+  @override
+  String get crossbreedImageRetry => 'Retry image';
+
+  @override
+  String get crossbreedOpenResult => 'View image';
+
+  @override
+  String get crossbreedQueued => 'Waiting in line to create the image…';
+
+  @override
+  String get crossbreedProcessing => 'Creating the image…';
+
+  @override
+  String get crossbreedJoinedNote => 'This pair was already being created, so your request joined it.';
+
+  @override
+  String get crossbreedReusedNote => 'This image was created earlier for this pair and is shown again.';
+
+  @override
+  String get crossbreedNoLongerAvailable => 'This crossbreed image is no longer available.';
+
+  @override
+  String crossbreedBasedOn(String first, String second) {
+    return 'Based on photos of $first and $second';
+  }
+
+  @override
+  String get crossbreedCancelOther => 'Cancel the other request';
 }

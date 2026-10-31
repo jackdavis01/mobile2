@@ -1117,5 +1117,49 @@
   "crossbreedPhotoUnavailable": "Photo unavailable",
   "@crossbreedPhotoUnavailable": {
     "description": "A source photo is not available"
+  },
+  "crossbreedImageRetry": "Retry image",
+  "@crossbreedImageRetry": {
+    "description": "Retries downloading the same crossbreed image (no new generation)"
+  },
+  "crossbreedOpenResult": "View image",
+  "@crossbreedOpenResult": {
+    "description": "Opens the full-size crossbreed result"
+  },
+  "crossbreedQueued": "Waiting in line to create the image…",
+  "@crossbreedQueued": {
+    "description": "Generation job is queued"
+  },
+  "crossbreedProcessing": "Creating the image…",
+  "@crossbreedProcessing": {
+    "description": "Generation job is processing"
+  },
+  "crossbreedJoinedNote": "This pair was already being created, so your request joined it.",
+  "@crossbreedJoinedNote": {
+    "description": "Fulfillment joined an in-progress generation"
+  },
+  "crossbreedReusedNote": "This image was created earlier for this pair and is shown again.",
+  "@crossbreedReusedNote": {
+    "description": "Fulfillment reused an existing published image"
+  },
+  "crossbreedNoLongerAvailable": "This crossbreed image is no longer available.",
+  "@crossbreedNoLongerAvailable": {
+    "description": "The pair was hidden or removed"
+  },
+  "crossbreedBasedOn": "Based on photos of {first} and {second}",
+  "@crossbreedBasedOn": {
+    "description": "Source attribution under a crossbreed image",
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
+  "crossbreedCancelOther": "Cancel the other request",
+  "@crossbreedCancelOther": {
+    "description": "Cancels a different pair's request that is still waiting for its ad"
   }
 }
