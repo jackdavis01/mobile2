@@ -13,6 +13,8 @@ import '../widgets/rating_bar_widget.dart';
 import '../widgets/spinkitwidgets.dart';
 import '../widgets/ad_banner.dart';
 import '../widgets/crossbreed_sheet.dart';
+import 'crossbreed_gallery_page.dart';
+import '../widgets/download_app_dialog.dart';
 import '../parameters/netservices.dart';
 import '../parameters/ads_config.dart';
 import '../platform/platform_info.dart';
@@ -168,13 +170,31 @@ class _CompareDetailsPageState extends State<CompareDetailsPage> {
       child: Column(
         children: [
           _buildHeaderRow(appLocalizations, dogA, dogB),
-          if (PlatformInfo.isAndroid || PlatformInfo.isIOS)
+          if (PlatformInfo.isAndroid || PlatformInfo.isIOS || PlatformInfo.isWeb)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: OutlinedButton.icon(
-                onPressed: () => showCrossbreedSheet(context, dogIds: [dogA.id, dogB.id], names: [dogA.name, dogB.name]),
-                icon: const Icon(Icons.auto_awesome),
-                label: Text(appLocalizations.crossbreedButton),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () => PlatformInfo.isWeb
+                        ? showDownloadAppDialog(context, message: appLocalizations.crossbreedWebDialogMessage)
+                        : showCrossbreedSheet(context, dogIds: [dogA.id, dogB.id], names: [dogA.name, dogB.name]),
+                    icon: const Icon(Icons.auto_awesome),
+                    label: Text(appLocalizations.crossbreedButton),
+                  ),
+                  TextButton(
+                    onPressed: () => PlatformInfo.isWeb
+                        ? showDownloadAppDialog(context, message: appLocalizations.crossbreedWebDialogMessage)
+                        : Navigator.pushNamed(context, CrossbreedGalleryScreen.routeName, arguments: {
+                            'dogIds': [dogA.id, dogB.id],
+                            'names': [dogA.name, dogB.name],
+                          }),
+                    child: Text(appLocalizations.crossbreedGalleryPairLink),
+                  ),
+                ],
               ),
             ),
           _buildAttribute(

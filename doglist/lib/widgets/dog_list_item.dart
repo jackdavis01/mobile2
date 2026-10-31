@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/link.dart';
 import '/l10n/gen/app_localizations.dart';
 import '/l10n/gen/app_localizations_en.dart';
 import '../platform/platform_info.dart';
@@ -16,6 +15,7 @@ import '../businesslogic/like_bloc_cubit.dart';
 import '../businesslogic/like_bloc_state.dart';
 import '../services/like_cache_service.dart';
 import '../services/rewarded_ad_manager.dart';
+import 'download_app_dialog.dart';
 import 'like_cooldown_dialog.dart';
 import 'like_cooldown_with_reward_dialog.dart';
 
@@ -26,11 +26,6 @@ enum DogListItemType {
 }
 
 class DogListItem extends StatelessWidget {
-  static final Uri _googlePlayStoreUri = Uri.parse(
-    'https://play.google.com/store/apps/details?id=com.proflutter.doglist',
-  );
-  static final Uri _appleAppStoreUri = Uri.parse('https://apps.apple.com/us/app/dog-list/id6756811861');
-
   final Dog dog;
   final VoidCallback onTap;
   final VoidCallback? onFavoriteToggled;
@@ -72,56 +67,6 @@ class DogListItem extends StatelessWidget {
         // If error message contains specific text, use it; otherwise use generic
         return errorCode.isNotEmpty ? errorCode : localizations.likeFailedToLike(dogName);
     }
-  }
-
-  Widget _buildStoreLink(String label, Uri uri, {bool emphasize = false}) {
-    return Link(
-      uri: uri,
-      target: LinkTarget.blank,
-      builder: (context, followLink) => InkWell(
-        onTap: followLink,
-        borderRadius: BorderRadius.circular(6),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: emphasize ? 20 : 18,
-              color: emphasize ? Colors.blue.shade800 : Colors.blue,
-              fontWeight: emphasize ? FontWeight.w600 : FontWeight.w400,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildWebStoreLinks() {
-    final bool preferAndroidStore = PlatformInfo.isAndroid;
-    final bool preferIosStore = PlatformInfo.isIOS;
-
-    if (preferAndroidStore) {
-      return [
-        _buildStoreLink('Google Play Store', _googlePlayStoreUri, emphasize: true),
-        const SizedBox(height: 8),
-        _buildStoreLink('Apple App Store', _appleAppStoreUri),
-      ];
-    }
-
-    if (preferIosStore) {
-      return [
-        _buildStoreLink('Apple App Store', _appleAppStoreUri, emphasize: true),
-        const SizedBox(height: 8),
-        _buildStoreLink('Google Play Store', _googlePlayStoreUri),
-      ];
-    }
-
-    return [
-      _buildStoreLink('Google Play Store', _googlePlayStoreUri),
-      const SizedBox(height: 8),
-      _buildStoreLink('Apple App Store', _appleAppStoreUri),
-    ];
   }
 
   @override
@@ -247,33 +192,7 @@ class DogListItem extends StatelessWidget {
                             : () async {
                                 // On web, show dialog to download app
                                 if (PlatformInfo.isWeb) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(appLocalizations.likeWebDialogTitle),
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            appLocalizations.likeWebDialogMessage,
-                                            style: const TextStyle(fontSize: 18),
-                                          ),
-                                          const SizedBox(height: 12),
-                                          ..._buildWebStoreLinks(),
-                                        ],
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.of(context).pop(),
-                                          child: Text(
-                                            appLocalizations.likeDialogOk,
-                                            style: const TextStyle(fontSize: 20),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                  showDownloadAppDialog(context, message: appLocalizations.likeWebDialogMessage);
                                   return;
                                 }
                                 if (isLiked) {

@@ -5,11 +5,14 @@ import 'dart:io';
 import 'package:doglist/businesslogic/crossbreed_gallery_bloc_cubit.dart';
 import 'package:doglist/l10n/gen/app_localizations.dart';
 import 'package:doglist/models/crossbreed_models.dart';
+import 'package:doglist/pages/crossbreed_gallery_page.dart';
 import 'package:doglist/pages/crossbreed_result_page.dart';
 import 'package:doglist/repositories/crossbreed_repository.dart';
 import 'package:doglist/services/crossbreed_image_cache_manager.dart';
+import 'package:doglist/widgets/ad_banner.dart';
 import 'package:doglist/widgets/crossbreed_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -196,6 +199,130 @@ void main() {
       c.removeUnavailable(_result(9).pairId);
       expect(c.state.isEmpty, isTrue);
       await c.close();
+    });
+  });
+
+  group('gallery page', () {
+    late _GalleryRepo repo;
+    late _RecordingMedia media;
+
+    Future<void> pumpGallery(WidgetTester tester, {List<String>? dogIds, List<String>? names}) async {
+      await tester.pumpWidget(_app(CrossbreedGalleryScreen(
+        dogIds: dogIds,
+        names: names,
+        repository: repo,
+        mediaCache: media,
+        imageCacheManager: _FakeCacheManager(),
+      )));
+      await tester.pumpAndSettle();
+    }
+
+    setUp(() {
+      repo = _GalleryRepo();
+      media = _RecordingMedia();
+    });
+
+    testWidgets('shows disclosure, AI tiles and the banner in the bottom navigation slot', (tester) async {
+      repo.pages[null] = _page([3, 2, 1]);
+      await pumpGallery(tester);
+
+      expect(find.text('All images in this gallery are AI-generated and do not show real dogs.'), findsOneWidget);
+      expect(find.byType(CrossbreedImage), findsNWidgets(3));
+      expect(find.byIcon(Icons.auto_awesome), findsNWidgets(3));
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(find.descendant(of: find.byWidget(scaffold.bottomNavigationBar!), matching: find.byType(AdBanner)),
+          findsOneWidget);
+      expect(find.byType(AdBanner), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('empty, filtered-empty and error with retry states', (tester) async {
+      repo.pages[null] = _page([]);
+      await pumpGallery(tester);
+      expect(find.text('No AI crossbreeds yet. Create one from Compare Breeds.'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      await pumpGallery(tester, dogIds: ['bulldog', 'husky'], names: ['Bulldog', 'Husky']);
+      expect(find.text('No AI crossbreed for this pair yet.'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+
+      repo.listError = const CrossbreedApiException(code: 'SERVICE_UNAVAILABLE', httpStatus: 503);
+      await pumpGallery(tester);
+      expect(find.text("Couldn't load the gallery."), findsOneWidget);
+      repo.listError = null;
+      repo.pages[null] = _page([1]);
+      await tester.tap(find.text('Try again'));
+      await tester.pumpAndSettle();
+      expect(find.byType(CrossbreedImage), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('pair filter is sent to the API and can be cleared', (tester) async {
+      repo.pages[null] = _page([2, 1]);
+      await pumpGallery(tester, dogIds: ['bulldog', 'husky'], names: ['Bulldog', 'Husky']);
+      expect(repo.listCalls.single.$2, ['bulldog', 'husky']);
+      expect(find.text('Bulldog × Husky'), findsOneWidget);
+
+      await tester.tap(find.descendant(of: find.byType(InputChip), matching: find.byType(Icon)).last);
+      await tester.pumpAndSettle();
+      expect(repo.listCalls.last.$2, isNull);
+      expect(find.byType(InputChip), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('tile opens the result page and a hidden pair is removed from the grid', (tester) async {
+      repo.pages[null] = _page([2, 1]);
+      repo.hidden.add(_result(2).pairId);
+      await pumpGallery(tester);
+
+      await tester.tap(find.text(_result(2).breedNames.join(' × ')).first);
+      await tester.pumpAndSettle();
+      expect(find.byType(CrossbreedResultPage), findsOneWidget);
+      expect(media.evicted, [_result(2).pairId]);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+      expect(find.byType(CrossbreedImage), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+    });
+
+    testWidgets('banner never covers the last row, pagination or snackbars and stays one instance', (tester) async {
+      tester.view.devicePixelRatio = 1;
+      tester.view.physicalSize = const Size(390, 844);
+      tester.view.padding = const FakeViewPadding(bottom: 34);
+      tester.view.viewPadding = const FakeViewPadding(bottom: 34);
+      addTearDown(tester.view.reset);
+
+      repo.pages[null] = _page([for (var i = 40; i > 20; i--) i], next: 'c1');
+      repo.pages['c1'] = _page([for (var i = 20; i > 0; i--) i]);
+      await pumpGallery(tester);
+      final bannerState = tester.state(find.byType(AdBanner));
+      final placeholder = tester.renderObject<RenderConstrainedBox>(
+        find.descendant(of: find.byType(AdBanner), matching: find.byType(SizedBox)),
+      );
+
+      for (final adHeight in [0.0, 50.0, 90.0]) {
+        placeholder.additionalConstraints = BoxConstraints.tightFor(height: adHeight == 0 ? 0 : adHeight + 34);
+        await tester.pump();
+        await tester.fling(find.byType(CustomScrollView), const Offset(0, -20000), 5000);
+        await tester.pumpAndSettle();
+
+        final bannerTop = tester.getRect(find.byType(AdBanner)).top;
+        expect(tester.getRect(find.byType(CustomScrollView)).bottom, lessThanOrEqualTo(bannerTop));
+        final lastTile = find.byType(CrossbreedImage).last;
+        expect(tester.getRect(lastTile).bottom, lessThanOrEqualTo(bannerTop));
+        expect(lastTile.hitTestable(), findsOneWidget);
+      }
+      expect(repo.listCalls.map((c) => c.$1), [null, 'c1']);
+      expect(find.byType(CrossbreedImage), findsWidgets);
+      expect(tester.state(find.byType(AdBanner)), same(bannerState));
+
+      ScaffoldMessenger.of(tester.element(find.byType(CustomScrollView)))
+          .showSnackBar(const SnackBar(content: Text('note')));
+      await tester.pumpAndSettle();
+      expect(tester.getRect(find.byType(SnackBar)).bottom,
+          lessThanOrEqualTo(tester.getRect(find.byType(AdBanner)).top));
+      await tester.pumpWidget(const SizedBox.shrink());
     });
   });
 }

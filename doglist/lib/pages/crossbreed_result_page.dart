@@ -32,9 +32,20 @@ class CrossbreedResultPage extends StatefulWidget {
   final BaseCacheManager? imageCacheManager;
 
   static Route<void> route(CrossbreedResult result,
-          {FulfillmentKind? fulfillment, void Function(String pairId)? onUnavailable}) =>
+          {FulfillmentKind? fulfillment,
+          void Function(String pairId)? onUnavailable,
+          CrossbreedRepository? repository,
+          CrossbreedMediaCache? mediaCache,
+          BaseCacheManager? imageCacheManager}) =>
       MaterialPageRoute(
-        builder: (_) => CrossbreedResultPage(result: result, fulfillment: fulfillment, onUnavailable: onUnavailable),
+        builder: (_) => CrossbreedResultPage(
+          result: result,
+          fulfillment: fulfillment,
+          onUnavailable: onUnavailable,
+          repository: repository,
+          mediaCache: mediaCache,
+          imageCacheManager: imageCacheManager,
+        ),
       );
 
   @override

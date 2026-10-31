@@ -881,4 +881,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get crossbreedCancelOther => 'Cancel the other request';
+
+  @override
+  String get crossbreedGalleryTitle => 'AI crossbreeds';
+
+  @override
+  String get crossbreedGalleryDisclosure => 'All images in this gallery are AI-generated and do not show real dogs.';
+
+  @override
+  String get crossbreedGalleryEmpty => 'No AI crossbreeds yet. Create one from Compare Breeds.';
+
+  @override
+  String get crossbreedGalleryFilteredEmpty => 'No AI crossbreed for this pair yet.';
+
+  @override
+  String get crossbreedGalleryError => 'Couldn\'t load the gallery.';
+
+  @override
+  String get crossbreedGalleryRetry => 'Try again';
+
+  @override
+  String get crossbreedGalleryPairLink => 'See in gallery';
+
+  @override
+  String get topDogsWebDialogMessage =>
+      'If you want to see the Top Dogs, please download the App from the Google Play Store or from the Apple App Store.';
+
+  @override
+  String get crossbreedWebDialogMessage =>
+      'If you want to create and browse AI crossbreeds, please download the App from the Google Play Store or from the Apple App Store.';
 }

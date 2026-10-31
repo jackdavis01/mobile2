@@ -1704,6 +1704,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel the other request'**
   String get crossbreedCancelOther;
+
+  /// Title of the public AI crossbreed gallery page and drawer entry
+  ///
+  /// In en, this message translates to:
+  /// **'AI crossbreeds'**
+  String get crossbreedGalleryTitle;
+
+  /// Disclosure at the top of the gallery
+  ///
+  /// In en, this message translates to:
+  /// **'All images in this gallery are AI-generated and do not show real dogs.'**
+  String get crossbreedGalleryDisclosure;
+
+  /// Gallery empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No AI crossbreeds yet. Create one from Compare Breeds.'**
+  String get crossbreedGalleryEmpty;
+
+  /// Gallery empty state when filtered to one pair
+  ///
+  /// In en, this message translates to:
+  /// **'No AI crossbreed for this pair yet.'**
+  String get crossbreedGalleryFilteredEmpty;
+
+  /// Gallery load error
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load the gallery.'**
+  String get crossbreedGalleryError;
+
+  /// Retries loading the gallery
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get crossbreedGalleryRetry;
+
+  /// Opens the AI crossbreed gallery filtered to the compared pair
+  ///
+  /// In en, this message translates to:
+  /// **'See in gallery'**
+  String get crossbreedGalleryPairLink;
+
+  /// Message shown on web when the user opens Top Dogs
+  ///
+  /// In en, this message translates to:
+  /// **'If you want to see the Top Dogs, please download the App from the Google Play Store or from the Apple App Store.'**
+  String get topDogsWebDialogMessage;
+
+  /// Message shown on web when the user opens AI crossbreed features
+  ///
+  /// In en, this message translates to:
+  /// **'If you want to create and browse AI crossbreeds, please download the App from the Google Play Store or from the Apple App Store.'**
+  String get crossbreedWebDialogMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

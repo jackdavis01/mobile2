@@ -1161,5 +1161,41 @@
   "crossbreedCancelOther": "Cancel the other request",
   "@crossbreedCancelOther": {
     "description": "Cancels a different pair's request that is still waiting for its ad"
+  },
+  "crossbreedGalleryTitle": "AI crossbreeds",
+  "@crossbreedGalleryTitle": {
+    "description": "Title of the public AI crossbreed gallery page and drawer entry"
+  },
+  "crossbreedGalleryDisclosure": "All images in this gallery are AI-generated and do not show real dogs.",
+  "@crossbreedGalleryDisclosure": {
+    "description": "Disclosure at the top of the gallery"
+  },
+  "crossbreedGalleryEmpty": "No AI crossbreeds yet. Create one from Compare Breeds.",
+  "@crossbreedGalleryEmpty": {
+    "description": "Gallery empty state"
+  },
+  "crossbreedGalleryFilteredEmpty": "No AI crossbreed for this pair yet.",
+  "@crossbreedGalleryFilteredEmpty": {
+    "description": "Gallery empty state when filtered to one pair"
+  },
+  "crossbreedGalleryError": "Couldn't load the gallery.",
+  "@crossbreedGalleryError": {
+    "description": "Gallery load error"
+  },
+  "crossbreedGalleryRetry": "Try again",
+  "@crossbreedGalleryRetry": {
+    "description": "Retries loading the gallery"
+  },
+  "crossbreedGalleryPairLink": "See in gallery",
+  "@crossbreedGalleryPairLink": {
+    "description": "Opens the AI crossbreed gallery filtered to the compared pair"
+  },
+  "topDogsWebDialogMessage": "If you want to see the Top Dogs, please download the App from the Google Play Store or from the Apple App Store.",
+  "@topDogsWebDialogMessage": {
+    "description": "Message shown on web when the user opens Top Dogs"
+  },
+  "crossbreedWebDialogMessage": "If you want to create and browse AI crossbreeds, please download the App from the Google Play Store or from the Apple App Store.",
+  "@crossbreedWebDialogMessage": {
+    "description": "Message shown on web when the user opens AI crossbreed features"
   }
 }
