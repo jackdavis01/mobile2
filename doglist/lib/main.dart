@@ -5,6 +5,7 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'app.dart';
 import 'parameters/ads_config.dart';
 import 'platform/platform_info.dart';
+import 'services/crossbreed_coordinator.dart';
 import 'services/rewarded_ad_manager.dart';
 
 void main() async {
@@ -58,6 +59,10 @@ void main() async {
     } else {
       debugPrint('Mobile Ads SDK initialization skipped (ads disabled)');
     }
+
+    // App-wide crossbreed coordinator: foreground-only polling and recovery of a pending Generate.
+    CrossbreedCoordinator.instance.attachLifecycle();
+    CrossbreedCoordinator.instance.recover().catchError((e) => debugPrint('Crossbreed recovery failed: $e'));
   }
 
   runApp(const DogListApp());
