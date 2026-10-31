@@ -7,7 +7,9 @@ import '../businesslogic/crossbreed_bloc_state.dart';
 import '../models/crossbreed_models.dart';
 import '../repositories/crossbreed_repository.dart';
 import 'crossbreed_ids.dart';
+import 'crossbreed_rewarded_ads.dart';
 import 'crossbreed_state_store.dart';
+import 'rewarded_ad_manager.dart';
 
 /// Owns the single in-flight Generate command. Lives for the whole app session (not tied to a page),
 /// persists every step before acting, polls only in the foreground and recovers after resume or relaunch.
@@ -15,23 +17,30 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
   CrossbreedCoordinator({
     required CrossbreedRepository repository,
     required CrossbreedStateStore store,
+    required CrossbreedAdPresenter ads,
     Future<void> Function(Duration)? delay,
     DateTime Function()? now,
+    this.rewardGrace = const Duration(seconds: 2),
   })  : _repo = repository,
         _store = store,
+        _ads = ads,
         _delay = delay ?? Future<void>.delayed,
         _now = now ?? DateTime.now;
 
   static CrossbreedCoordinator? _instance;
-  static CrossbreedCoordinator get instance =>
-      _instance ??= CrossbreedCoordinator(repository: ApiCrossbreedRepository(), store: PrefsCrossbreedStateStore());
+  static CrossbreedCoordinator get instance => _instance ??= CrossbreedCoordinator(
+      repository: ApiCrossbreedRepository(), store: PrefsCrossbreedStateStore(), ads: SdkCrossbreedAdPresenter());
 
   static const int minPollSeconds = 3;
   static const int maxPollSeconds = 15;
   static const int maxRetryAfterSeconds = 60;
 
+  /// How long a dismissal without reward waits for a late `onUserEarnedReward` of the same attempt.
+  final Duration rewardGrace;
+
   final CrossbreedRepository _repo;
   final CrossbreedStateStore _store;
+  final CrossbreedAdPresenter _ads;
   final Future<void> Function(Duration) _delay;
   final DateTime Function() _now;
 
@@ -44,10 +53,14 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
   int _pollGeneration = 0;
   Future<void> _queue = Future.value();
 
+  /// Attempt whose full-screen ad is on screen in this process; recovery waits for its callbacks.
+  String? _adInFlight;
+
   CrossbreedFlowState get state => _state;
   Stream<CrossbreedFlowState> get stream => _controller.stream;
   CrossbreedPendingCommand? get pendingCommand => _command;
   bool get isForeground => _foreground;
+  bool get adsSupported => _ads.isSupported;
 
   void attachLifecycle() {
     if (_observing) return;
@@ -83,6 +96,10 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
     return result;
   }
 
+  /// Completes after every operation queued so far (tests).
+  @visibleForTesting
+  Future<void> drain() => _serial(() async {});
+
   void _emit(CrossbreedFlowState state) {
     _state = state;
     if (!_controller.isClosed) _controller.add(state);
@@ -114,10 +131,18 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
     await _store.clear();
   }
 
-  /// Starts one Generate action for the pair in display order. Returns false while another command is pending.
+  Future<CrossbreedSourcePreview> previewSources(String firstDogId, String secondDogId) =>
+      _repo.previewSources(firstDogId, secondDogId);
+
+  /// Starts one Generate action for the pair in display order. Returns false while another command is
+  /// pending or when rewarded ads are unsupported/disabled (no free bypass).
   Future<bool> startGenerate({required List<String> displayDogIds, required String catalogVersion}) => _serial(() async {
         await _restoreOnce();
         if (_command != null) return false;
+        if (!_ads.isSupported) {
+          _emit(const CrossbreedFlowState(phase: CrossbreedPhase.failed, errorCode: 'ADS_UNSUPPORTED'));
+          return false;
+        }
         if (displayDogIds.length != 2 || displayDogIds[0] == displayDogIds[1]) {
           throw ArgumentError('exactly two different dogs are required');
         }
@@ -132,31 +157,80 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
         return true;
       });
 
-  /// Rewarded-ad callbacks. The claim is submitted only after the reward was earned and the ad closed.
-  Future<void> recordAdEarned() => _serial(() async {
+  /// Loads and shows the crossbreed rewarded ad for the pending intent. The SDK callbacks are bound to
+  /// the attempt ID persisted before showing, so late or out-of-order callbacks cannot complete a
+  /// different intent or pair.
+  Future<void> watchAd() async {
+    final ready = await _serial(() async {
+      final c = _command;
+      if (c == null || c.intentId == null || c.adEarned || c.redeemSubmitted || _adInFlight != null) return false;
+      if (_state.phase != CrossbreedPhase.awaitingAd) return false;
+      _emit(_from(CrossbreedPhase.showingAd));
+      return true;
+    });
+    if (!ready) return;
+    final loaded = await _ads.ensureLoaded();
+    await _serial(() async {
+      final c = _command;
+      if (c == null || _state.phase != CrossbreedPhase.showingAd) return;
+      if (!loaded) return _emit(_from(CrossbreedPhase.awaitingAd, errorCode: 'AD_UNAVAILABLE'));
+      final attempt = c.clientAdAttemptId;
+      if (c.adDismissed) await _save(c.copyWith(adDismissed: false));
+      _adInFlight = attempt;
+      final outcome = _ads.show(
+        onEarned: () => unawaited(_onAdEarned(attempt)),
+        onDismissed: () => unawaited(_onAdDismissed(attempt)),
+        onFailedToShow: () => unawaited(_onAdFailed(attempt)),
+      );
+      if (outcome != RewardedShowOutcome.started) {
+        if (_adInFlight == attempt) _adInFlight = null;
+        _emit(_from(CrossbreedPhase.awaitingAd, errorCode: 'AD_UNAVAILABLE'));
+      }
+    });
+  }
+
+  Future<void> _onAdEarned(String attempt) => _serial(() async {
         final c = _command;
-        if (c == null || c.adEarned) return;
+        if (c == null || c.clientAdAttemptId != attempt || c.adEarned) return;
         await _save(c.copyWith(adEarned: true));
         if (c.adDismissed) await _redeem();
       });
 
-  Future<void> recordAdDismissed() => _serial(() async {
+  Future<void> _onAdDismissed(String attempt) async {
+    final submit = await _serial(() async {
+      if (_adInFlight == attempt) _adInFlight = null;
+      final c = _command;
+      if (c == null || c.clientAdAttemptId != attempt || c.adDismissed) return false;
+      await _save(c.copyWith(adDismissed: true));
+      if (c.adEarned) {
+        await _redeem();
+        return false;
+      }
+      return true;
+    });
+    if (!submit) return;
+    // Some SDK versions report the reward after dismissal; wait briefly before declaring it skipped.
+    await _delay(rewardGrace);
+    await _serial(() async {
+      final c = _command;
+      if (c == null || c.clientAdAttemptId != attempt || c.adEarned) return;
+      // Not earned: the attempt never reached the server, so the next ad gets a fresh attempt id.
+      await _save(c.copyWith(clientAdAttemptId: newUuidV4(), adDismissed: false));
+      _emit(_from(CrossbreedPhase.awaitingAd, errorCode: 'AD_NOT_COMPLETED', needsNewAd: true));
+    });
+  }
+
+  Future<void> _onAdFailed(String attempt) => _serial(() async {
+        if (_adInFlight == attempt) _adInFlight = null;
         final c = _command;
-        if (c == null || c.adDismissed) return;
-        if (c.adEarned) {
-          await _save(c.copyWith(adDismissed: true));
-          await _redeem();
-        } else {
-          // Not earned: the attempt never reached the server, so the next ad gets a fresh attempt id.
-          await _save(c.copyWith(clientAdAttemptId: newUuidV4(), adDismissed: false));
-          _emit(_from(CrossbreedPhase.awaitingAd, errorCode: 'AD_NOT_COMPLETED', needsNewAd: true));
-        }
+        if (c == null || c.clientAdAttemptId != attempt || c.adEarned) return;
+        _emit(_from(CrossbreedPhase.awaitingAd, errorCode: 'AD_UNAVAILABLE'));
       });
 
   /// Abandons a command before any reward was earned. Earned or submitted commands cannot be cancelled.
   Future<bool> cancel() => _serial(() async {
         final c = _command;
-        if (c != null && (c.adEarned || c.redeemSubmitted)) return false;
+        if (c != null && (c.adEarned || c.redeemSubmitted || _adInFlight != null)) return false;
         await _finish(CrossbreedFlowState.idle);
         return true;
       });
@@ -168,6 +242,8 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
 
   /// Resynchronises the persisted command with the server (relaunch, resume, retry button).
   Future<void> recover() => _serial(() async {
+        // An ad on screen (or loading) finishes through its own callbacks.
+        if (_adInFlight != null || _state.phase == CrossbreedPhase.showingAd) return;
         _pollGeneration++;
         _restored = true;
         _command ??= await _store.load();
@@ -222,7 +298,12 @@ class CrossbreedCoordinator with WidgetsBindingObserver {
         if (allowRedeem) return _redeem();
         return _emit(_from(CrossbreedPhase.failed, errorCode: 'SERVICE_UNAVAILABLE', retryable: true));
       case CrossbreedIntentState.created:
-        if (allowRedeem && c.adEarned && (c.adDismissed || c.redeemSubmitted)) return _redeem();
+        if (allowRedeem && c.adEarned) {
+          // Saved local completion. Without an ad in flight, dismissal can no longer arrive (process
+          // loss or lost callback), so the earned reward resumes without another ad.
+          if (!c.adDismissed) await _save(c.copyWith(adDismissed: true));
+          return _redeem();
+        }
         if (c.redeemSubmitted || c.adEarned) {
           await _save(c.copyWith(clientAdAttemptId: newUuidV4(), adEarned: false, adDismissed: false, redeemSubmitted: false));
           return _emit(_from(CrossbreedPhase.awaitingAd, errorCode: 'REWARDED_AD_REQUIRED', needsNewAd: true));

@@ -6,6 +6,8 @@ import 'package:doglist/businesslogic/crossbreed_bloc_state.dart';
 import 'package:doglist/models/crossbreed_models.dart';
 import 'package:doglist/repositories/mock_crossbreed_repository.dart';
 import 'package:doglist/services/crossbreed_coordinator.dart';
+import 'package:doglist/services/crossbreed_rewarded_ads.dart';
+import 'package:doglist/services/rewarded_ad_manager.dart';
 import 'package:doglist/services/crossbreed_state_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +42,38 @@ class _CountingRepository extends MockCrossbreedRepository {
   }
 }
 
+class _FakeAds implements CrossbreedAdPresenter {
+  @override
+  bool isSupported = true;
+  bool fill = true;
+  RewardedShowOutcome outcome = RewardedShowOutcome.started;
+  int loads = 0;
+  int shows = 0;
+  void Function()? onEarned;
+  void Function()? onDismissed;
+  void Function()? onFailedToShow;
+
+  @override
+  Future<bool> ensureLoaded() async {
+    loads++;
+    return fill;
+  }
+
+  @override
+  RewardedShowOutcome show(
+      {required void Function() onEarned,
+      required void Function() onDismissed,
+      required void Function() onFailedToShow}) {
+    shows++;
+    if (outcome == RewardedShowOutcome.started) {
+      this.onEarned = onEarned;
+      this.onDismissed = onDismissed;
+      this.onFailedToShow = onFailedToShow;
+    }
+    return outcome;
+  }
+}
+
 const _dogs = ['siberian-husky', 'bulldog'];
 const _queued = 'public/job-status-response/queued.json';
 const _succeeded = 'public/job-status-response/succeeded.json';
@@ -47,11 +81,13 @@ const _succeeded = 'public/job-status-response/succeeded.json';
 void main() {
   late List<Duration> delays;
   late InMemoryCrossbreedStateStore store;
+  late _FakeAds ads;
 
   CrossbreedCoordinator coordinator(MockCrossbreedRepository repo, {Future<void> Function(Duration)? delay}) =>
       CrossbreedCoordinator(
         repository: repo,
         store: store,
+        ads: ads,
         delay: delay ??
             (d) async {
               delays.add(d);
@@ -62,13 +98,16 @@ void main() {
       c.state.phase == phase ? Future.value(c.state) : c.stream.firstWhere((s) => s.phase == phase);
 
   Future<void> watchAd(CrossbreedCoordinator c) async {
-    await c.recordAdEarned();
-    await c.recordAdDismissed();
+    await c.watchAd();
+    ads.onEarned!();
+    ads.onDismissed!();
+    await c.drain();
   }
 
   setUp(() {
     delays = [];
     store = InMemoryCrossbreedStateStore();
+    ads = _FakeAds();
   });
 
   group('state store', () {
@@ -117,10 +156,13 @@ void main() {
       final c = coordinator(repo);
       expect(await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1'), isTrue);
       expect(c.state.phase, CrossbreedPhase.awaitingAd);
-      await c.recordAdEarned();
+      await c.watchAd();
+      expect(c.state.phase, CrossbreedPhase.showingAd);
+      ads.onEarned!();
+      await c.drain();
       expect(repo.redeems, 0);
       final done = settle(c, CrossbreedPhase.succeeded);
-      await c.recordAdDismissed();
+      ads.onDismissed!();
       final state = await done;
       expect(repo.redeems, 1);
       expect(state.result, isNotNull);
@@ -151,8 +193,11 @@ void main() {
       final c = coordinator(repo);
       await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
       final attempt = c.pendingCommand!.clientAdAttemptId;
-      await c.recordAdDismissed();
-      expect(c.state.errorCode, 'AD_NOT_COMPLETED');
+      await c.watchAd();
+      final skipped = c.stream.firstWhere((s) => s.errorCode == 'AD_NOT_COMPLETED');
+      ads.onDismissed!();
+      await skipped;
+      expect(delays, [const Duration(seconds: 2)]);
       expect(c.pendingCommand!.clientAdAttemptId, isNot(attempt));
       expect(repo.redeems, 0);
       expect(await c.cancel(), isTrue);
@@ -162,7 +207,10 @@ void main() {
     test('earned commands cannot be cancelled', () async {
       final c = coordinator(_CountingRepository(MockCrossbreedScenario.generated));
       await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
-      await c.recordAdEarned();
+      await c.watchAd();
+      expect(await c.cancel(), isFalse, reason: 'ad on screen');
+      ads.onEarned!();
+      await c.drain();
       expect(await c.cancel(), isFalse);
     });
 
@@ -256,14 +304,100 @@ void main() {
       }
     });
 
+    test('reward reported after dismissal within the grace period still redeems once', () async {
+      final repo = _CountingRepository(MockCrossbreedScenario.reused);
+      final grace = Completer<void>();
+      final c = coordinator(repo, delay: (_) => grace.future);
+      await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
+      await c.watchAd();
+      ads.onDismissed!();
+      await c.drain();
+      expect(repo.redeems, 0);
+      ads.onEarned!();
+      await c.drain();
+      grace.complete();
+      await pumpEventQueue();
+      expect(c.state.phase, CrossbreedPhase.succeeded);
+      expect(repo.redeems, 1);
+    });
+
+    test('callbacks of an earlier ad attempt are ignored', () async {
+      final repo = _CountingRepository(MockCrossbreedScenario.reused);
+      final c = coordinator(repo);
+      await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
+      await c.watchAd();
+      final staleEarned = ads.onEarned!;
+      final skipped = c.stream.firstWhere((s) => s.errorCode == 'AD_NOT_COMPLETED');
+      ads.onDismissed!();
+      await skipped;
+      staleEarned();
+      await c.drain();
+      expect(c.pendingCommand!.adEarned, isFalse);
+      expect(repo.redeems, 0);
+      await watchAd(c);
+      expect(c.state.phase, CrossbreedPhase.succeeded);
+      expect(repo.redeems, 1);
+    });
+
+    test('no fill, busy or failure to show keeps the intent and offers the ad again', () async {
+      final repo = _CountingRepository(MockCrossbreedScenario.reused);
+      final c = coordinator(repo);
+      await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
+      ads.fill = false;
+      await c.watchAd();
+      expect((c.state.phase, c.state.errorCode, ads.shows), (CrossbreedPhase.awaitingAd, 'AD_UNAVAILABLE', 0));
+      ads
+        ..fill = true
+        ..outcome = RewardedShowOutcome.busy;
+      await c.watchAd();
+      expect((c.state.phase, c.state.errorCode), (CrossbreedPhase.awaitingAd, 'AD_UNAVAILABLE'));
+      ads.outcome = RewardedShowOutcome.started;
+      await c.watchAd();
+      ads.onFailedToShow!();
+      await c.drain();
+      expect((c.state.phase, c.state.errorCode), (CrossbreedPhase.awaitingAd, 'AD_UNAVAILABLE'));
+      expect((repo.intents, repo.redeems), (1, 0));
+      await watchAd(c);
+      expect(c.state.phase, CrossbreedPhase.succeeded);
+    });
+
+    test('unsupported ads disable Generate without creating an intent', () async {
+      ads.isSupported = false;
+      final repo = _CountingRepository(MockCrossbreedScenario.reused);
+      final c = coordinator(repo);
+      expect(c.adsSupported, isFalse);
+      expect(await c.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1'), isFalse);
+      expect(c.state.errorCode, 'ADS_UNSUPPORTED');
+      expect(repo.intents, 0);
+      expect(await store.load(), isNull);
+    });
+
+    test('a saved reward without dismissal resumes after relaunch without another ad', () async {
+      final a = coordinator(_CountingRepository(MockCrossbreedScenario.reused));
+      await a.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
+      await a.watchAd();
+      ads.onEarned!();
+      await a.drain();
+      expect((await store.load())!.adEarned, isTrue);
+      await a.dispose();
+
+      ads = _FakeAds();
+      final second = _CountingRepository(MockCrossbreedScenario.reused);
+      final b = coordinator(second);
+      await b.recover();
+      expect(b.state.phase, CrossbreedPhase.succeeded);
+      expect((second.intents, second.redeems, ads.shows), (0, 1, 0));
+    });
+
     test('cubit mirrors the coordinator and closing it keeps the command', () async {
       final c = coordinator(_CountingRepository(MockCrossbreedScenario.generated), delay: (_) => Completer<void>().future);
       final cubit = CrossbreedCubit(coordinator: c);
-      await cubit.startGenerate(displayDogIds: _dogs, catalogVersion: 'v1');
-      expect(cubit.state.phase, CrossbreedPhase.awaitingAd);
+      expect(await cubit.generate(displayDogIds: _dogs, catalogVersion: 'v1'), isTrue);
+      expect(cubit.state.phase, CrossbreedPhase.showingAd);
       await cubit.close();
-      await c.recordAdEarned();
-      await c.recordAdDismissed();
+      ads.onEarned!();
+      ads.onDismissed!();
+      await c.drain();
       expect(c.state.phase, CrossbreedPhase.generating);
       expect(c.pendingCommand, isNotNull);
     });

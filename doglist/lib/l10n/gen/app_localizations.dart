@@ -1476,6 +1476,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get compareSortDone;
+
+  /// Button on the comparison page that opens the AI crossbreed sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Create AI crossbreed'**
+  String get crossbreedButton;
+
+  /// Title of the AI crossbreed sheet
+  ///
+  /// In en, this message translates to:
+  /// **'AI crossbreed'**
+  String get crossbreedTitle;
+
+  /// Explains the rewarded ad and that an existing image may be reused
+  ///
+  /// In en, this message translates to:
+  /// **'Watch a short rewarded ad to get an AI-generated image of a crossbreed of these two breeds. If this pair was created before, the existing image is shown again.'**
+  String get crossbreedExplanation;
+
+  /// Label shown with every crossbreed image
+  ///
+  /// In en, this message translates to:
+  /// **'AI-generated image'**
+  String get crossbreedAiLabel;
+
+  /// Generate action: starts a new request and shows a rewarded ad
+  ///
+  /// In en, this message translates to:
+  /// **'Watch ad and create'**
+  String get crossbreedGenerate;
+
+  /// Shows another rewarded ad for the same pending request
+  ///
+  /// In en, this message translates to:
+  /// **'Watch ad again'**
+  String get crossbreedWatchAdAgain;
+
+  /// Retries the same request without another ad
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get crossbreedRetry;
+
+  /// Cancels a request before the reward was earned
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get crossbreedCancel;
+
+  /// Closes the AI crossbreed sheet
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get crossbreedClose;
+
+  /// Shown while the source preview loads
+  ///
+  /// In en, this message translates to:
+  /// **'Loading breed photos…'**
+  String get crossbreedLoadingPreview;
+
+  /// Source preview failed
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the breed photos. Check your connection and try again.'**
+  String get crossbreedPreviewError;
+
+  /// Creating the crossbreed request
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing your request…'**
+  String get crossbreedPreparing;
+
+  /// Rewarded ad is loading or on screen
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the ad…'**
+  String get crossbreedLoadingAd;
+
+  /// Sending the completed ad claim
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your reward…'**
+  String get crossbreedRedeeming;
+
+  /// Generation in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Creating the crossbreed image. This can take a minute; you can leave this screen.'**
+  String get crossbreedGenerating;
+
+  /// Generation or reuse succeeded
+  ///
+  /// In en, this message translates to:
+  /// **'Your crossbreed is ready'**
+  String get crossbreedReady;
+
+  /// Rewarded ad dismissed without reward
+  ///
+  /// In en, this message translates to:
+  /// **'The ad was closed before the reward. Watch the full ad to create the image.'**
+  String get crossbreedAdNotCompleted;
+
+  /// Rewarded ad failed to load or show
+  ///
+  /// In en, this message translates to:
+  /// **'No ad is available right now. Please try again a little later.'**
+  String get crossbreedAdUnavailable;
+
+  /// Ads disabled or unsupported platform
+  ///
+  /// In en, this message translates to:
+  /// **'Creating crossbreeds needs rewarded ads, which are not available here.'**
+  String get crossbreedAdsUnsupported;
+
+  /// Generation disabled by the server
+  ///
+  /// In en, this message translates to:
+  /// **'Creating new crossbreeds is paused right now.'**
+  String get crossbreedGenerationPaused;
+
+  /// Generic preview ineligibility
+  ///
+  /// In en, this message translates to:
+  /// **'A crossbreed can\'t be created for this pair right now.'**
+  String get crossbreedNotAvailable;
+
+  /// Daily limit, capacity or rate limit
+  ///
+  /// In en, this message translates to:
+  /// **'The crossbreed limit was reached for now. Please try again later.'**
+  String get crossbreedLimitReached;
+
+  /// Transient failure after the reward was earned
+  ///
+  /// In en, this message translates to:
+  /// **'The service is temporarily unavailable. Your reward is kept, so you can retry without another ad.'**
+  String get crossbreedTemporaryError;
+
+  /// Definite generation failure
+  ///
+  /// In en, this message translates to:
+  /// **'The image could not be created. You can try again with a new ad.'**
+  String get crossbreedFailed;
+
+  /// Pair hidden or unavailable
+  ///
+  /// In en, this message translates to:
+  /// **'This crossbreed is not available.'**
+  String get crossbreedPairUnavailable;
+
+  /// Catalog version changed
+  ///
+  /// In en, this message translates to:
+  /// **'The breed photos were updated. Please review them and try again.'**
+  String get crossbreedSourceChanged;
+
+  /// Intent expired
+  ///
+  /// In en, this message translates to:
+  /// **'This request expired. Please start again.'**
+  String get crossbreedExpired;
+
+  /// A different pair already has a pending request
+  ///
+  /// In en, this message translates to:
+  /// **'Another crossbreed is still in progress.'**
+  String get crossbreedOtherPending;
+
+  /// A source photo is not available
+  ///
+  /// In en, this message translates to:
+  /// **'Photo unavailable'**
+  String get crossbreedPhotoUnavailable;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

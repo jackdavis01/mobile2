@@ -1001,5 +1001,121 @@
   "compareSortDone": "Done",
   "@compareSortDone": {
     "description": "Close the comparison sort sheet after choosing an order"
+  },
+  "crossbreedButton": "Create AI crossbreed",
+  "@crossbreedButton": {
+    "description": "Button on the comparison page that opens the AI crossbreed sheet"
+  },
+  "crossbreedTitle": "AI crossbreed",
+  "@crossbreedTitle": {
+    "description": "Title of the AI crossbreed sheet"
+  },
+  "crossbreedExplanation": "Watch a short rewarded ad to get an AI-generated image of a crossbreed of these two breeds. If this pair was created before, the existing image is shown again.",
+  "@crossbreedExplanation": {
+    "description": "Explains the rewarded ad and that an existing image may be reused"
+  },
+  "crossbreedAiLabel": "AI-generated image",
+  "@crossbreedAiLabel": {
+    "description": "Label shown with every crossbreed image"
+  },
+  "crossbreedGenerate": "Watch ad and create",
+  "@crossbreedGenerate": {
+    "description": "Generate action: starts a new request and shows a rewarded ad"
+  },
+  "crossbreedWatchAdAgain": "Watch ad again",
+  "@crossbreedWatchAdAgain": {
+    "description": "Shows another rewarded ad for the same pending request"
+  },
+  "crossbreedRetry": "Retry",
+  "@crossbreedRetry": {
+    "description": "Retries the same request without another ad"
+  },
+  "crossbreedCancel": "Cancel",
+  "@crossbreedCancel": {
+    "description": "Cancels a request before the reward was earned"
+  },
+  "crossbreedClose": "Close",
+  "@crossbreedClose": {
+    "description": "Closes the AI crossbreed sheet"
+  },
+  "crossbreedLoadingPreview": "Loading breed photos…",
+  "@crossbreedLoadingPreview": {
+    "description": "Shown while the source preview loads"
+  },
+  "crossbreedPreviewError": "Could not load the breed photos. Check your connection and try again.",
+  "@crossbreedPreviewError": {
+    "description": "Source preview failed"
+  },
+  "crossbreedPreparing": "Preparing your request…",
+  "@crossbreedPreparing": {
+    "description": "Creating the crossbreed request"
+  },
+  "crossbreedLoadingAd": "Loading the ad…",
+  "@crossbreedLoadingAd": {
+    "description": "Rewarded ad is loading or on screen"
+  },
+  "crossbreedRedeeming": "Checking your reward…",
+  "@crossbreedRedeeming": {
+    "description": "Sending the completed ad claim"
+  },
+  "crossbreedGenerating": "Creating the crossbreed image. This can take a minute; you can leave this screen.",
+  "@crossbreedGenerating": {
+    "description": "Generation in progress"
+  },
+  "crossbreedReady": "Your crossbreed is ready",
+  "@crossbreedReady": {
+    "description": "Generation or reuse succeeded"
+  },
+  "crossbreedAdNotCompleted": "The ad was closed before the reward. Watch the full ad to create the image.",
+  "@crossbreedAdNotCompleted": {
+    "description": "Rewarded ad dismissed without reward"
+  },
+  "crossbreedAdUnavailable": "No ad is available right now. Please try again a little later.",
+  "@crossbreedAdUnavailable": {
+    "description": "Rewarded ad failed to load or show"
+  },
+  "crossbreedAdsUnsupported": "Creating crossbreeds needs rewarded ads, which are not available here.",
+  "@crossbreedAdsUnsupported": {
+    "description": "Ads disabled or unsupported platform"
+  },
+  "crossbreedGenerationPaused": "Creating new crossbreeds is paused right now.",
+  "@crossbreedGenerationPaused": {
+    "description": "Generation disabled by the server"
+  },
+  "crossbreedNotAvailable": "A crossbreed can't be created for this pair right now.",
+  "@crossbreedNotAvailable": {
+    "description": "Generic preview ineligibility"
+  },
+  "crossbreedLimitReached": "The crossbreed limit was reached for now. Please try again later.",
+  "@crossbreedLimitReached": {
+    "description": "Daily limit, capacity or rate limit"
+  },
+  "crossbreedTemporaryError": "The service is temporarily unavailable. Your reward is kept, so you can retry without another ad.",
+  "@crossbreedTemporaryError": {
+    "description": "Transient failure after the reward was earned"
+  },
+  "crossbreedFailed": "The image could not be created. You can try again with a new ad.",
+  "@crossbreedFailed": {
+    "description": "Definite generation failure"
+  },
+  "crossbreedPairUnavailable": "This crossbreed is not available.",
+  "@crossbreedPairUnavailable": {
+    "description": "Pair hidden or unavailable"
+  },
+  "crossbreedSourceChanged": "The breed photos were updated. Please review them and try again.",
+  "@crossbreedSourceChanged": {
+    "description": "Catalog version changed"
+  },
+  "crossbreedExpired": "This request expired. Please start again.",
+  "@crossbreedExpired": {
+    "description": "Intent expired"
+  },
+  "crossbreedOtherPending": "Another crossbreed is still in progress.",
+  "@crossbreedOtherPending": {
+    "description": "A different pair already has a pending request"
+  },
+  "crossbreedPhotoUnavailable": "Photo unavailable",
+  "@crossbreedPhotoUnavailable": {
+    "description": "A source photo is not available"
   }
 }

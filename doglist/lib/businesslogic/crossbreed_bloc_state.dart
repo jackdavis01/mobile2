@@ -1,6 +1,17 @@
 import '../models/crossbreed_models.dart';
 
-enum CrossbreedPhase { idle, preparingIntent, awaitingAd, redeeming, generating, succeeded, failed }
+enum CrossbreedPhase {
+  idle,
+  preparingIntent,
+  awaitingAd,
+
+  /// Rewarded ad loading or on screen; results are never shown during this phase.
+  showingAd,
+  redeeming,
+  generating,
+  succeeded,
+  failed,
+}
 
 class CrossbreedFlowState {
   const CrossbreedFlowState({
@@ -25,7 +36,8 @@ class CrossbreedFlowState {
   final String? pairId;
   final CrossbreedResult? result;
 
-  /// Safe error code (contract code or NETWORK_ERROR/TIMEOUT/INVALID_RESPONSE/AD_NOT_COMPLETED).
+  /// Safe error code: a contract code, NETWORK_ERROR/TIMEOUT/INVALID_RESPONSE, or a local ad code
+  /// (AD_NOT_COMPLETED, AD_UNAVAILABLE, ADS_UNSUPPORTED).
   final String? errorCode;
 
   /// The same pending command can be retried without watching another ad.
@@ -36,7 +48,10 @@ class CrossbreedFlowState {
   final int? retryAfterSeconds;
 
   bool get isBusy =>
-      phase == CrossbreedPhase.preparingIntent || phase == CrossbreedPhase.redeeming || phase == CrossbreedPhase.generating;
+      phase == CrossbreedPhase.preparingIntent ||
+      phase == CrossbreedPhase.showingAd ||
+      phase == CrossbreedPhase.redeeming ||
+      phase == CrossbreedPhase.generating;
 
   @override
   String toString() => 'CrossbreedFlowState($phase, error: $errorCode, retryable: $retryable, needsNewAd: $needsNewAd)';

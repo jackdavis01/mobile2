@@ -762,4 +762,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get compareSortDone => 'Done';
+
+  @override
+  String get crossbreedButton => 'Create AI crossbreed';
+
+  @override
+  String get crossbreedTitle => 'AI crossbreed';
+
+  @override
+  String get crossbreedExplanation =>
+      'Watch a short rewarded ad to get an AI-generated image of a crossbreed of these two breeds. If this pair was created before, the existing image is shown again.';
+
+  @override
+  String get crossbreedAiLabel => 'AI-generated image';
+
+  @override
+  String get crossbreedGenerate => 'Watch ad and create';
+
+  @override
+  String get crossbreedWatchAdAgain => 'Watch ad again';
+
+  @override
+  String get crossbreedRetry => 'Retry';
+
+  @override
+  String get crossbreedCancel => 'Cancel';
+
+  @override
+  String get crossbreedClose => 'Close';
+
+  @override
+  String get crossbreedLoadingPreview => 'Loading breed photos…';
+
+  @override
+  String get crossbreedPreviewError => 'Could not load the breed photos. Check your connection and try again.';
+
+  @override
+  String get crossbreedPreparing => 'Preparing your request…';
+
+  @override
+  String get crossbreedLoadingAd => 'Loading the ad…';
+
+  @override
+  String get crossbreedRedeeming => 'Checking your reward…';
+
+  @override
+  String get crossbreedGenerating =>
+      'Creating the crossbreed image. This can take a minute; you can leave this screen.';
+
+  @override
+  String get crossbreedReady => 'Your crossbreed is ready';
+
+  @override
+  String get crossbreedAdNotCompleted => 'The ad was closed before the reward. Watch the full ad to create the image.';
+
+  @override
+  String get crossbreedAdUnavailable => 'No ad is available right now. Please try again a little later.';
+
+  @override
+  String get crossbreedAdsUnsupported => 'Creating crossbreeds needs rewarded ads, which are not available here.';
+
+  @override
+  String get crossbreedGenerationPaused => 'Creating new crossbreeds is paused right now.';
+
+  @override
+  String get crossbreedNotAvailable => 'A crossbreed can\'t be created for this pair right now.';
+
+  @override
+  String get crossbreedLimitReached => 'The crossbreed limit was reached for now. Please try again later.';
+
+  @override
+  String get crossbreedTemporaryError =>
+      'The service is temporarily unavailable. Your reward is kept, so you can retry without another ad.';
+
+  @override
+  String get crossbreedFailed => 'The image could not be created. You can try again with a new ad.';
+
+  @override
+  String get crossbreedPairUnavailable => 'This crossbreed is not available.';
+
+  @override
+  String get crossbreedSourceChanged => 'The breed photos were updated. Please review them and try again.';
+
+  @override
+  String get crossbreedExpired => 'This request expired. Please start again.';
+
+  @override
+  String get crossbreedOtherPending => 'Another crossbreed is still in progress.';
+
+  @override
+  String get crossbreedPhotoUnavailable => 'Photo unavailable';
 }
