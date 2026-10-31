@@ -1,0 +1,21 @@
+{
+  "intentId": "5d8f2a17-6c4b-4e39-a8d1-7f3e0b9c2a64",
+  "clientIntentId": "1a7c3e95-2b6d-4f08-9e4a-8c5b1d3f7e20",
+  "dogIds": [
+    "siberian-husky",
+    "bulldog"
+  ],
+  "canonicalDogIds": [
+    "bulldog",
+    "siberian-husky"
+  ],
+  "state": "reward_reported",
+  "rewardStatus": "client_reported",
+  "createdAt": "2026-10-22T18:00:00Z",
+  "expiresAt": "2026-10-23T18:00:00Z",
+  "fulfillment": null,
+  "pairId": null,
+  "generationId": null,
+  "status": null,
+  "result": null
+}

@@ -1,0 +1,43 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Flutter: run on iPhone 14 Plus",
+			"type": "shell",
+			"command": ".fvm/flutter_sdk/bin/flutter",
+			"args": [
+				"run",
+				"-d",
+				"00008110-00120848149A201E"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Flutter: run release on iPhone 14 Plus",
+			"type": "shell",
+			"command": ".fvm/flutter_sdk/bin/flutter",
+			"args": [
+				"run",
+				"--release",
+				"-d",
+				"00008110-00120848149A201E"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Flutter: run release on Android SM A356B",
+			"type": "shell",
+			"command": ".fvm/flutter_sdk/bin/flutter",
+			"args": [
+				"run",
+				"--release",
+				"-d",
+				"RFCX71T0S5N"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

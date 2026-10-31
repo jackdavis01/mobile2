@@ -1,0 +1,57 @@
+{
+  "intentId": "5d8f2a17-6c4b-4e39-a8d1-7f3e0b9c2a64",
+  "clientIntentId": "1a7c3e95-2b6d-4f08-9e4a-8c5b1d3f7e20",
+  "dogIds": [
+    "siberian-husky",
+    "bulldog"
+  ],
+  "canonicalDogIds": [
+    "bulldog",
+    "siberian-husky"
+  ],
+  "state": "fulfilled",
+  "rewardStatus": "consumed",
+  "createdAt": "2026-10-22T18:00:00Z",
+  "expiresAt": "2026-10-23T18:00:00Z",
+  "fulfillment": "reused",
+  "pairId": "3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13",
+  "generationId": "9b2e7c41-5a3d-4f86-b1e0-2c7d9a4f6e58",
+  "status": "succeeded",
+  "result": {
+    "pairId": "3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13",
+    "generationId": "9b2e7c41-5a3d-4f86-b1e0-2c7d9a4f6e58",
+    "dogIds": [
+      "bulldog",
+      "siberian-husky"
+    ],
+    "breedNames": [
+      "Bulldog",
+      "Siberian Husky"
+    ],
+    "imageUrl": "https://media.example.test/crossbreeds/3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13/original.png",
+    "thumbnailUrl": "https://media.example.test/crossbreeds/3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13/thumbnail.webp",
+    "imageWidth": 1024,
+    "imageHeight": 1024,
+    "thumbnailWidth": 256,
+    "thumbnailHeight": 256,
+    "imageMimeType": "image/png",
+    "thumbnailMimeType": "image/webp",
+    "aiGenerated": true,
+    "sources": [
+      {
+        "dogId": "bulldog",
+        "breedName": "Bulldog",
+        "sha256": "4cf8bee1d874337ca658e629abbf2c4003d527f7b89f2b46afbc8b6e0efc793b",
+        "catalogVersion": "odr-v2-20261008"
+      },
+      {
+        "dogId": "siberian-husky",
+        "breedName": "Siberian Husky",
+        "sha256": "47acd971fda773b7a8f84716ead8fba44b44c240584d236b4af3befd028f602b",
+        "catalogVersion": "odr-v2-20261008"
+      }
+    ],
+    "createdAt": "2026-10-22T18:00:00Z",
+    "completedAt": "2026-10-22T18:01:12Z"
+  }
+}

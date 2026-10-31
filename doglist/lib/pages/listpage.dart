@@ -14,6 +14,7 @@ import '../widgets/ad_banner.dart';
 import '../widgets/quick_filter_buttons.dart';
 import '../widgets/navigation_drawer.dart';
 import '../widgets/dog_list_item.dart';
+import '../widgets/download_app_dialog.dart';
 import '../widgets/feature_discovery_wrapper.dart';
 import '../widgets/feature_overlays.dart';
 import '../parameters/feature_ids.dart';
@@ -231,7 +232,7 @@ class _ListPageContentState extends State<_ListPageContent> with SingleTickerPro
               appBar: AppBar(
                 title: Text(appLocalizations.breedListTitle),
                 centerTitle: true,
-                leadingWidth: !PlatformInfo.isWeb ? 104 : null,
+                leadingWidth: 104,
                 leading: Builder(
                   builder: (BuildContext context) {
                     return Row(
@@ -252,15 +253,18 @@ class _ListPageContentState extends State<_ListPageContent> with SingleTickerPro
                             ),
                           ),
                         ),
-                        if (!PlatformInfo.isWeb)
-                          IconButton(
-                            iconSize: 28,
-                            icon: const Icon(Icons.emoji_events, color: Colors.orange),
-                            onPressed: () {
-                              _showTopDogsOverlay();
-                            },
-                            tooltip: appLocalizations.topDogsTitle,
-                          ),
+                        IconButton(
+                          iconSize: 28,
+                          icon: const Icon(Icons.emoji_events, color: Colors.orange),
+                          onPressed: () {
+                            if (PlatformInfo.isWeb) {
+                              showDownloadAppDialog(context, message: appLocalizations.topDogsWebDialogMessage);
+                              return;
+                            }
+                            _showTopDogsOverlay();
+                          },
+                          tooltip: appLocalizations.topDogsTitle,
+                        ),
                       ],
                     );
                   },

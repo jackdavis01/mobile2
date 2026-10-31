@@ -1,0 +1,10 @@
+{
+  "intentId": "b4e8a1c7-0d2f-4b63-9a5e-1f7c3d8b2e60",
+  "rewardStatus": "consumed",
+  "fulfillment": "joined",
+  "pairId": "3f6c1a52-8d4e-4b7a-9c21-6e0f5d2a7b13",
+  "generationId": "9b2e7c41-5a3d-4f86-b1e0-2c7d9a4f6e58",
+  "status": "processing",
+  "result": null,
+  "pollAfterSeconds": 3
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DogList crossbreed shared definitions (crossbreed-contracts-v1)",
+  "$defs": {
+    "uuidV4": {
+      "description": "Random UUIDv4, 128 bits, canonical lowercase 36-character text. Never expires.",
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "sha256Hex": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "dogId": {
+      "description": "Exact catalog breed ID; case-sensitive, never normalized. 1-50 code points without whitespace, control characters, quote, backslash or comma.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "pattern": "^[^\\s\",\\\\\\u0000-\\u001f\\u007f]+$"
+    },
+    "breedName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "catalogVersion": {
+      "description": "Opaque backend source-catalog version.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{1,64}$"
+    },
+    "utcTimestamp": {
+      "description": "ISO-8601 UTC timestamp with Z suffix.",
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "usdAmount": {
+      "description": "Decimal USD as a string with exactly 8 fractional digits; never a float.",
+      "type": "string",
+      "pattern": "^[0-9]{1,4}\\.[0-9]{8}$"
+    },
+    "canonicalDogIds": {
+      "description": "Two distinct dog IDs in canonical order (unsigned UTF-8 byte order, lo first). Ordering is checked semantically, not by this schema.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/dogId" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "originalImageUrl": {
+      "description": "Permanent public original URL: https://<media-host>/crossbreeds/{pairId}/original.png. No generation ID, query, signature or expiry.",
+      "type": "string",
+      "pattern": "^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?/crossbreeds/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/original\\.png$"
+    },
+    "thumbnailImageUrl": {
+      "description": "Permanent public thumbnail URL: https://<media-host>/crossbreeds/{pairId}/thumbnail.webp.",
+      "type": "string",
+      "pattern": "^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?/crossbreeds/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/thumbnail\\.webp$"
+    },
+    "recipeId": { "const": "klein4b-crossbreed-v1" },
+    "promptVersion": { "enum": ["crossbreed-adult-klein-v2", "crossbreed-adult-klein-v1"] },
+    "settingsVersion": { "const": "klein4b-1mp-seed17-v1" },
+    "artifactProfile": { "const": "png1024-webp256-q80-v1" },
+    "publicJobStatus": {
+      "description": "Public generation status. Internal executing/importing/publishing/reconciling map to processing; failed/cancelled map to failed.",
+      "enum": ["queued", "processing", "succeeded", "failed"]
+    },
+    "fulfillmentKind": {
+      "enum": ["reused", "joined", "generated"]
+    },
+    "executionState": {
+      "description": "Hetzner private execution task state.",
+      "enum": ["queued", "processing", "reconciliation_required", "succeeded", "failed", "cancelled"]
+    },
+    "originalAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "mimeType", "byteSize", "width", "height"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256Hex" },
+        "mimeType": { "const": "image/png" },
+        "byteSize": { "type": "integer", "minimum": 1, "maximum": 20971520 },
+        "width": { "const": 1024 },
+        "height": { "const": 1024 }
+      }
+    },
+    "thumbnailAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256", "mimeType", "byteSize", "width", "height", "quality"],
+      "properties": {
+        "sha256": { "$ref": "#/$defs/sha256Hex" },
+        "mimeType": { "const": "image/webp" },
+        "byteSize": { "type": "integer", "minimum": 1, "maximum": 1048576 },
+        "width": { "const": 256 },
+        "height": { "const": 256 },
+        "quality": { "const": 80 }
+      }
+    },
+    "sourceSnapshot": {
+      "description": "Immutable outdoor source photo snapshot (DogImages.largeOutdoors). Limits: 10 MiB, 4,000,000 pixels, max edge 4096.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dogId", "breedName", "variant", "sha256", "byteSize", "width", "height", "mimeType"],
+      "properties": {
+        "dogId": { "$ref": "#/$defs/dogId" },
+        "breedName": { "$ref": "#/$defs/breedName" },
+        "variant": { "const": "outdoors" },
+        "sha256": { "$ref": "#/$defs/sha256Hex" },
+        "byteSize": { "type": "integer", "minimum": 1, "maximum": 10485760 },
+        "width": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "height": { "type": "integer", "minimum": 1, "maximum": 4096 },
+        "mimeType": { "enum": ["image/png", "image/jpeg", "image/webp"] }
+      }
+    },
+    "modelRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "name", "version"],
+      "properties": {
+        "provider": { "const": "replicate" },
+        "name": { "const": "black-forest-labs/flux-2-klein-4b" },
+        "version": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

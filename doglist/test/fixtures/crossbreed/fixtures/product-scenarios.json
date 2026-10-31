@@ -1,0 +1,163 @@
+{
+  "$comment": "Product-level scenarios (contract P1.13) for backend fulfillment tests and the Flutter mock repository. 'responses' reference files under contracts/examples/valid. Every Generate action below assumes the app already recorded earned reward + dismissal for its own new intent.",
+  "contractVersion": "crossbreed-contracts-v1",
+  "scenarios": [
+    {
+      "id": "missing-pair-generate",
+      "given": "No pair row, generation enabled, budget available",
+      "when": "Ad-completed redeem for bulldog + siberian-husky",
+      "then": { "httpStatus": 202, "fulfillment": "generated", "newGenerations": 1, "reservationsUsd": "0.01000000", "aiSubmits": 1 },
+      "responses": ["public/redeem-response/generated-202.json", "public/job-status-response/queued.json", "public/job-status-response/succeeded.json"]
+    },
+    {
+      "id": "ready-reuse",
+      "given": "Pair ready and published with both assets",
+      "when": "Another installation redeems siberian-husky + bulldog after its own fresh ad",
+      "then": { "httpStatus": 200, "fulfillment": "reused", "newGenerations": 0, "reservationsUsd": "0.00000000", "aiSubmits": 0 },
+      "responses": ["public/redeem-response/reused-200.json"]
+    },
+    {
+      "id": "local-cache-hit-still-needs-ad",
+      "given": "Both PNG and WebP for the pair are fresh in the Flutter disk and memory cache",
+      "when": "User taps Generate again",
+      "then": { "newIntent": true, "rewardedAdShown": true, "resultRenderedBeforeRedeem": false, "fulfillment": "reused" },
+      "responses": ["public/intent-response/created.json", "public/redeem-response/reused-200.json"]
+    },
+    {
+      "id": "active-join",
+      "given": "Pair has an executing/importing/publishing/reconciling generation",
+      "when": "Second installation redeems the same pair",
+      "then": { "httpStatus": 202, "fulfillment": "joined", "newGenerations": 0, "reservationsUsd": "0.00000000", "aiSubmits": 0, "sameGenerationId": true },
+      "responses": ["public/redeem-response/joined-202.json", "public/job-status-response/processing-reconciling-internally.json"]
+    },
+    {
+      "id": "concurrent-missing",
+      "given": "No pair row",
+      "when": "Two installations redeem the same pair concurrently on different backend replicas",
+      "then": { "fulfillments": ["generated", "joined"], "newGenerations": 1, "aiSubmits": 1 }
+    },
+    {
+      "id": "uncertain-acceptance-join",
+      "given": "Pair generation is reconciling after an ambiguous provider create",
+      "when": "New ad-completed intent for the pair",
+      "then": { "httpStatus": 202, "fulfillment": "joined", "publicStatus": "processing", "newGenerations": 0, "aiSubmits": 0 }
+    },
+    {
+      "id": "definitive-failure-then-new-intent",
+      "given": "Last generation failed definitively; no saved output; no uncertain operation",
+      "when": "User deliberately taps Generate again (new intent, new ad)",
+      "then": { "httpStatus": 202, "fulfillment": "generated", "attemptNumber": 2, "newGenerations": 1 },
+      "responses": ["public/job-status-response/failed.json", "public/redeem-response/generated-202.json"]
+    },
+    {
+      "id": "hidden-pair",
+      "given": "Pair hidden by an administrator",
+      "when": "Ad-completed redeem",
+      "then": { "httpStatus": 409, "error": "PAIR_UNAVAILABLE", "rewardStatus": "client_reported", "newGenerations": 0 },
+      "responses": ["public/error-response/pair-unavailable.json"]
+    },
+    {
+      "id": "unpublished-asset-recovery",
+      "given": "Assets imported, MySQL publishing, publication PUT response lost",
+      "when": "Publication worker retries",
+      "then": { "sameRevision": true, "sameGenerationId": true, "aiSubmits": 0, "finalPairState": "ready" }
+    },
+    {
+      "id": "missing-media-not-a-miss",
+      "given": "Pair ready but the store reports a missing file",
+      "when": "Ad-completed redeem",
+      "then": { "httpStatus": 409, "error": "PAIR_UNAVAILABLE", "newGenerations": 0, "repairScheduled": true }
+    },
+    {
+      "id": "lost-intent-create-response",
+      "given": "POST intent succeeded but the response was lost",
+      "when": "App replays with the same Idempotency-Key and payload",
+      "then": { "httpStatus": 200, "sameIntentId": true },
+      "responses": ["public/intent-response/created.json"]
+    },
+    {
+      "id": "changed-intent-payload",
+      "given": "Intent exists for Idempotency-Key K",
+      "when": "App posts a different pair under K",
+      "then": { "httpStatus": 409, "error": "IDEMPOTENCY_CONFLICT" }
+    },
+    {
+      "id": "lost-redeem-response",
+      "given": "Redeem fulfilled but the response was lost",
+      "when": "App resends its saved redemption command (no new ad)",
+      "then": { "sameMapping": true, "newGenerations": 0, "rewardedAdShown": false },
+      "responses": ["public/redeem-response/generated-202.json"]
+    },
+    {
+      "id": "recorded-claim-recovery",
+      "given": "Claim recorded (client_reported) but fulfillment rolled back with 503",
+      "when": "App retries the same intent later",
+      "then": { "rewardedAdShown": false, "fulfillment": "generated" },
+      "responses": ["public/error-response/service-unavailable.json", "public/intent-response/reward-reported-unfulfilled.json"]
+    },
+    {
+      "id": "no-claim",
+      "given": "Intent with no recorded claim",
+      "when": "Redeem with rewardedAdCompleted false",
+      "then": { "httpStatus": 403, "error": "REWARDED_AD_REQUIRED", "aiSubmits": 0 },
+      "responses": ["public/error-response/rewarded-ad-required.json"]
+    },
+    {
+      "id": "ad-attempt-reused",
+      "given": "clientAdAttemptId X already bound to intent I1 of this installation",
+      "when": "Redeem intent I2 with attempt X",
+      "then": { "httpStatus": 409, "error": "AD_ATTEMPT_ALREADY_USED" }
+    },
+    {
+      "id": "different-attempt-for-reported-intent",
+      "given": "Intent already has recorded attempt X and is unfulfilled",
+      "when": "Redeem with attempt Y",
+      "then": { "httpStatus": 409, "error": "AD_COMPLETION_CONFLICT" }
+    },
+    {
+      "id": "source-version-changed",
+      "given": "Unfulfilled cache-miss intent; catalog changed after preview",
+      "when": "Redeem with the old confirmedCatalogVersion",
+      "then": { "httpStatus": 409, "error": "SOURCE_VERSION_CHANGED", "rewardStatus": "client_reported", "next": "re-preview, redeem same intent with new version, no new ad" },
+      "responses": ["public/error-response/source-version-changed.json"]
+    },
+    {
+      "id": "source-version-ignored-for-ready-pair",
+      "given": "Pair ready; catalog changed",
+      "when": "Redeem with an old confirmedCatalogVersion",
+      "then": { "httpStatus": 200, "fulfillment": "reused" }
+    },
+    {
+      "id": "expired-unfulfilled-intent",
+      "given": "Intent unfulfilled for more than 24 hours",
+      "when": "Redeem",
+      "then": { "httpStatus": 410, "error": "INTENT_EXPIRED" },
+      "responses": ["public/intent-response/expired.json"]
+    },
+    {
+      "id": "fulfilled-replay-after-expiry",
+      "given": "Intent fulfilled, now older than 24 hours",
+      "when": "Redeem replay",
+      "then": { "sameMapping": true }
+    },
+    {
+      "id": "generation-disabled-reuse-still-works",
+      "given": "crossbreed.generation.enabled=false, pair ready",
+      "when": "Ad-completed redeem",
+      "then": { "httpStatus": 200, "fulfillment": "reused" }
+    },
+    {
+      "id": "budget-exhausted",
+      "given": "Daily cap reached",
+      "when": "Ad-completed redeem for a missing pair",
+      "then": { "httpStatus": 503, "error": "SERVICE_UNAVAILABLE", "rewardStatus": "client_reported", "newGenerations": 0 }
+    },
+    {
+      "id": "gallery-browse",
+      "given": "Published results exist",
+      "when": "Open gallery, paginate, open originals",
+      "then": { "rewardedAdShown": false, "bannerShown": true, "imageBytesFrom": "media-host" },
+      "responses": ["public/gallery-list-response/first-page.json", "public/gallery-list-response/empty.json"]
+    }
+  ]
+}

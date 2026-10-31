@@ -86,6 +86,19 @@ abstract class AdsConfig {
   @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_REWARDED_ID', obfuscate: true)
   static final String productionAdmobIosRewardedId = _AdsConfig.productionAdmobIosRewardedId;
 
+  /// Dedicated AI crossbreed rewarded units (optional; empty falls back to the shared rewarded unit).
+  @EnviedField(varName: 'TEST_ADMOB_ANDROID_CROSSBREED_REWARDED_ID', optional: true)
+  static final String? testAdmobAndroidCrossbreedRewardedId = _AdsConfig.testAdmobAndroidCrossbreedRewardedId;
+
+  @EnviedField(varName: 'TEST_ADMOB_IOS_CROSSBREED_REWARDED_ID', optional: true)
+  static final String? testAdmobIosCrossbreedRewardedId = _AdsConfig.testAdmobIosCrossbreedRewardedId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_ANDROID_CROSSBREED_REWARDED_ID', obfuscate: true, optional: true)
+  static final String? productionAdmobAndroidCrossbreedRewardedId = _AdsConfig.productionAdmobAndroidCrossbreedRewardedId;
+
+  @EnviedField(varName: 'PRODUCTION_ADMOB_IOS_CROSSBREED_REWARDED_ID', obfuscate: true, optional: true)
+  static final String? productionAdmobIosCrossbreedRewardedId = _AdsConfig.productionAdmobIosCrossbreedRewardedId;
+
   @EnviedField(varName: 'PRODUCTION_ADMOB_ANDROID_REWARDED_INTERSTITIAL_ID', obfuscate: true)
   static final String productionAdmobAndroidRewardedInterstitialId = _AdsConfig.productionAdmobAndroidRewardedInterstitialId;
 

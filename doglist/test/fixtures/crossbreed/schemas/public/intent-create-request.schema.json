@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "POST /api/v1/crossbreed-intents request (Idempotency-Key = client intent UUID)",
+  "description": "Immutable creation payload; changing it under the same key returns 409 IDEMPOTENCY_CONFLICT.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dogIds",
+    "catalogVersion"
+  ],
+  "properties": {
+    "dogIds": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/defs.schema.json#/$defs/dogId"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Selected/display order; the backend canonicalizes."
+    },
+    "catalogVersion": {
+      "$ref": "../common/defs.schema.json#/$defs/catalogVersion"
+    }
+  }
+}

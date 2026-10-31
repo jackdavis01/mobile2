@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Public crossbreed result / gallery item",
+  "description": "One saved shared image per unordered pair. URLs contain only the pair ID; there is no mediaExpiresAt field.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "pairId",
+    "generationId",
+    "dogIds",
+    "breedNames",
+    "imageUrl",
+    "thumbnailUrl",
+    "imageWidth",
+    "imageHeight",
+    "thumbnailWidth",
+    "thumbnailHeight",
+    "imageMimeType",
+    "thumbnailMimeType",
+    "aiGenerated",
+    "sources",
+    "createdAt",
+    "completedAt"
+  ],
+  "properties": {
+    "pairId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "generationId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "dogIds": {
+      "$ref": "../common/defs.schema.json#/$defs/canonicalDogIds"
+    },
+    "breedNames": {
+      "type": "array",
+      "items": {
+        "$ref": "../common/defs.schema.json#/$defs/breedName"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "Breed name snapshots in canonical dogIds order."
+    },
+    "imageUrl": {
+      "$ref": "../common/defs.schema.json#/$defs/originalImageUrl"
+    },
+    "thumbnailUrl": {
+      "$ref": "../common/defs.schema.json#/$defs/thumbnailImageUrl"
+    },
+    "imageWidth": {
+      "const": 1024
+    },
+    "imageHeight": {
+      "const": 1024
+    },
+    "thumbnailWidth": {
+      "const": 256
+    },
+    "thumbnailHeight": {
+      "const": 256
+    },
+    "imageMimeType": {
+      "const": "image/png"
+    },
+    "thumbnailMimeType": {
+      "const": "image/webp"
+    },
+    "aiGenerated": {
+      "const": true
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "dogId",
+          "breedName",
+          "sha256",
+          "catalogVersion"
+        ],
+        "properties": {
+          "dogId": {
+            "$ref": "../common/defs.schema.json#/$defs/dogId"
+          },
+          "breedName": {
+            "$ref": "../common/defs.schema.json#/$defs/breedName"
+          },
+          "sha256": {
+            "$ref": "../common/defs.schema.json#/$defs/sha256Hex"
+          },
+          "catalogVersion": {
+            "$ref": "../common/defs.schema.json#/$defs/catalogVersion"
+          }
+        }
+      }
+    },
+    "createdAt": {
+      "$ref": "../common/defs.schema.json#/$defs/utcTimestamp"
+    },
+    "completedAt": {
+      "$ref": "../common/defs.schema.json#/$defs/utcTimestamp"
+    }
+  }
+}

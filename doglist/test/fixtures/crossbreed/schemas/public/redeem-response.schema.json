@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Redeem 200 (succeeded result) / 202 (generated or joined, poll the job) response",
+  "description": "generated = a new job was admitted, not completed. A fulfilled replay returns the identical original mapping.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intentId",
+    "rewardStatus",
+    "fulfillment",
+    "pairId",
+    "generationId",
+    "status",
+    "result"
+  ],
+  "properties": {
+    "intentId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "rewardStatus": {
+      "const": "consumed"
+    },
+    "fulfillment": {
+      "$ref": "../common/defs.schema.json#/$defs/fulfillmentKind"
+    },
+    "pairId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "generationId": {
+      "$ref": "../common/defs.schema.json#/$defs/uuidV4"
+    },
+    "status": {
+      "$ref": "../common/defs.schema.json#/$defs/publicJobStatus"
+    },
+    "result": {
+      "oneOf": [
+        {
+          "$ref": "crossbreed-result.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "pollAfterSeconds": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 15
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "succeeded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "$ref": "crossbreed-result.schema.json"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "result": {
+            "type": "null"
+          }
+        },
+        "required": [
+          "pollAfterSeconds"
+        ]
+      }
+    }
+  ]
+}

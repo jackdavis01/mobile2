@@ -11,6 +11,7 @@ import 'businesslogic/compare_bloc_cubit.dart';
 import 'pages/listpage.dart';
 import 'pages/compare_page.dart';
 import 'pages/compare_details_page.dart';
+import 'pages/crossbreed_gallery_page.dart';
 import 'pages/detailspage.dart';
 import 'pages/filter_page_wrapper.dart';
 import 'pages/breed_info_page.dart';
@@ -87,6 +88,7 @@ class _DogListAppState extends State<DogListApp> {
             '/breed-info': (context) => BreedInfoPage(),
             '/compare': (context) => const ComparePage(),
             '/compare-details': (context) => const CompareDetailsPage(),
+            CrossbreedGalleryScreen.routeName: CrossbreedGalleryScreen.fromRoute,
             '/settings': (context) => const SettingsPage(),
             '/info': (context) => const InfoPage(),
             '/onboarding': (context) => const OnboardingPage(fromFirstLaunch: false),

@@ -15,6 +15,8 @@ import '../widgets/feature_discovery_wrapper.dart';
 import '../widgets/feature_overlays.dart';
 import '../parameters/feature_ids.dart';
 import '../parameters/netservices.dart';
+import '../pages/crossbreed_gallery_page.dart';
+import 'download_app_dialog.dart';
 
 class DogNavDrawer extends StatelessWidget {
   final VoidCallback? onTopDogsTap;
@@ -57,7 +59,11 @@ class _DogNavDrawerContent extends StatelessWidget {
     Navigator.pushNamed(context, '/info');
   }
 
-  void _navigateToTopDogsPage(BuildContext context) {
+  void _navigateToTopDogsPage(BuildContext context, AppLocalizations l) {
+    if (PlatformInfo.isWeb) {
+      showDownloadAppDialog(context, message: l.topDogsWebDialogMessage);
+      return;
+    }
     if (onTopDogsTap != null) {
       onTopDogsTap!();
       return;
@@ -68,6 +74,14 @@ class _DogNavDrawerContent extends StatelessWidget {
 
   void _navigateToComparePage(BuildContext context) {
     Navigator.pushNamed(context, '/compare');
+  }
+
+  void _navigateToCrossbreedGallery(BuildContext context, AppLocalizations l) {
+    if (PlatformInfo.isWeb) {
+      showDownloadAppDialog(context, message: l.crossbreedWebDialogMessage);
+      return;
+    }
+    Navigator.pushNamed(context, CrossbreedGalleryScreen.routeName);
   }
 
   Future<void> _handleBestDogTap(BuildContext context, NavigationDrawerState drawerState) async {
@@ -176,19 +190,23 @@ class _DogNavDrawerContent extends StatelessWidget {
             children: <Widget>[
               drawerHeader,
               const SizedBox(height: 8),
-              // Hide Top 3 dogs menu item on web
-              if (!PlatformInfo.isWeb)
-                ListTile(
-                  leading: const Icon(Icons.emoji_events, color: Colors.orange),
-                  minLeadingWidth: 0,
-                  title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
-                  onTap: () => _navigateToTopDogsPage(context),
-                ),
+              ListTile(
+                leading: const Icon(Icons.emoji_events, color: Colors.orange),
+                minLeadingWidth: 0,
+                title: Text(appLocalizations.topDogsTitle, style: const TextStyle(fontSize: 18.0)),
+                onTap: () => _navigateToTopDogsPage(context, appLocalizations),
+              ),
               ListTile(
                 leading: const Icon(Icons.compare_arrows),
                 minLeadingWidth: 0,
                 title: Text(appLocalizations.compareTitle, style: const TextStyle(fontSize: 18.0)),
                 onTap: () => _navigateToComparePage(context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.auto_awesome, color: Colors.deepPurple),
+                minLeadingWidth: 0,
+                title: Text(appLocalizations.crossbreedGalleryTitle, style: const TextStyle(fontSize: 18.0)),
+                onTap: () => _navigateToCrossbreedGallery(context, appLocalizations),
               ),
               ListTile(
                 leading: const Icon(Icons.settings),
