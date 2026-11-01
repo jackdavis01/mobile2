@@ -56,7 +56,7 @@
       "pattern": "^https://[A-Za-z0-9.-]+(:[0-9]{1,5})?/crossbreeds/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/thumbnail\\.webp$"
     },
     "recipeId": { "const": "klein4b-crossbreed-v1" },
-    "promptVersion": { "enum": ["crossbreed-adult-klein-v2", "crossbreed-adult-klein-v1"] },
+    "promptVersion": { "enum": ["crossbreed-adult-klein-v3", "crossbreed-adult-klein-v2", "crossbreed-adult-klein-v1"] },
     "settingsVersion": { "const": "klein4b-1mp-seed17-v1" },
     "artifactProfile": { "const": "png1024-webp256-q80-v1" },
     "publicJobStatus": {
